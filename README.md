@@ -42,6 +42,10 @@ All API is available through `testit` object:
 + `testit.type( entity, 'type' )` - check type (`function`, `object`, ...) of entity
 + `testit.types( [entity1, entity2] )` - check equality between types of all entities in array
 
+Some other stuff
+
++ `testit.time( entity )` - print time spended on performing entity (commonly function)
+
 some examples:
     
     testit( Me ); // pass if variable Me exist
