@@ -34,37 +34,37 @@ in bottom of your `<body>` tag. Thats it!
 ### How to use
 All API is available through `testit` object:
 
-+ `testit( entity )` - check existance of entity:
-+ `testit( entity1, entity2 )` - check equality between 2 entities.
++ `test.it( entity )` - check existance of entity:
++ `test.it( entity1, entity2 )` - check equality between 2 entities.
   
   if entity is function - `testit` takes it's returned value for comparison.
-+ `testit( [entity1, entity2] )` check equality between all entities in array
-+ `testit.type( entity, 'type' )` - check type (`function`, `object`, ...) of entity
-+ `testit.types( [entity1, entity2] )` - check equality between types of all entities in array
++ `test.it( [entity1, entity2] )` check equality between all entities in array
++ `test.type( entity, 'type' )` - check type (`function`, `object`, ...) of entity
++ `test.types( [entity1, entity2] )` - check equality between types of all entities in array
 
 Some other stuff
 
-+ `testit.time( entity )` - print time spended on performing entity (commonly function)
++ `test.time( entity )` - print time spended on performing entity (commonly function)
 
 some examples:
     
-    testit( Me ); // pass if variable Me exist
+    test.it( Me ); // pass if variable Me exist
     
-    testit( Me.getJob ); // pass if Me exist and has property getJob (even if getJob is a function)
+    test.it( Me.getJob ); // pass if Me exist and has property getJob (even if getJob is a function)
     
-    testit( myName, 'Titulus' ); // pass if myName is variable with a value of 'Titulus'
-    testit( 'Titulus', myName ); // equal to previous
+    test.it( myName, 'Titulus' ); // pass if myName is variable with a value of 'Titulus'
+    test.it( 'Titulus', myName ); // equal to previous
     
-    testit( getMyFamilyName(), 'Desiderio' ); // pass if myFunction() return 'myReturn'
+    test.it( getMyFamilyName(), 'Desiderio' ); // pass if myFunction() return 'myReturn'
     
-    testit( [mySurname, mySisterSurname, myMotherSurname, myFatherSurname, 'Desiderio', getMyFamilyName()] );
+    test.it( [mySurname, mySisterSurname, myMotherSurname, myFatherSurname, 'Desiderio', getMyFamilyName()] );
     // pass if all of entities in the transmitted array contains or returns 'Desiderio'
     
-    testit.type( myName, 'string' ); // pass if myName is string value
-    testit.type( getMyFamilyName, 'function' ); // pass if getMyFamilyName is function
-    testit.type( getMyFamilyName(), 'string' ); // pass if getMyFamilyName return string
+    test.type( myName, 'string' ); // pass if myName is string value
+    test.type( getMyFamilyName, 'function' ); // pass if getMyFamilyName is function
+    test.type( getMyFamilyName(), 'string' ); // pass if getMyFamilyName return string
     
-    testit.types( [mySurname, mySisterSurname, myMotherSurname, myFatherSurname, 'Desiderio', getMyFamilyName()] );
+    test.types( [mySurname, mySisterSurname, myMotherSurname, myFatherSurname, 'Desiderio', getMyFamilyName()] );
     // pass if all entities in the transmitted array contains or returns values of the same type
 
 ### Results
