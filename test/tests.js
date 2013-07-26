@@ -1,6 +1,4 @@
 
-window.test = new testit;
-
 var mockstack = {
     status: 'failed',
     result: {
@@ -88,20 +86,24 @@ console.log(1);
 //         test.record('last',3);
 //     });
 // });
-test.it('a',231,3,4);
-test.group('test a',function(){
-    test.it(a);
-        test.comment('try to: a');
-}); test.comment('обернул в группу, что бы отловить ошибку');
+test.it('a');
 test.group('second a',function(){
     a = 1+1;
-    test.it(a); test.comment('try to: a; again');
+    test.it(a); test.comment('try to: a;');
     test.it(a>5);
         test.comment('is a>5?');
     a += 4;
     test.it(a>5);
         test.comment('is a>5?');
 });
+test.it(1,2,3,4);
+var asd = function() {
+    for (i=1;i<100000000;i++) {var s = 'asd'; s+='dsa'; s=12; delete s;}
+    return i;
+}
+test.group('longtest',function(){
+    test.it(asd());
+})
 test.group('objects',function(){
     a = document.createElement('div');
     test.it(a);
