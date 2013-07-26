@@ -88,6 +88,7 @@ console.log(1);
 //         test.record('last',3);
 //     });
 // });
+test.it('a',231,3,4);
 test.group('test a',function(){
     test.it(a);
         test.comment('try to: a');
@@ -100,5 +101,18 @@ test.group('second a',function(){
     a += 4;
     test.it(a>5);
         test.comment('is a>5?');
+});
+test.group('objects',function(){
+    a = document.createElement('div');
+    test.it(a);
+        test.comment('test object a')
+});
+test.group('two arguments',function(){
+    test.it(1,2);
+        test.comment('wrong value');
+    test.it(1,1);
+        test.comment('same value');
+    test.it(1+1,2);
+        test.comment('values');
 });
 test.done();

@@ -24,6 +24,8 @@ var testit = function() {
         this.status = undefined;
         this.comment = undefined;
         this.error = undefined;
+        this.description = undefined;
+        this.entity = [];
     }
 
     var root = new group();
@@ -50,28 +52,32 @@ var testit = function() {
 
     var _it = function(a,b) {
         var newtest = new test();
+        for (i in arguments) {
+            newtest.entity.push(arguments[i]);
+        }
         switch (arguments.length) {
             case 0 : {
-                newtest.status='error';
+                newtest.status = 'error';
                 newtest.error = new ReferenceError("at least one argument expected");
             } break;
             case 1 : {
+                newtest.description = 'argument exist and not false';
                 if (a) {
-                    newtest.status='pass';
+                    newtest.status = 'pass';
                 } else {
-                    newtest.status='fail';
+                    newtest.status = 'fail';
                 }
             } break;
             case 2 : {
-                if (a===b) {
-                    newtest.status='pass';
+                newtest.description = 'arguments are equal';
+                if (a == b) {
+                    newtest.status = 'pass';
                 } else {
-                    newtest.status='fail';
+                    newtest.status = 'fail';
                 }
-                newtest.status='pass';
             } break;
             default : {
-                newtest.status='error';
+                newtest.status = 'error';
                 newtest.error = new RangeError("too much arguments");
             }
         }
