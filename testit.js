@@ -1,137 +1,297 @@
 (function(window) {
 
-    var testit = function() {
-
-        var group = function() {
-            this.name = undefined;
-            this.status = undefined;
-            this.comment = undefined;
-            this.error = undefined;
-            this.time = new Date().getTime();
-            this.result = {
-                tests: {
-                    passed: 0,
-                    failed: 0,
-                    error: 0,
-                    total: 0
-                },
-                groups: {
-                    passed: 0,
-                    failed: 0,
-                    error: 0,
-                    total: 0
-                }
-            };
-            this.stack = [];
-        }
-
-        var test = function() {
-            this.status = undefined;
-            this.comment = undefined;
-            this.error = undefined;
-            this.description = undefined;
-            this.time = new Date().getTime();
-            this.entity = [];
-        }
-
-        var root = new group();
-        this.root = root;
-        root.name = 'root';
-
-        var _makeGroup = function(name,fun) {
-            var newgroup = new group();
-            newgroup.name = name;
-            newgroup.status ='pass';
-
-            var oldRoot = root;
-            root = newgroup;
-
-            try{fun();} catch(e) {
-                newgroup.status = 'error';
-                newgroup.error = e;
+var testit = function() {
+    /**
+     * group class, which will contain tests
+     * In addition, it will be used for wrapping some wrong code from falling.
+     * @constructor
+     * @private
+     * @attribute {String} name         name of group
+     * @attribute {String} status       indicate results of all test in group ('pass','fail','error')
+     * @attribute {String} comment      text specified by user
+     * @attribute {Error}  error        contain error object if some of tests throw it
+     * @attribute {Number} time         time in ms spend on code in group
+     * @attribute {Object} result       counters for tests and groups
+     * @attribute {array}  stack        array of tests and groups
+     */
+    var group = function() {
+        this.name = undefined;
+        this.status = undefined;
+        this.comment = undefined;
+        this.error = undefined;
+        this.time = new Date().getTime();
+        this.result = {
+            tests: {
+                passed: 0,
+                failed: 0,
+                error: 0,
+                total: 0
+            },
+            groups: {
+                passed: 0,
+                failed: 0,
+                error: 0,
+                total: 0
             }
-            oldRoot.status = updateStatus(oldRoot.status,root.status);
-            root = oldRoot;
-            switch (newgroup.status) {
-                case 'pass' : {
-                    root.result.groups.passed++;
-                } break;
-                case 'fail' : {
-                    root.result.groups.failed++;
-                } break;
-                case 'error' : {
-                    root.result.groups.error++;
-                } break;
-            }
-            root.result.groups.total++;
-            newgroup.time = new Date().getTime() - newgroup.time;
-            root.stack.push(newgroup);
-        }
-        this.group = _makeGroup;
-
-        var _it = function(a,b) {
-            var newtest = new test();
-            for (i in arguments) {
-                newtest.entity.push(arguments[i]);
-            }
-            switch (arguments.length) {
-                case 0 : {
-                    newtest.status = 'error';
-                    newtest.error = new ReferenceError("at least one argument expected");
-                } break;
-                case 1 : {
-                    newtest.description = 'argument exist and not false';
-                    if (a) {
-                        newtest.status = 'pass';
-                    } else {
-                        newtest.status = 'fail';
-                    }
-                } break;
-                case 2 : {
-                    newtest.description = 'arguments are equal';
-                    if (a == b) {
-                        newtest.status = 'pass';
-                    } else {
-                        newtest.status = 'fail';
-                    }
-                } break;
-                default : {
-                    newtest.status = 'error';
-                    newtest.error = new RangeError("too much arguments");
-                }
-            }
-            switch (newtest.status) {
-                case 'pass' : {
-                    root.result.tests.passed++;
-                } break;
-                case 'fail' : {
-                    root.result.tests.failed++;
-                } break;
-                case 'error' : {
-                    root.result.tests.error++;
-                } break;
-            }
-            root.result.tests.total++;
-            root.status = updateStatus(root.status,newtest.status);
-            newtest.time = new Date().getTime() - newtest.time;
-            root.stack.push(newtest);
-        }
-        this.it = _it;
-
-        var _comment = function(text) {
-            if (root.stack.length) root.stack[root.stack.length-1].comment = text;
-        }
-        this.comment = _comment;
-
-
-        var _done = function(obj) {
-            // stack.time = +new Date - timestamp;
-           root.time = new Date().getTime() - root.time;
-            console.dir(root);
-        }
-        this.done = _done;
+        };
+        this.stack = [];
     }
 
+    /**
+     * test class, which will contain result and some more info about one test
+     * @constructor
+     * @private
+     * @attribute {String} status       indicate results of test ('pass','fail','error')
+     * @attribute {String} comment      text specified by user
+     * @attribute {String} description  text generated by script
+     * @attribute {Error}  error        contain error object if test can throw it without falling
+     * @attribute {Number} time         time in ms spend on test
+     * @attribute {Array}  entity       all received arguments
+     */
+    var test = function() {
+        this.status = undefined;
+        this.comment = undefined;
+        this.description = undefined;
+        this.error = undefined;
+        this.time = new Date().getTime();
+        this.entity = [];
+    }
+
+    /**
+     * main group
+     * @public
+     * @type {group}
+     */
+    var root = new group();
+    this.root = root;
+    root.name = 'root';
+
+    /**
+     * make new instace of group, fill it, add it to previous group.stack, fill some values in previous group
+     * @private
+     * @type {Function}
+     * @param  {String}   name          name of new group
+     * @param  {Function} fun           function witch will be tryed to execute (commonly consist of tests and other groups)
+     */
+    var _makeGroup = function(name,fun) {
+        /**
+         * making a new instance of group
+         * Most of code in this function will manipulate whis it.
+         */
+        var newgroup = new group();
+        newgroup.name = name;
+        /** set to pass as default. it's may be changed in some next lines */
+        newgroup.status ='pass';
+
+        /**
+         * making a new root, to provide nesting
+         * Nested tests and groups will us it, like first one use root.
+         */
+        var oldRoot = root;
+        root = newgroup;
+        /**
+         * try to execute code with tests and other groups in it
+         * This part provide nesting.
+         */
+        try{fun();} catch(e) {
+            newgroup.status = 'error';
+            newgroup.error = e;
+        }
+        /** 
+         * reverse inheritance of status
+         * If some of deep nested test will 'fail', root will be 'fail' too.
+         * More info in updateStatus() comments.
+         */
+        oldRoot.status = updateStatus(oldRoot.status,root.status);
+        /**
+         * take back old root
+         * Next code do not need nesting.
+         */
+        root = oldRoot;
+
+        /** update counters */
+        switch (newgroup.status) {
+            case 'pass' : {
+                root.result.groups.passed++;
+            } break;
+            case 'fail' : {
+                root.result.groups.failed++;
+            } break;
+            case 'error' : {
+                root.result.groups.error++;
+            } break;
+        }
+        root.result.groups.total++;
+
+        /** update time */
+        newgroup.time = new Date().getTime() - newgroup.time;
+
+        /** finally place this group into previous level stack */
+        root.stack.push(newgroup);
+    }
+    /**
+     * public interface for _makeGroup
+     * @public
+     * @type {Function}
+     * @example
+     *  test.group('name of group',function(){
+     *      test.it('nested test');
+     *      test.group('nested group',function(){
+     *          test.it('deep nested test');
+     *      });
+     *  });
+     */
+    this.group = _makeGroup;
+
+    /**
+     * basic test. Make new instance of test, fill it, add it to previous group.stack, fill some values in previous group
+     * @private
+     * @type {Function}
+     * @param  {Multiple} a @required       first entity, which will check for truth it only transmitted
+     * @param  {Multiple} b                 second entity which will compared with a if transmitted 
+     * @return {Boolean}                    true if 'pass', fail otherwise
+     */
+    var _it = function(a,b) {
+        /**
+         * making a new instance of test
+         * Most of code in this function will manipulate whis it.
+         */
+        var newtest = new test();
+
+        /**
+         * fill newtest.entity with arguments
+         * (arguments is array-like object, but not array. So i can't just  newtest.entity = newtest.entity.concat(arguments); or newtest.entity = arguments)
+         */
+        for (i in arguments) {
+            newtest.entity.push(arguments[i]);
+        }
+
+        /** try to figure out what kind of test expected */
+        switch (arguments.length) {
+            /** in case of no arguments - throw Reference error */
+            case 0 : {
+                newtest.status = 'error';
+                newtest.error = new ReferenceError("at least one argument expected");
+            } break;
+            /** if there only one argument - test it for truth */
+            case 1 : {
+                newtest.description = 'argument exist and not false';
+                if (a) {
+                    newtest.status = 'pass';
+                } else {
+                    newtest.status = 'fail';
+                }
+            } break;
+            /** if there are two arguments - test equalence between them */
+            case 2 : {
+                newtest.description = 'arguments are equal';
+                if (a == b) {
+                    newtest.status = 'pass';
+                } else {
+                    newtest.status = 'fail';
+                }
+            } break;
+            /** otherwise throw Range error */
+            default : {
+                newtest.status = 'error';
+                newtest.error = new RangeError("too much arguments");
+            }
+        }
+        
+        /** update counters of contained object */
+        switch (newtest.status) {
+            case 'pass' : {
+                root.result.tests.passed++;
+            } break;
+            case 'fail' : {
+                root.result.tests.failed++;
+            } break;
+            case 'error' : {
+                root.result.tests.error++;
+            } break;
+        }
+        root.result.tests.total++;
+
+        /** reverse inheritance of status */
+        root.status = updateStatus(root.status,newtest.status);
+
+        /** update time */
+        newtest.time = new Date().getTime() - newtest.time;
+
+        /** finally place this test into container stack */
+        root.stack.push(newtest);
+
+        return (newtest.status==='pass')? true:false;
+    }
+    /**
+     * public interface for _it()
+     * @public
+     * @type {Function}
+     * @example
+     *   test.it(myFunction());
+     *   test.it(myVar>5);
+     *   test.it(myVar,mySecondVar);
+     */
+    this.it = _it;
+
+    /**
+     * add comment for the last test or group in current stack
+     * @private
+     * @type {Function}
+     * @param  {String} text        user defined text, which will be used as a comment
+     */
+    var _comment = function(text) {
+        /** add comment, if there are something can be commented */
+        if (root.stack.length) root.stack[root.stack.length-1].comment = text;
+    }
+    /**
+     * public interface for _comment()
+     * @public
+     * @type {Function}
+     * @example
+     *   test.group('group name',function(){
+     *      test.it(myFunction());
+     *          test.comment('comment to test');
+     *   });
+     *      test.comment('comment to group');
+     */
+    this.comment = _comment;
+
+    /** 
+     * apply last stuff and display results
+     * type {Function}
+     * @private
+     */
+    var _done = function(obj) {
+        /** update time in root */
+        root.time = new Date().getTime() - root.time;
+
+        /** display root */
+        console.dir(root);
+    }
+    /**
+     * public interface for _done()
+     * @type {Function}
+     * @public
+     * @example
+     *   test.it(1);
+     *   test.it(2);
+     *   test.it(3);
+     *   
+     *   test.done();
+     */
+    this.done = _done;
+}
+
+/**
+ * figure out what status will be used
+ * Depends on significanse:
+ * More significant -> less significant.
+ * error -> fail -> pass -> undefined
+ * @param  {String} oldstatus   first compared status
+ * @param  {String} newstatus   second compared status
+ * @return {String}             status which will be set
+ */
 var updateStatus = function(oldstatus,newstatus) {
     if (oldstatus===undefined) return newstatus;
     if (newstatus===undefined) return oldstatus;
@@ -140,6 +300,10 @@ var updateStatus = function(oldstatus,newstatus) {
     return 'pass';
 }
 
+/** 
+ * make new instance of testit
+ * Make it availible from outside.
+ */
 window.test = new testit();
 
 })(window) 
