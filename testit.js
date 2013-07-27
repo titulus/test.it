@@ -288,18 +288,26 @@ var testit = function() {
      */
     this.done = _done;
 
+    /**
+     * pritty display group or test in browser dev console
+     * @private
+     * @param  {Object} obj     group or test to display
+     */
     var _printConsole = function(obj) {
+
+        /** colors for console.log %c */
         var green = "color: green",
             red = "color: red;",
             orange = "color: orange",
             blue = "color: blue",
             normal = "color: normal";
 
-
+        /** Try to figure out what type of object display and open group */
         switch (obj.type) {
             case 'group' : {
-
+                /** some difference depends on status */
                 switch (obj.status) {
+                    /** if object passed - make collapsed group*/
                     case 'pass' : {
                         console.groupCollapsed("%s - %cpass",obj.name,green);
                     } break;
@@ -309,19 +317,24 @@ var testit = function() {
                     case 'error' : {
                         console.group("%s - %cerror",obj.name,orange);
                     } break;
+                    /** if status is not defined - display error; finish displaying */
                     default : {
                         console.error("No status in object %s",obj.name);
                         return false;
                     }
                 }
 
+                /** display description if defined */
                 if (obj.description) {
                     console.log(obj.description);
                 }
+
+                /** display comment if defined */
                 if (obj.comment) {
                     console.log(obj.comment);                    
                 }
 
+                /** display result counters */
                 console.log("tests: %cpass%c %d, %cfail%c %d, %cerror%c %d\ngroups: %cpass%c %d, %cfail%c %d, %cerror%c %d"
                             ,green,normal,obj.result.tests.passed
                             ,red,normal,obj.result.tests.failed
@@ -329,23 +342,31 @@ var testit = function() {
                             ,green,normal,obj.result.groups.passed
                             ,red,normal,obj.result.groups.failed
                             ,orange,normal,obj.result.groups.error);
-
+                /** display time */
                 console.log("time: %c%d%c ms",blue,obj.time,normal);
                 
+                /** display error if defined */
                 if (obj.error) {
                     console.error(obj.error);                    
                 }
 
+                /**
+                 * display all tests and groups in stack
+                 * It will make new levels of group, if there are groups in stack.
+                 */
                 for (i in obj.stack) {
                     _printConsole(obj.stack[i]);
                 }
 
+                /** close opened group (current level) */
                 console.groupEnd();
 
             } break;
             case 'test' : {
+                /** display different results, depend on status */
                 switch (obj.status) {
                     case 'pass' : {
+                        /** if pass - collaps group*/
                         console.groupCollapsed("%cpass%c: %s",green,normal,(obj.comment)?obj.comment:'no comment');
                         console.log("%s\n%o"
                                     ,(obj.description)?obj.description:'no description'

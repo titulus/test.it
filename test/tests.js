@@ -20,7 +20,7 @@ test.group('longtest',function(){
 test.group('objects',function(){
     a = document.createElement('div');
     test.it(a);
-        test.comment('test object a')
+        test.comment('test object a');
 });
 test.group('two arguments',function(){
     test.it(1,2);
