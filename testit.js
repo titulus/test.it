@@ -190,7 +190,8 @@ var testit = function() {
             /** if there are two arguments - test equalence between them */
             case 2 : {
                 newtest.description = 'arguments are equal';
-                if (typeof(a) === typeof(b) && typeof(a) === 'object'
+                if (a !== null && b!== null
+                 && typeof(a) === typeof(b) && typeof(a) === 'object'
                  && a.toString() === b.toString() && a.toString() === '[object Object]') {
                     newtest.status = (JSON.stringify(a) === JSON.stringify(b))? 'pass':'fail';
                 } else {
@@ -404,6 +405,58 @@ var testit = function() {
      *   test.ptint(test.root);
      */
     this.print = _printConsole;
+
+    /**
+     * determinate type of entity
+     * More powerfull then typeof().
+     * @private
+     * @return {String}     type name of entity
+     *                      undefined, if type was not determinated
+     */
+    var _typeof = function (entity) {
+        var type;
+        try {
+            switch (entity.constructor) {
+                case Array : type='array';break;
+                case Boolean : type='boolean';break;
+                case Date : type='date';break;
+                case Error : type='error';break;
+                case EvalError : type='evalerror';break;
+                case Function : type='function';break;
+                // case Math : type='math';break;
+                case Number : {type=(isNaN(entity))?'nan':'number';}break;
+                case Object : type='object';break;
+                case RangeError : type='rangeerror';break;
+                case ReferenceError : type='referenceerror';break;
+                case RegExp : type='regexp';break;
+                case String : type='string';break;
+                case SyntaxError : type='syntaxerror';break;
+                case TypeError : type='typeerror';break;
+                case URIError : type='urierror';break;
+                case Window : type='window';break;
+                case HTMLDocument : type='dom';break;
+                case NodeList : type='nodelist';break;
+                default : {
+                    if (typeof entity === 'object'
+                     && entity.toString().indexOf('HTML') !== -1) {
+                        type = 'dom';
+                    } else {
+                        type = undefined;
+                    }
+                }
+            }
+        } catch (e) {
+            type = (entity === null)? 'null' : typeof entity;
+        }
+        return type;
+    }
+    /**
+     * public interface for _typeof
+     * @public
+     * @example
+     *   test.typeof(myVar);
+     */
+    this.typeof = _typeof;
 }
 
 /**
