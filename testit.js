@@ -391,6 +391,14 @@ var testit = function() {
             } break;
         }
     }
+    /**
+     * public interface for _printConsole
+     * @type {Function}
+     * @public
+     * @example
+     *   test.ptint(test.root);
+     */
+    this.print = _printConsole;
 }
 
 /**
