@@ -190,17 +190,23 @@ var testit = function() {
             /** if there are two arguments - test equalence between them */
             case 2 : {
                 newtest.description = 'arguments are equal';
-                if (a !== null && b!== null
-                 && typeof(a) === typeof(b) && typeof(a) === 'object'
-                 && a.toString() === b.toString() && a.toString() === '[object Object]') {
-                    newtest.status = (JSON.stringify(a) === JSON.stringify(b))? 'pass':'fail';
+                
+                if (_typeof(a) !== _typeof(b)) {
+                    newtest.status = 'fail';
                 } else {
-                    if (a == b) {
-                        newtest.status = 'pass';
-                    } else {
-                        newtest.status = 'fail';
-                    }
+                    /*switch (_typeof(a)) {
+                        case 'array' : {} break;
+                        case 'object' : {} break;
+                        case 'regexp' : {} break;
+                        case 'dom' : {} break;
+                        case 'nodelist' : {} break;
+                        default : {
+                            newtest.status = (a===b);
+                        }
+                    }*/
+                    newtest.status = (deepCompare(a,b))? 'pass' : 'fail';
                 }
+                
             } break;
             /** otherwise throw Range error */
             default : {
@@ -476,10 +482,17 @@ var updateStatus = function(oldstatus,newstatus) {
     return 'pass';
 }
 
+/**
+ * Compare any type of variables
+ * @return {Boolean}            result of comparison
+ * {@link http://stackoverflow.com/a/1144249/1771942}
+ */
+function deepCompare(){function c(d,e){var f;if(isNaN(d)&&isNaN(e)&&"number"==typeof d&&"number"==typeof e)return!0;if(d===e)return!0;if("function"==typeof d&&"function"==typeof e||d instanceof Date&&e instanceof Date||d instanceof RegExp&&e instanceof RegExp||d instanceof String&&e instanceof String||d instanceof Number&&e instanceof Number)return d.toString()===e.toString();if(!(d instanceof Object&&e instanceof Object))return!1;if(d.isPrototypeOf(e)||e.isPrototypeOf(d))return!1;if(d.constructor!==e.constructor)return!1;if(d.prototype!==e.prototype)return!1;if(a.indexOf(d)>-1||b.indexOf(e)>-1)return!1;for(f in e){if(e.hasOwnProperty(f)!==d.hasOwnProperty(f))return!1;if(typeof e[f]!=typeof d[f])return!1}for(f in d){if(e.hasOwnProperty(f)!==d.hasOwnProperty(f))return!1;if(typeof e[f]!=typeof d[f])return!1;switch(typeof d[f]){case"object":case"function":if(a.push(d),b.push(e),!c(d[f],e[f]))return!1;a.pop(),b.pop();break;default:if(d[f]!==e[f])return!1}}return!0}var a,b;if(arguments.length<1)return!0;for(var d=1,e=arguments.length;e>d;d++)if(a=[],b=[],!c(arguments[0],arguments[d]))return!1;return!0}
+
 /** 
  * make new instance of testit
  * Make it availible from outside.
  */
 window.test = new testit();
 
-})(window) 
+})(window)
