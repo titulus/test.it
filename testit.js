@@ -190,10 +190,15 @@ var testit = function() {
             /** if there are two arguments - test equalence between them */
             case 2 : {
                 newtest.description = 'arguments are equal';
-                if (a == b) {
-                    newtest.status = 'pass';
+                if (typeof(a) === typeof(b) && typeof(a) === 'object'
+                 && a.toString() === b.toString() && a.toString() === '[object Object]') {
+                    newtest.status = (JSON.stringify(a) === JSON.stringify(b))? 'pass':'fail';
                 } else {
-                    newtest.status = 'fail';
+                    if (a == b) {
+                        newtest.status = 'pass';
+                    } else {
+                        newtest.status = 'fail';
+                    }
                 }
             } break;
             /** otherwise throw Range error */
