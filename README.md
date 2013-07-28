@@ -19,8 +19,9 @@ Simple js testing framework
 
 #### Test types
   + equality between 2 or more entities
-  + existance of entity
-  + type of entity
+  + non-fail result of expression or entity
+  + existance of entity *Not realised yet*
+  + type of entity *Not realised yet*
 
 ===
 
