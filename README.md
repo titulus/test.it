@@ -32,7 +32,7 @@ You only need to add
 in bottom of your `<body>` tag. Thats it!
 
 ### How to use
-All API is available through `testit` object:
+All API is available through `test` object:
 
 + `test.it( entity||expression )` - check expression or entity for no-false value.
 + `test.it( entity1, entity2 )` - check equality between 2 entities.
