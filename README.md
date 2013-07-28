@@ -39,6 +39,7 @@ All API is available through `test` object:
 + `test.it( entity1, entity2 )` - check equality between 2 entities.
   if entity is function - `test.it` takes it's returned value for comparison.
 + `test.group('groupname',function(){/*your code here*/})` - combines tests and other groups in group. can be called multiple levels.
++ `test.comment('comment text')` - add comment for previous test or group.
 + `test.done()` - calculate time for `root` group and print result.
 
 **Not realised yet**
@@ -49,24 +50,35 @@ All API is available through `test` object:
 
 some examples:
     
-    test.it( Me ); // pass if variable Me exist and consist non-false value, 'Titulus' for example
-    
-    test.it( Me.getJob ); // pass if Me exist and has property getJob
-    
-    test.it( myName, 'Titulus' ); // pass if myName is variable with a value of 'Titulus'
-    test.it( 'Titulus', myName ); // equal to previous
-    
-    test.it( getMyFamilyName(), 'Desiderio' ); // pass if myFunction() return 'myReturn'
+      var Me = {name:'Titulus',lastName:'Desiderio'};
+      test.it( Me ); // pass if variable Me exist and consist non-false value, 'Titulus' for example
+        test.comment('Am I exist?')
 
-    test.group('my family',function(){ // first level group
-      test.it( myFamily );
-      test.it( myFamily.name, 'Desiderio' );
-      test.group('my family',function(){ // second level group
-        test.it( myFamily.Me );
-        test.it( myFamily.Me, 'Titulus' );
-        test.it( myFamily.myDog, 'google' );
+      test.it( Me.getJob ); // pass if Me exist and has property getJob
+        test.comment('Everybody always told me to get a job');
+
+      test.it( Me.name, 'Titulus' ); // pass if myName is variable with a value of 'Titulus'
+      test.it( 'Desiderio', Me.lastName ); // equal to previous
+
+      function getMyFamilyName(from) {
+        return from.lastName;
+      }
+
+      test.it( getMyFamilyName(Me), 'Desiderio' ); // pass if myFunction() return 'myReturn'
+        test.comment('did i write getMyFamilyName() right?');
+
+      var myFamily ={name:'Desiderio',cat:'google',Me:'Titulus'};
+      test.group('my family',function(){ // first level group
+        test.it( myFamily );
+        test.it( myFamily.name, 'Desiderio' );
+        test.group('Me',function(){ // second level group
+          test.it( myFamily.Me );
+          test.it( myFamily.Me, 'Titulus' );
+        });
+          test.comment('I must to check myself more detail');
+        test.it( myFamily.dog, 'google' );
       });
-    });
+      test.done();
 
 ### Results
 Results of the tests will be placed in dev console.
