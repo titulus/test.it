@@ -1,3 +1,4 @@
-
-test.it({a:1,b:2},{a:1,b:2});
+var myName = 'Titulus';
+test.it( myName, 'Titulus' ); // pass if myName is variable with a value of 'Titulus'
+test.it( 'Titulus', myName ); // equal to previous
 test.done();

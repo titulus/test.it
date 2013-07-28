@@ -34,38 +34,38 @@ in bottom of your `<body>` tag. Thats it!
 ### How to use
 All API is available through `testit` object:
 
-+ `test.it( entity )` - check existance of entity:
++ `test.it( entity||expression )` - check expression or entity for no-false value.
 + `test.it( entity1, entity2 )` - check equality between 2 entities.
-  
-  if entity is function - `testit` takes it's returned value for comparison.
-+ `test.it( [entity1, entity2] )` check equality between all entities in array
+  if entity is function - `test.it` takes it's returned value for comparison.
++ `test.group('groupname',function(){/*your code here*/})` - combines tests and other groups in group. can be called multiple levels.
++ `test.done()` - calculate time for `root` group and print result.
+
+**Not realised yet**
++ `test.them( [entity1, entity2] )` check equality between all entities in array
 + `test.type( entity, 'type' )` - check type (`function`, `object`, ...) of entity
-+ `test.types( [entity1, entity2] )` - check equality between types of all entities in array
-
-Some other stuff
-
++ `test.types( [entity1, entity2], 'type' )` - check equality between types of all entities in first argument (array), If 'type' specified - types of entities will compare with it.
 + `test.time( entity )` - print time spended on performing entity (commonly function)
 
 some examples:
     
-    test.it( Me ); // pass if variable Me exist
+    test.it( Me ); // pass if variable Me exist and consist non-false value, 'Titulus' for example
     
-    test.it( Me.getJob ); // pass if Me exist and has property getJob (even if getJob is a function)
+    test.it( Me.getJob ); // pass if Me exist and has property getJob
     
     test.it( myName, 'Titulus' ); // pass if myName is variable with a value of 'Titulus'
     test.it( 'Titulus', myName ); // equal to previous
     
     test.it( getMyFamilyName(), 'Desiderio' ); // pass if myFunction() return 'myReturn'
-    
-    test.it( [mySurname, mySisterSurname, myMotherSurname, myFatherSurname, 'Desiderio', getMyFamilyName()] );
-    // pass if all of entities in the transmitted array contains or returns 'Desiderio'
-    
-    test.type( myName, 'string' ); // pass if myName is string value
-    test.type( getMyFamilyName, 'function' ); // pass if getMyFamilyName is function
-    test.type( getMyFamilyName(), 'string' ); // pass if getMyFamilyName return string
-    
-    test.types( [mySurname, mySisterSurname, myMotherSurname, myFatherSurname, 'Desiderio', getMyFamilyName()] );
-    // pass if all entities in the transmitted array contains or returns values of the same type
+
+    test.group('my family',function(){ // first level group
+      test.it( myFamily );
+      test.it( myFamily.name, 'Desiderio' );
+      test.group('my family',function(){ // second level group
+        test.it( myFamily.Me );
+        test.it( myFamily.Me, 'Titulus' );
+        test.it( myFamily.myDog, 'google' );
+      });
+    });
 
 ### Results
 Results of the tests will be placed in dev console.
