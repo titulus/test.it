@@ -12,7 +12,7 @@ function getMyFamilyName(from) {
   return from.lastName;
 }
 
-test.it( getMyFamilyName(Me), 'Desiderio' ); // pass if myFunction() return 'myReturn'
+test.it( getMyFamilyName(Me), 'Desiderio' ); // pass if getMyFamilyName(Me) return 'Desiderio'
   test.comment('did i write getMyFamilyName() right?');
 
 var myFamily ={name:'Desiderio',cat:'google',Me:'Titulus'};
