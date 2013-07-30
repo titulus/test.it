@@ -57,20 +57,20 @@ Some features:
 some examples:
 ```javascript
 var Me = {name:'Titulus',lastName:'Desiderio'};
-test.it( Me ); // suits if variable Me exists and contains a non-false value,e.g.'Titulus'
+test.it( Me ); // pass if variable Me exists and contains a non-false value,e.g.'Titulus'
   test.comment('Do I exist?')
 
 test.it( Me.getJob ); // will fail, because Me doesn't have the property `getJob`
   test.comment('Everybody always tells me to get a job');
 
-test.it( Me.name, 'Titulus' ); // suits if myName is a variable with a value of 'Titulus'
+test.it( Me.name, 'Titulus' ); // pass if myName is a variable with a value of 'Titulus'
 test.it( 'Desiderio', Me.lastName ); // the same as the previous line
 
 function getMyFamilyName(from) {
   return from.lastName;
 }
 
-test.it( getMyFamilyName(Me), 'Desiderio' ); // suits if getMyFamilyName(Me) returns 'Desiderio'
+test.it( getMyFamilyName(Me), 'Desiderio' ); // pass if getMyFamilyName(Me) returns 'Desiderio'
   test.comment('did i write getMyFamilyName() right?');
 
 var myFamily ={name:'Desiderio',cat:'google',Me:'Titulus'};
@@ -93,7 +93,9 @@ The test results will be shown in dev console.
 Google Chrome it will show it in this way:
 ![](http://habrastorage.org/storage2/dfd/5b6/9a0/dfd5b69a0ff3a3e2296a64bb71eff0b5.png)
 
-If the groups and tests are passed, they will be shown as collapsed. If not, they'll be expanded. If you expand every test and group, it will look like this:
+If the groups and tests are passed, they will be shown as collapsed. If not, they'll be expanded.
+
+If you expand every test and group, it will look like this:
 ![](http://habrastorage.org/storage2/c82/ef2/b35/c82ef2b353ba1e3efcc997863116a0d4.png)
 
 The same in Firebug:
