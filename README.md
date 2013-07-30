@@ -6,13 +6,13 @@ Simple js testing framework
 ## *!in progress now!*
 
 
-#### Goal:
-  + use dev console instead of page DOM
-  + avoid dying
-  + avoid difference in results during testing the same code
-  + simple to use
+#### Goals:
+  + to use dev console instead of page DOM
+  + to avoid crashes
+  + to avoid differences in results of tests of one and the same code
+  + to provide the ease of use
   + multilevel nesting
-  + help messages
+  + tooltips
 
 #### Techniques:
   + OOP
@@ -20,80 +20,80 @@ Simple js testing framework
 
 #### Test types
   + equality between 2 or more entities
-  + non-fail result of expression or entity
-  + existance of entity *Not realised yet*
-  + type of entity *Not realised yet*
+  + non-false result of expression or entity value
+  + entity existence *Not realised yet*
+  + entity type *Not realised yet*
 
 ===
 
 ### How to install
-You only need to add 
+You just need to add 
     
     <script src='path/to/testit.js'></script>
 
-in bottom of your `<body>` tag. Thats it!
+to the end of  `<body>` tag. That's it!
 
 ### How to use
-All API is available through `test` object:
+All API are available through `test` object:
 
-+ `test.it( entity||expression )` - check expression or entity for no-false value.
-+ `test.it( entity1, entity2 )` - check equality between 2 entities.
-  if entity is function - `test.it` takes it's returned value for comparison.
-+ `test.group( 'groupname', function(){/*your code here*/} )` - combines tests and other groups in group. can be called multiple levels.
-+ `test.comment('comment text' )` - add comment for previous test or group.
-+ `test.done()` - calculate time for `root` group and print result.
++ `test.it( entity||expression )` checks the expression or entity for non-false value.
++ `test.it( entity1, entity2 )` checks the equality between 2 entities.
+  if entity is a function, `test.it` takes for comparison its returned value.
++ `test.group( 'groupname', function(){/*your code here*/} )` combines tests and other groups in a group. It can be called at multiple levels.
++ `test.comment('comment text' )` adds comment to the previous test or group.
++ `test.done()` calculates the execution time for `root` group and prints the result.
 
 Some features:
 
-+ `test.typeof( entity )` - determinate type of entity
-  recognizes `array`, `boolean`, `date`, `error` (`evalerror`, `rangeerror`, `referenceerror`, `syntaxerror`, `typeerror`, `urierror`), `function`, `nan` & `number`, `object`, `regexp`, `string`, `window`, `dom`, `nodelist`.
++ `test.typeof( entity )` determines the type of an entity
+  It recognizes `array`, `boolean`, `date`, `error` (`evalerror`, `rangeerror`, `referenceerror`, `syntaxerror`, `typeerror`, `urierror`), `function`, `nan` & `number`, `object`, `regexp`, `string`, `window`, `dom`, `nodelist`.
 
 **Not realised yet**
-+ `test.them( [entity1, entity2] )` check equality between all entities in array
-+ `test.type( entity, 'type' )` - check type (`function`, `object`, ...) of entity
-+ `test.types( [entity1, entity2], 'type' )` - check equality between types of all entities in first argument (array), If 'type' specified - types of entities will compare with it.
-+ `test.time( entity )` - print time spended on performing entity (commonly function)
++ `test.them( [entity1, entity2] )` checks the equality among all entities in an array
++ `test.type( entity, 'type' )` checks the type (`function`, `object`, ...) of an entity
++ `test.types( [entity1, entity2], 'type' )` checks the equality among the types of all entities in the first argument (array), If 'type' is specified, the types of entities will be compared with it.
++ `test.time( entity )` prints the time spent on the execution of an entity (usually, a function)
 
 some examples:
 ```javascript
 var Me = {name:'Titulus',lastName:'Desiderio'};
-test.it( Me ); // pass if variable Me exist and consist non-false value, 'Titulus' for example
-  test.comment('Am I exist?')
+test.it( Me ); // suits if variable Me exists and contains a non-false value,e.g.'Titulus'
+  test.comment('Do I exist?')
 
-test.it( Me.getJob ); // will fail, because Me has no property `getJob`
-  test.comment('Everybody always told me to get a job');
+test.it( Me.getJob ); // will fail, because Me doesn't have the property `getJob`
+  test.comment('Everybody always tells me to get a job');
 
-test.it( Me.name, 'Titulus' ); // pass if myName is variable with a value of 'Titulus'
-test.it( 'Desiderio', Me.lastName ); // equal to previous
+test.it( Me.name, 'Titulus' ); // suits if myName is a variable with a value of 'Titulus'
+test.it( 'Desiderio', Me.lastName ); // the same as the previous line
 
 function getMyFamilyName(from) {
   return from.lastName;
 }
 
-test.it( getMyFamilyName(Me), 'Desiderio' ); // pass if getMyFamilyName(Me) return 'Desiderio'
+test.it( getMyFamilyName(Me), 'Desiderio' ); // suits if getMyFamilyName(Me) returns 'Desiderio'
   test.comment('did i write getMyFamilyName() right?');
 
 var myFamily ={name:'Desiderio',cat:'google',Me:'Titulus'};
-test.group('my family',function(){ // first level group
+test.group('my family',function(){ // first-level group
   test.it( myFamily );
   test.it( myFamily.name, 'Desiderio' );
-  test.group('Me',function(){ // second level group
+  test.group('Me',function(){ // second-level group
     test.it( myFamily.Me );
     test.it( myFamily.Me, 'Titulus' );
   });
-    test.comment('I must to check myself more detail');
-  test.it( myFamily.dog, 'google' ); // will fail, because myFamily has no property `dog`
+    test.comment('I must check myself in more detail');
+  test.it( myFamily.dog, 'google' ); // will fail, because myFamily doesn't have the property `dog`
 });
 test.done();
 ```
 
 ### Results
-Results of the tests will be placed in dev console.
+The test results will be shown in dev console.
 
-In Google Chrome it will be shown like this:
+Google Chrome it will show it in this way:
 ![](http://habrastorage.org/storage2/dfd/5b6/9a0/dfd5b69a0ff3a3e2296a64bb71eff0b5.png)
 
-Groups and tests collapsed if passed and expanded otherwise. If you expand every test and group it will be shown this like:
+If the groups and tests are passed, they will be shown as collapsed. If not, they'll be expanded. If you expand every test and group, it will look like this:
 ![](http://habrastorage.org/storage2/c82/ef2/b35/c82ef2b353ba1e3efcc997863116a0d4.png)
 
 The same in Firebug:
