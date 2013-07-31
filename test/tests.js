@@ -26,4 +26,26 @@ test.group('my family',function(){ // first level group
     test.comment('I must to check myself more detail');
   test.it( myFamily.dog, 'google' ); // will fail, because myFamily has no property `dog`
 });
+
+test.group('failtests',function(){
+    test.it(null);
+    test.it(undefined);
+    test.it(NaN);
+    test.it(0);
+    test.it(false);
+    test.it('');
+    test.it([]);
+    test.it([null]);
+    test.it([undefined]);
+    test.it([NaN]);
+    test.it([0]);
+    test.it([false]);
+    test.it(['']);
+    test.it('null');
+    test.it('undefined');
+    test.it('NaN');
+    test.it('0');
+    test.it('false');
+
+});
 test.done();

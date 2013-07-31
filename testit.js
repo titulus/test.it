@@ -184,6 +184,15 @@ var testit = function() {
                 if (a) {
                     newtest.status = 'pass';
                 } else {
+                    switch (_typeof(a)) {
+                        case 'undefined' : {newtest.tooltip = 'argument undefined. define it, to pass this test';} break;
+                        case 'nan' : {newtest.tooltip = 'argument is NaN. If it\'s right value, try to use test.it(yourArgument, NaN) instead';} break;
+                        case 'null' : {newtest.tooltip = 'argument is Null. If it\'s right value, try to use test.it(yourArgument, null) instead';} break;
+                        case 'boolean' : {newtest.tooltip = 'argument is false. If it\'s right value, try to use test.it(yourArgument, false) instead';} break;
+                        case 'number' : {newtest.tooltip = 'argument is 0. If it\'s right value, try to use test.it(yourArgument, 0) instead';} break;
+                        case 'string' : {newtest.tooltip = 'argument is empty string. If it\'s right value, try to use test.it(yourArgument, "") instead';} break;
+                        default : {newtest.tooltip = 'argument is '+a+'. If it\'s right value, try to use test.it(yourArgument, '+a+') instead';} break;
+                    }
                     newtest.status = 'fail';
                 }
             } break;
@@ -388,7 +397,7 @@ var testit = function() {
                     case 'fail' : {
                         console.group("%cfail%c: %s",red,normal,(obj.comment)?obj.comment:'no comment');
                         console.log("%s\n%o"
-                                    ,(obj.description)?obj.description:'no description'
+                                    ,obj.tooltip
                                     ,obj.entity);
                         console.groupEnd();
                     } break;
