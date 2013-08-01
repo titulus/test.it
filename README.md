@@ -12,6 +12,7 @@ Simple js testing framework
   + to avoid differences in results of tests of one and the same code
   + to provide the ease of use
   + multilevel nesting
+  + chaining
 
 #### Techniques:
   + OOP
@@ -76,6 +77,7 @@ Some features:
 + `test.type( entity, 'type' )` checks the type (`function`, `object`, ...) of an entity
 + `test.types( [entity1, entity2], 'type' )` checks the equality among the types of all entities in the first argument (array), If 'type' is specified, the types of entities will be compared with it.
 + `test.time( entity )` prints the time spent on the execution of an entity (usually, a function)
++ `.callback( funcIfpass, funcIffail, func)` will execute funcIfpass() if test pass, funcIffail() if test failed, func() in both cases.
 
 some examples:
 ```javascript
