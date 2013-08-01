@@ -26,7 +26,7 @@ test.group('my family',function(){ // first level group
     test.comment('I must to check myself more detail');
   test.it( myFamily.dog, 'google' ); // will fail, because myFamily has no property `dog`
 });
-test.group('failtests',function(){
+var groupresult = test.group('failtests',function(){
     test.it(null);
       test.comment('comment1');
     test.it(undefined).comment('comment2');
@@ -43,7 +43,8 @@ test.group('failtests',function(){
     test.it('test','');
     test.it('test',[]);
 
-}).comment('chaincomment');
+}).comment('chaincomment').result();
+console.log('result of group: ',groupresult);
 console.log('result of this test: ',test.it(1).comment('result will displayed in console').result());
 console.log('result of this test: ',test.it(NaN).comment('result will displayed in console').result());
 test.done();

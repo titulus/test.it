@@ -274,20 +274,30 @@ var testit = function() {
      * @public
      * @example
      *   test.group('group name',function(){
-     *      test.it(myFunction());
-     *          test.comment('comment to test');
-     *   });
-     *      test.comment('comment to group');
+     *      test
+     *          .it(myFunction())
+     *          .comment('comment to test');
+     *   }).comment('comment to group');
      */
     this.comment = _comment;
 
-
+    /**
+     * Final chain-link: will return result of test
+     * @private
+     * @return {boolean}            true - if test or group passed, false - otherwise.
+     */
     var _result = function() {
         if (root.stack.length) {
             return (root.stack[root.stack.length-1].status == 'pass')? true : false;
         }
         return undefined
     }
+    /**
+     * public interface for _result()
+     * @public
+     * @example
+     *   var testresult = test.it(myFunction()).comment('comment to test').result();
+     */
     this.result = _result;
 
     /** 
