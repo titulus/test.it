@@ -44,5 +44,5 @@ test.group('failtests',function(){
     test.it('test','');
     test.it('test',[]);
 
-});
+}).comment('chaincomment');
 test.done();

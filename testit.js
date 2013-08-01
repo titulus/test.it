@@ -133,6 +133,8 @@ var testit = function() {
 
         /** finally place this group into previous level stack */
         root.stack.push(newgroup);
+
+        return this;
     }
     /**
      * public interface for _makeGroup
