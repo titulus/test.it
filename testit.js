@@ -370,13 +370,28 @@ var testit = function() {
                 switch (obj.status) {
                     /** if object passed - make collapsed group*/
                     case 'pass' : {
-                        console.groupCollapsed("%s - %cpass",obj.name,green);
+                        console.groupCollapsed("%s - %c%s - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms)"
+                                     ,obj.name,green,obj.status
+                                     ,green,(obj.result.tests.passed+obj.result.groups.passed),normal
+                                     ,red,(obj.result.tests.failed+obj.result.groups.failed),normal
+                                     ,orange,(obj.result.tests.error+obj.result.groups.error),normal
+                                     ,blue,obj.time,normal);
                     } break;
                     case 'fail' : {
-                        console.group("%s - %cfail",obj.name,red);
+                        console.group("%s - %c%s - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms)"
+                                     ,obj.name,red,obj.status
+                                     ,green,(obj.result.tests.passed+obj.result.groups.passed),normal
+                                     ,red,(obj.result.tests.failed+obj.result.groups.failed),normal
+                                     ,orange,(obj.result.tests.error+obj.result.groups.error),normal
+                                     ,blue,obj.time,normal);
                     } break;
                     case 'error' : {
-                        console.group("%s - %cerror",obj.name,orange);
+                        console.group("%s - %c%s - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms)"
+                                     ,obj.name,orange,obj.status
+                                     ,green,(obj.result.tests.passed+obj.result.groups.passed),normal
+                                     ,red,(obj.result.tests.failed+obj.result.groups.failed),normal
+                                     ,orange,(obj.result.tests.error+obj.result.groups.error),normal
+                                     ,blue,obj.time,normal);
                     } break;
                     /** if status is not defined - display error; finish displaying */
                     default : {
@@ -394,17 +409,6 @@ var testit = function() {
                 if (obj.comment) {
                     console.log(obj.comment);                    
                 }
-
-                /** display result counters */
-                console.log("tests: %cpass%c %d, %cfail%c %d, %cerror%c %d\ngroups: %cpass%c %d, %cfail%c %d, %cerror%c %d"
-                            ,green,normal,obj.result.tests.passed
-                            ,red,normal,obj.result.tests.failed
-                            ,orange,normal,obj.result.tests.error
-                            ,green,normal,obj.result.groups.passed
-                            ,red,normal,obj.result.groups.failed
-                            ,orange,normal,obj.result.groups.error);
-                /** display time */
-                console.log("time: %c%d%c ms",blue,obj.time,normal);
                 
                 /** display error if defined */
                 if (obj.error) {
@@ -428,27 +432,19 @@ var testit = function() {
                 switch (obj.status) {
                     case 'pass' : {
                         /** if pass - collaps group*/
-                        console.groupCollapsed("%cpass%c: %s",green,normal,(obj.comment)?obj.comment:'no comment');
-                        console.log("%s\n%o"
-                                    ,(obj.description)?obj.description:'no description'
-                                    ,obj.argument);
-                        console.groupEnd();
+                        console.groupCollapsed("%cpass%c: %s",green,normal,(obj.comment)?obj.comment:'');
                     } break;
                     case 'fail' : {
-                        console.group("%cfail%c: %s",red,normal,(obj.comment)?obj.comment:'no comment');
-                        console.log("%s\n%o"
-                                    ,(obj.description)?obj.description:'no description'
-                                    ,obj.argument);
-                        console.groupEnd();
+                        console.group("%cfail%c: %s",red,normal,(obj.comment)?obj.comment:'');
                     } break;
                     case 'error' : {
-                        console.group("%cerror%c: %s",orange,normal,(obj.comment)?obj.comment:'no comment');
-                        console.log("%s\n%o"
-                                    ,(obj.description)?obj.description:'no description'
-                                    ,obj.error);
-                        console.groupEnd();
+                        console.group("%cerror%c: %s",orange,normal,(obj.comment)?obj.comment:'');
                     } break;
                 }
+                if (obj.description) console.log(obj.description);
+                if (obj.error) console.error(obj.error);
+                console.log(obj.argument);
+                console.groupEnd();
             } break;
         }
     }

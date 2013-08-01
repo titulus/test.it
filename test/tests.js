@@ -33,7 +33,7 @@ var groupresult = test.group('failtests',function(){
     test.it(NaN);
     test.it(0);
     test.it(false);
-    test.it('');
+    test.it(h.a.b.r);
     test.it([]);
     test.it('test',null);
     test.it('test',undefined);
