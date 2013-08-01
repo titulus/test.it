@@ -113,7 +113,7 @@ test.done();
 ### Results
 The test results will be shown in dev console.
 
-Google Chrome it will show it in this way:
+Google Chrome will show it in this way:
 ![](http://habrastorage.org/storage2/dfd/5b6/9a0/dfd5b69a0ff3a3e2296a64bb71eff0b5.png)
 
 If the groups and tests are passed, they will be shown as collapsed. If not, they'll be expanded.
