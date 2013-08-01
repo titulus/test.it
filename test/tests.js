@@ -35,17 +35,13 @@ test.group('failtests',function(){
     test.it(false);
     test.it('');
     test.it([]);
-    test.it([null]);
-    test.it([undefined]);
-    test.it([NaN]);
-    test.it([0]);
-    test.it([false]);
-    test.it(['']);
-    test.it('null');
-    test.it('undefined');
-    test.it('NaN');
-    test.it('0');
-    test.it('false');
+    test.it('test',null);
+    test.it('test',undefined);
+    test.it('test',NaN);
+    test.it('test',0);
+    test.it('test',false);
+    test.it('test','');
+    test.it('test',[]);
 
 });
 test.done();
