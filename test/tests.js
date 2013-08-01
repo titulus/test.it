@@ -29,7 +29,8 @@ test.group('my family',function(){ // first level group
 
 test.group('failtests',function(){
     test.it(null);
-    test.it(undefined);
+      test.comment('comment1');
+    test.it(undefined).comment('comment2');
     test.it(NaN);
     test.it(0);
     test.it(false);

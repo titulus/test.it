@@ -243,7 +243,7 @@ var testit = function() {
         /** finally place this test into container stack */
         root.stack.push(newtest);
 
-        return (newtest.status==='pass')? true:false;
+        return this;
     }
     /**
      * public interface for _it()
