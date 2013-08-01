@@ -12,7 +12,6 @@ Simple js testing framework
   + to avoid differences in results of tests of one and the same code
   + to provide the ease of use
   + multilevel nesting
-  + tooltips
 
 #### Techniques:
   + OOP
