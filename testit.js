@@ -202,6 +202,7 @@ var testit = function() {
                 
                 if (_typeof(a) !== _typeof(b)) {
                     newtest.status = 'fail';
+                    newtest.tooltip = 'arguments has different types';
                 } else {
                     /*switch (_typeof(a)) {
                         case 'array' : {} break;
@@ -397,7 +398,7 @@ var testit = function() {
                     case 'fail' : {
                         console.group("%cfail%c: %s",red,normal,(obj.comment)?obj.comment:'no comment');
                         console.log("%s\n%o"
-                                    ,obj.tooltip
+                                    ,(obj.tooltip)?obj.tooltip:obj.description
                                     ,obj.entity);
                         console.groupEnd();
                     } break;
