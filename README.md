@@ -39,8 +39,32 @@ All API are available through `test` object:
 + `test.it( entity1, entity2 )` checks the equality between 2 entities.
   if entity is a function, `test.it` takes for comparison its returned value.
 + `test.group( 'groupname', function(){/*your code here*/} )` combines tests and other groups in a group. It can be called at multiple levels.
-+ `test.comment('comment text' )` adds comment to the previous test or group.
 + `test.done()` calculates the execution time for `root` group and prints the result.
+
+Tests groups starts chain.
+Next methods proceed chain
++ `.comment('comment text' )` adds comment to the previous test or group.
+
+Next methods ends chain
++ `.result()` return result of test or group
++ `.arguments()` return single or array of arguments from test (not from group!)
+
+So you can use chains like this:
+```javascript
+test.it('single')
+    .comment('test a simle string')
+    .result() // -> true
+test.it('first','second')
+    .comment('test two string')
+    .result() // -> false
+
+test.it('single')
+    .comment('test a simle string')
+    .value() // -> 'single'
+test.it('first','second')
+    .comment('test two string')
+    .value() // -> ['first','second']
+```
 
 Some features:
 

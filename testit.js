@@ -282,7 +282,7 @@ var testit = function() {
     this.comment = _comment;
 
     /**
-     * Final chain-link: will return result of test
+     * Final chain-link: will return result of test or group
      * @private
      * @return {boolean}            true - if test or group passed, false - otherwise.
      */
