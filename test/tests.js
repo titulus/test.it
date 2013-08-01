@@ -52,4 +52,6 @@ console.error(fritstGroupOfTest);
 console.log('arguments of this test: ',test.it(Infinity).comment('arguments will displayed in console').arguments());
 console.log('arguments of this test: ',test.it('(:','(:').comment('arguments will displayed in console').arguments());
 console.log('arguments of this test: ',test.it(1,2,3).comment('arguments will displayed in console').arguments());
+
+console.log('deep in arguments: ',test.it({a:'asd',b:'dsa'}).arguments().a);
 test.done();
