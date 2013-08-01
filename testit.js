@@ -74,7 +74,7 @@ var testit = function() {
     /**
      * make new instace of group, fill it, add it to previous group.stack, fill some values in previous group
      * @private
-     * @type {Function}
+     * @chainable
      * @param  {String}   name          name of new group
      * @param  {Function} fun           function witch will be tryed to execute (commonly consist of tests and other groups)
      */
@@ -139,7 +139,6 @@ var testit = function() {
     /**
      * public interface for _makeGroup
      * @public
-     * @type {Function}
      * @example
      *  test.group('name of group',function(){
      *      test.it('nested test');
@@ -153,7 +152,7 @@ var testit = function() {
     /**
      * basic test. Make new instance of test, fill it, add it to previous group.stack, fill some values in previous group
      * @private
-     * @type {Function}
+     * @chainable
      * @param  {Multiple} a @required       first entity, which will check for truth it only transmitted
      * @param  {Multiple} b                 second entity which will compared with a if transmitted 
      * @return {Boolean}                    true if 'pass', fail otherwise
@@ -250,7 +249,6 @@ var testit = function() {
     /**
      * public interface for _it()
      * @public
-     * @type {Function}
      * @example
      *   test.it(myFunction());
      *   test.it(myVar>5);
@@ -261,17 +259,19 @@ var testit = function() {
     /**
      * add comment for the last test or group in current stack
      * @private
+     * @chainable
      * @type {Function}
      * @param  {String} text        user defined text, which will be used as a comment
      */
     var _comment = function(text) {
         /** add comment, if there are something can be commented */
         if (root.stack.length) root.stack[root.stack.length-1].comment = text;
+
+        return this;
     }
     /**
      * public interface for _comment()
      * @public
-     * @type {Function}
      * @example
      *   test.group('group name',function(){
      *      test.it(myFunction());
@@ -280,6 +280,15 @@ var testit = function() {
      *      test.comment('comment to group');
      */
     this.comment = _comment;
+
+
+    var _result = function() {
+        if (root.stack.length) {
+            return (root.stack[root.stack.length-1].status == 'pass')? true : false;
+        }
+        return undefined
+    }
+    this.result = _result;
 
     /** 
      * apply last stuff and display results
