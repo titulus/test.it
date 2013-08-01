@@ -296,17 +296,32 @@ var testit = function() {
      * public interface for _result()
      * @public
      * @example
-     *   var testresult = test.it(myFunction()).comment('comment to test').result();
+     *   var testResult = test.it(undefined).comment('comment to test').result(); // testResult === false
      */
     this.result = _result;
 
-    var _value = function() {
-        // if (root.stack.length) {
-        //     return (root.stack[root.stack.length-1].status == 'pass')
-        // }
-        // return undefined;
+    /**
+     * Final chain-link: will return arguments of test (not of group!)
+     * @private
+     * @return                      single argument or array of arguments
+     */
+    var _arguments = function() {
+        if (root.stack.length) {
+            var lastTest = root.stack[root.stack.length-1];
+            if (lastTest.type!=='test') return TypeError('groups does not return arguments');
+            return (lastTest.argument.length===1)? lastTest.argument[0] : lastTest.argument;
+        }
+        return undefined;
     }
-    this.value = _value;
+    /**
+     * public interface for _arguments()
+     * @public
+     * @example
+     *   var testArguments = test.it('single').comment('comment to test').arguments(); // testArguments === 'single'
+     *   testArguments = test.it('first','second').comment('comment to test').arguments(); // testArguments === ['first','second']
+     */
+    this.arguments = _arguments;
+
 
     /** 
      * apply last stuff and display results
