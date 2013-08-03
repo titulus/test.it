@@ -81,20 +81,21 @@ Some features:
 + `.callback( funcIfpass, funcIffail, func)` will execute funcIfpass() if test pass, funcIffail() if test failed, func() in both cases.
 + `test.group(groupName)` - perform nesting of groups.
 Example
-```javascript
-test.group('first group',function(){
-  test.it('first test');
-  test.group('second group', function(){
-    ...
-  });
-  ...
-});
+    ```javascript
+    test.group('first group',function(){
+      ...
+      test.group('second group', function(){
+        ...
+      });
+      ...
+    });
+    
+    // add test 'additional test' to the group 'second group' in group 'first group'
+    test.group('first group').group('second group',function(){
+      test.it('additional test');
+    });
+    ```
 
-// add test 'additional test' to the group 'second group' in group 'first group'
-test.group('first group').group('second group',function(){
-  test.it('additional test');
-});
-```
 some examples:
 ```javascript
 var Me = {name:'Titulus',lastName:'Desiderio'};
