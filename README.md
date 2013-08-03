@@ -70,7 +70,8 @@ test.it('first','second')
 Some features:
 
 + `test.typeof( entity )` determines the type of an entity
-  It recognizes `array`, `boolean`, `date`, `error` (`evalerror`, `rangeerror`, `referenceerror`, `syntaxerror`, `typeerror`, `urierror`), `function`, `nan` & `number`, `object`, `regexp`, `string`, `window`, `dom`, `nodelist`.
+  It recognizes `array`, `boolean`, `date`, `error` (`evalerror`, `rangeerror`, `referenceerror`, `syntaxerror`, `typeerror`, `urierror`), `function`, `nan` & `number`, `object`, `regexp`, `string`, `window`, `dom`, `nodelist`. But can't recognize undefined vars.
++ `test.trace()` - return list *(joined by "\n")* of functions that have been performed to call the current line.
 
 **Not realised yet**
 + `test.them( [entity1, entity2] )` checks the equality among all entities in an array
