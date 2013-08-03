@@ -58,7 +58,7 @@ Example
     ```
 + `test.done()` calculates the execution time for `root` group and prints the result.
 
-Tests groups starts chain.
+Tests & groups starts chain.
 Next methods proceed chain
 + `.comment('comment text' )` adds comment to the previous test or group.
 
