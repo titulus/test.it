@@ -37,7 +37,6 @@ var testit = function() {
             }
         };
         this.stack = [];
-
     }
 
     /**
@@ -79,14 +78,45 @@ var testit = function() {
      * @param  {Function} fun           function witch will be tryed to execute (commonly consist of tests and other groups)
      */
     var _makeGroup = function(name,fun) {
+        switch (arguments.length) {
+            case 1 : {
+                for (i in root.stack) {
+                    if (root.stack[i].type !== 'group') continue;
+                    if (root.stack[i].name === name) {
+                        return Object.create(this,{link:{value:root.stack[i]}});
+                    }
+                }
+            } break;
+            case 2 : break;
+            default : throw new RangeError("too much arguments");
+        }
+
         /**
-         * making a new instance of group
-         * Most of code in this function will manipulate whis it.
+         * replace root with link if defined to provide chaining
+         * Save root in oldRoot
          */
-        var newgroup = new group();
+        var oldRoot = root;
+        root = (this.link)? this.link : root;
+        /** var for the new instance of group */
+        var newgroup;
+        /** identify new group */
+        var groupAlreadyExist = false;
+        /** find group in current-level stack */
+        for (i in root.stack) {
+            if (root.stack[i].type !== 'group') continue;
+            if (root.stack[i].name === name) {
+                newgroup = root.stack[i];
+                groupAlreadyExist = true;
+                break;
+            }
+        }
+        if (!newgroup) newgroup = new group();
         newgroup.name = name;
         /** set to pass as default. it's may be changed in some next lines */
         newgroup.status ='pass';
+
+        /** return root back */
+        root = oldRoot;
 
         /**
          * making a new root, to provide nesting
@@ -147,10 +177,11 @@ var testit = function() {
         /** update time */
         newgroup.time = new Date().getTime() - newgroup.time;
 
-        /** finally place this group into previous level stack */
-        root.stack.push(newgroup);
+        /** finally place this group into previous level stack (if it's a new group) */
+        if (!groupAlreadyExist) root.stack.push(newgroup);
 
-        return this;
+        /** return testit with link to this group to provide chaining */
+        return Object.create(this,{link:{value:newgroup}});
     }
     /**
      * public interface for _makeGroup
@@ -260,7 +291,8 @@ var testit = function() {
         /** finally place this test into container stack */
         root.stack.push(newtest);
 
-        return this;
+        /** return testit with link to this test to provide chaining */
+        return Object.create(this,{link:{value:newtest}});
     }
     /**
      * public interface for _it()
@@ -273,7 +305,7 @@ var testit = function() {
     this.it = _it;
 
     /**
-     * add comment for the last test or group in current stack
+     * add comment for the linked test or group
      * @private
      * @chainable
      * @type {Function}
@@ -281,7 +313,7 @@ var testit = function() {
      */
     var _comment = function(text) {
         /** add comment, if there are something can be commented */
-        if (root.stack.length) root.stack[root.stack.length-1].comment = text;
+        if (this.link) this.link.comment = text;
 
         return this;
     }
@@ -303,8 +335,8 @@ var testit = function() {
      * @return {boolean}            true - if test or group passed, false - otherwise.
      */
     var _result = function() {
-        if (root.stack.length) {
-            return (root.stack[root.stack.length-1].status == 'pass')? true : false;
+        if (this.link) {
+            return (this.link.status == 'pass')? true : false;
         }
         return undefined;
     }
@@ -322,10 +354,9 @@ var testit = function() {
      * @return                      single argument or array of arguments
      */
     var _arguments = function() {
-        if (root.stack.length) {
-            var lastTest = root.stack[root.stack.length-1];
-            if (lastTest.type!=='test') return TypeError('groups does not return arguments');
-            return (lastTest.argument.length===1)? lastTest.argument[0] : lastTest.argument;
+        if (this.link) {
+            if (this.link.type!=='test') return TypeError('groups does not return arguments');
+            return (this.link.argument.length===1)? this.link.argument[0] : this.link.argument;
         }
         return undefined;
     }
@@ -536,6 +567,11 @@ var testit = function() {
      *   test.trace();
      */
     this.trace = getTrace;
+
+
+    this.test = function(){
+        console.log(this.link)
+    }
 }
 
 /**
