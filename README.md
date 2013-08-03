@@ -79,7 +79,22 @@ Some features:
 + `test.types( [entity1, entity2], 'type' )` checks the equality among the types of all entities in the first argument (array), If 'type' is specified, the types of entities will be compared with it.
 + `test.time( entity )` prints the time spent on the execution of an entity (usually, a function)
 + `.callback( funcIfpass, funcIffail, func)` will execute funcIfpass() if test pass, funcIffail() if test failed, func() in both cases.
++ `test.group(groupName)` - perform nesting of groups.
+Example
+```javascript
+test.group('first group',function(){
+  test.it('first test');
+  test.group('second group', function(){
+    ...
+  });
+  ...
+});
 
+// add test 'additional test' to the group 'second group' in group 'first group'
+test.group('first group').group('second group',function(){
+  test.it('additional test');
+});
+```
 some examples:
 ```javascript
 var Me = {name:'Titulus',lastName:'Desiderio'};
