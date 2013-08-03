@@ -16,16 +16,17 @@ test.it( getMyFamilyName(Me), 'Desiderio' ); // pass if getMyFamilyName(Me) retu
   test.comment('did i write getMyFamilyName() right?');
 
 var myFamily ={name:'Desiderio',cat:'google',Me:'Titulus'};
-var fritstGroupOfTest = test.group('my family',function(){ // first level group
+test.group('my family',function(){ // first level group
   test.it( myFamily );
   test.it( myFamily.name, 'Desiderio' );
   test.group('Me',function(){ // second level group
     test.it( myFamily.Me );
     test.it( myFamily.Me, 'Titulus' );
+    test.it(a.s.d);
   });
     test.comment('I must to check myself more detail');
   test.it( myFamily.dog, 'google' ); // will fail, because myFamily has no property `dog`
-}).arguments();
+});/*
 var groupresult = test.group('failtests',function(){
     test.it(null);
       test.comment('comment1');
@@ -53,5 +54,5 @@ console.log('arguments of this test: ',test.it(Infinity).comment('arguments will
 console.log('arguments of this test: ',test.it('(:','(:').comment('arguments will displayed in console').arguments());
 console.log('arguments of this test: ',test.it(1,2,3).comment('arguments will displayed in console').arguments());
 
-console.log('deep in arguments: ',test.it({a:'asd',b:'dsa'}).arguments().a);
+console.log('deep in arguments: ',test.it({a:'asd',b:'dsa'}).arguments().a);*/
 test.done();

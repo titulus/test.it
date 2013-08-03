@@ -98,9 +98,31 @@ var testit = function() {
          * try to execute code with tests and other groups in it
          * This part provide nesting.
          */
-        try{fun();} catch(e) {
+        try{
+            fun();
+        } catch(e) {
             newgroup.status = 'error';
-            newgroup.error = e;
+            /**
+             * more understandable error object
+             * @type {Object}
+             * @property {Error} error      consist basic error object
+             * @property {String} type      type of error
+             * @property {String} message   message from basic property
+             * @property {String} stack     some kind of result of trace()
+             */
+            var errorObject = {};
+            errorObject.error = e;
+            errorObject.type = _typeof(e);
+            errorObject.message = e.message;
+            errorObject.stack = '';
+            e.stack.split(/[\n]/).forEach(function(i,n){
+                if (i.indexOf('_makeGroup')==-1 && i!=='' && i.indexOf('Error:')==-1) {
+                    errorObject.stack += (errorObject.stack)?'\n':'';
+                    errorObject.stack += i.replace(/((\s+at\s+)|(^@))/,'');
+                }
+            })
+
+            newgroup.error = errorObject;
         }
         /** 
          * reverse inheritance of status
@@ -410,17 +432,21 @@ var testit = function() {
                     console.log(obj.comment);                    
                 }
                 
-                /** display error if defined */
-                if (obj.error) {
-                    console.error(obj.error);                    
-                }
-
                 /**
                  * display all tests and groups in stack
                  * It will make new levels of group, if there are groups in stack.
                  */
                 for (i in obj.stack) {
                     _printConsole(obj.stack[i]);
+                }
+
+                /** display error if defined */
+                if (obj.error) {
+                    // console.error(obj.error);
+                    console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
+                        console.log(obj.error.stack);
+                        console.dir(obj.error.error);
+                    console.groupEnd();
                 }
 
                 /** close opened group (current level) */
@@ -468,29 +494,29 @@ var testit = function() {
         var type;
         try {
             switch (argument.constructor) {
-                case Array : type='array';break;
-                case Boolean : type='boolean';break;
-                case Date : type='date';break;
-                case Error : type='error';break;
-                case EvalError : type='evalerror';break;
-                case Function : type='function';break;
+                case Array : type='Array';break;
+                case Boolean : type='Boolean';break;
+                case Date : type='Date';break;
+                case Error : type='Error';break;
+                case EvalError : type='EvalError';break;
+                case Function : type='Function';break;
                 // case Math : type='math';break;
-                case Number : {type=(isNaN(argument))?'nan':'number';}break;
-                case Object : type='object';break;
-                case RangeError : type='rangeerror';break;
-                case ReferenceError : type='referenceerror';break;
-                case RegExp : type='regexp';break;
-                case String : type='string';break;
-                case SyntaxError : type='syntaxerror';break;
-                case TypeError : type='typeerror';break;
-                case URIError : type='urierror';break;
-                case Window : type='window';break;
-                case HTMLDocument : type='dom';break;
-                case NodeList : type='nodelist';break;
+                case Number : {type=(isNaN(argument))?'NaN':'Number';}break;
+                case Object : type='Object';break;
+                case RangeError : type='RangeError';break;
+                case ReferenceError : type='ReferenceError';break;
+                case RegExp : type='RegExp';break;
+                case String : type='String';break;
+                case SyntaxError : type='SyntaxError';break;
+                case TypeError : type='TypeError';break;
+                case URIError : type='URIError';break;
+                case Window : type='Window';break;
+                case HTMLDocument : type='HTML';break;
+                case NodeList : type='NodeList';break;
                 default : {
                     if (typeof argument === 'object'
                      && argument.toString().indexOf('HTML') !== -1) {
-                        type = 'dom';
+                        type = 'HTML';
                     } else {
                         type = undefined;
                     }
