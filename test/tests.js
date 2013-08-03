@@ -14,7 +14,7 @@ function getMyFamilyName(from) {
 
 test.it( getMyFamilyName(Me), 'Desiderio' ); // pass if getMyFamilyName(Me) return 'Desiderio'
   test.comment('did i write getMyFamilyName() right?');
-
+console.log(test.trace());
 var myFamily ={name:'Desiderio',cat:'google',Me:'Titulus'};
 test.group('my family',function(){ // first level group
   test.it( myFamily );

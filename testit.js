@@ -114,13 +114,7 @@ var testit = function() {
             errorObject.error = e;
             errorObject.type = _typeof(e);
             errorObject.message = e.message;
-            errorObject.stack = '';
-            e.stack.split(/[\n]/).forEach(function(i,n){
-                if (i.indexOf('_makeGroup')==-1 && i!=='' && i.indexOf('Error:')==-1) {
-                    errorObject.stack += (errorObject.stack)?'\n':'';
-                    errorObject.stack += i.replace(/((\s+at\s+)|(^@))/,'');
-                }
-            })
+            errorObject.stack = getTrace(e);
 
             newgroup.error = errorObject;
         }
@@ -534,6 +528,14 @@ var testit = function() {
      *   test.typeof(myVar);
      */
     this.typeof = _typeof;
+
+    /**
+     * public interface for getTrace(error)
+     * @public
+     * @example
+     *   test.trace();
+     */
+    this.trace = getTrace;
 }
 
 /**
@@ -551,6 +553,35 @@ var updateStatus = function(oldstatus,newstatus) {
     if (oldstatus==='error' || newstatus==='error') return 'error';
     if (oldstatus==='fail' || newstatus==='fail') return 'fail';
     return 'pass';
+}
+
+/**
+ * returns a list of functions that have been performed to call the current line
+ * @param  {Error} error    if setted, trace will be based on it stack
+ * @return {String}         list of functions joined by "\n";
+ */
+var getTrace = function(error) {
+    if (!error) error = new Error();
+    var stack = '';
+    error.stack.split(/[\n]/).forEach(function(i,n){
+        var addToStack = true;
+        /** take off empty strings (FireBug) */
+        if (i==='') addToStack = false;
+        /** take off Errors (Chrome) */
+        if (i.indexOf(test.typeof(error))!==-1) addToStack = false;
+        /** take of reference to this function */
+        if (i.indexOf('getTrace')!==-1) addToStack = false;
+        /** take off any references to testit methods */
+        for (prop in test) {    
+            if (i.indexOf('[as '+prop+']')!==-1) addToStack = false;
+        }
+        /** fill the stack */
+        if (addToStack) {
+            stack += (stack)?'\n':'';
+            stack += i.replace(/((\s+at\s+)|(^@))/,'');
+        }
+    })
+    return stack;
 }
 
 /**
