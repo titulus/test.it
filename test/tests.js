@@ -7,6 +7,9 @@ test.it( 0 ).comment('fail test');
 test.it( 1 ).comment('pass test');
 test.it( 1,0 ).comment('fail test');
 test.it( 1,1 ).comment('pass test');
+test.them( [1,'a',true,window] ).comment('pass test them');
+test.them( [1,0] ).comment('fail test them');
+test.them( 'asd' ).comment('error test them');
 test.it( getMyFamilyName(Me), 'Desiderio' ) // pass if getMyFamilyName(Me) return 'Desiderio'
     .comment('did i write getMyFamilyName() right?');
 // console.log(test.trace());

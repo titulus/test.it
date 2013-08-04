@@ -69,6 +69,7 @@ var testit = function() {
      * @chainable
      * @param  {String}   name          name of new group
      * @param  {Function} fun           function witch will be tryed to execute (commonly consist of tests and other groups)
+     * @return {Object}                     test with link
      */
     var _makeGroup = function(name,fun) {
         switch (arguments.length) {
@@ -181,7 +182,7 @@ var testit = function() {
      * @chainable
      * @param  {Multiple} a @required       first argument, which will check for truth it only transmitted
      * @param  {Multiple} b                 second argument which will compared with a if transmitted 
-     * @return {Boolean}                    true if 'pass', fail otherwise
+     * @return {Object}                     test with link
      */
     var _it = function(a,b) {
         /**
@@ -197,7 +198,6 @@ var testit = function() {
         for (i in arguments) {
             newtest.argument.push(arguments[i]);
         }
-
         /** try to figure out what kind of test expected */
         switch (arguments.length) {
             /** in case of no arguments - throw Reference error */
@@ -249,23 +249,33 @@ var testit = function() {
      */
     this.it = _it;
 
+    /**
+     * test array of values for non-false
+     * @private
+     * @chainable
+     * @param  {Array} args     array of values which will be tested
+     * @return {Object}         test with link
+     */
     var _them = function(args) {
         /**
          * making a new instance of test
          * Most of code in this function will manipulate whis it.
          */
         var newtest = new test();
+        
+        newtest.argument = args;
 
-        if (_typeof[args] !== 'Array') {
+        if (_typeof(args) !== 'Array') {
             newtest.status = 'error';
             var e = new RangeError("test.them expects to receive an array");
             var errorObject = {};
             generateError(e,errorObject);
 
             newtest.error = errorObject;
+            newtest.argument = [args];
+        } else {
+            testNonFalse(newtest,args);
         }
-
-        testNonFalse(newtest,args);
 
         /** update counters of contained object */
         updateCounters(root);
@@ -279,6 +289,13 @@ var testit = function() {
         /** return testit with link to this test to provide chaining */
         return Object.create(this,{link:{value:newtest}});
     }
+    /**
+     * public interface for _them()
+     * @public
+     * @example
+     *   test.them([1,'a',true,window]);
+     */
+    this.them = _them;
 
     /**
      * Test all values in args for non-false
@@ -346,7 +363,7 @@ var testit = function() {
             error: 0,
             total: 0
         };
-        
+
         for (i in link.stack) {
             link.result.total++;
             switch (link.stack[i].status) {
