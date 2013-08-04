@@ -36,6 +36,7 @@ to the end of  `<body>` tag. That's it!
 ### How to use
 All API are available through `test` object:
 
+Next methods starts chain:
 + `test.it( entity||expression )` checks the expression or entity for non-false value.
 + `test.it( entity1, entity2 )` checks the equality between 2 entities.
   if entity is a function, `test.it` takes for comparison its returned value.
@@ -56,9 +57,7 @@ Example
       test.it('additional test');
     });
     ```
-+ `test.done()` calculates the execution time for `root` group and prints the result.
 
-Tests & groups starts chain.
 Next methods proceed chain
 + `.comment('comment text' )` adds comment to the previous test/group.
 + `.callback( funcIfpass, funcIffail, funcIferror)` will execute funcIfpass() if test/group pass, funcIffail() if it failed, funcIferror() if it cause error.
@@ -71,6 +70,7 @@ So you can use chains like this:
 ```javascript
 test.it('single')
     .comment('test a simle string')
+    .callback(function(){alert('test has been passed')})
     .result() // -> true
 test.it('first','second')
     .comment('test two string')
@@ -78,11 +78,15 @@ test.it('first','second')
 
 test.it('single')
     .comment('test a simle string')
-    .value() // -> 'single'
+    .arguments() // -> 'single'
 test.it('first','second')
     .comment('test two string')
-    .value() // -> ['first','second']
+    .callback(null, function(){alert('test has been failed')})
+    .arguments() // -> ['first','second']
 ```
+
+Tests must be ended by
++ `test.done()` calculates the execution time for `root` group and prints the result.
 
 Some features:
 
