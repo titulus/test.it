@@ -298,6 +298,7 @@ var testit = function() {
      * public interface for _it()
      * @public
      * @example
+     *   test.it(someThing);
      *   test.it(myFunction());
      *   test.it(myVar>5);
      *   test.it(myVar,mySecondVar);
@@ -313,7 +314,8 @@ var testit = function() {
      */
     var _comment = function(text) {
         /** add comment, if there are something can be commented */
-        if (this.link) this.link.comment = text;
+        if (!this.link) throw new ReferenceError('comment can only be used in testit chain');
+        this.link.comment = text;
 
         return this;
     }
@@ -323,11 +325,39 @@ var testit = function() {
      * @example
      *   test.group('group name',function(){
      *      test
-     *          .it(myFunction())
+     *          .it(someThing)
      *          .comment('comment to test');
      *   }).comment('comment to group');
      */
     this.comment = _comment;
+
+    /**
+     * try to execute functions in arguments, depend on test|group result
+     * @private
+     * @chainable
+     * @param  {Function} pass  function to execute if test|group passed
+     * @param  {Function} fail  function to execute if test|group failed
+     * @param  {Function} error function to execute if test|group cause error
+     */
+    var _callback = function(pass,fail,error) {
+        if (!this.link) throw new ReferenceError('callback can only be used in testit chain');
+        if (this.link.status === 'pass' && _typeof(pass) === 'Function' ) try {pass();} catch(e) {throw e;}
+        if (this.link.status === 'fail' && _typeof(fail) === 'Function' ) try {fail();} catch(e) {throw e;}
+        if (this.link.status === 'error' && _typeof(error) === 'Function' ) try {error();} catch(e) {throw e;}
+
+        return this;
+    }
+    /**
+     * public interface for _callback()
+     * @public
+     * @example
+     *   test.it(someThing).callback(
+     *       function() {...} // - will be execute if test passed
+     *      ,function() {...} // - will be execute if test failed
+     *      ,function() {...} // - will be execute if test error
+     *   );
+     */
+    this.callback = _callback;
 
     /**
      * Final chain-link: will return result of test or group

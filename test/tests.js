@@ -26,7 +26,9 @@ test.it( myFamily.name, 'Desiderio' ).comment('test between outer groups').argum
 
 // console.log(test.group('my family'));
 test.group('my family').group('groupname',function(){
-      test.it( myFamily.Me ).comment('third contrl test');
+      test.it( myFamily.Me,'ASDDS',1 )
+          .callback(function(){console.log('callback',1)},function(){console.log('callback',2)},function(){console.log('callback',3)})
+          .comment('third contrl test');
     });
 test.group('my family').comment('comment added outer');
 /*

@@ -60,7 +60,8 @@ Example
 
 Tests & groups starts chain.
 Next methods proceed chain
-+ `.comment('comment text' )` adds comment to the previous test or group.
++ `.comment('comment text' )` adds comment to the previous test/group.
++ `.callback( funcIfpass, funcIffail, funcIferror)` will execute funcIfpass() if test/group pass, funcIffail() if it failed, funcIferror() if it cause error.
 
 Next methods ends chain
 + `.result()` return result of test or group
@@ -94,7 +95,7 @@ Some features:
 + `test.type( entity, 'type' )` checks the type (`function`, `object`, ...) of an entity
 + `test.types( [entity1, entity2], 'type' )` checks the equality among the types of all entities in the first argument (array), If 'type' is specified, the types of entities will be compared with it.
 + `test.time( entity )` prints the time spent on the execution of an entity (usually, a function)
-+ `.callback( funcIfpass, funcIffail, func)` will execute funcIfpass() if test pass, funcIffail() if test failed, func() in both cases.
+
 
 
 some examples:
