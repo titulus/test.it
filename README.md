@@ -40,6 +40,8 @@ Next methods starts chain:
 + `test.it( entity||expression )` checks the expression or entity for non-false value.
 + `test.it( entity1, entity2 )` checks the equality between 2 entities.
   if entity is a function, `test.it` takes for comparison its returned value.
++ `test.them( [entity1, entity2] )` checks the equality among all entities in an array
++ `test.type( entity, 'type' )` checks the type (`function`, `object`, ...) of an entity
 + `test.group( 'groupname', function(){/*your code here*/} )` combines tests and other groups in a group. It can be called at multiple levels.
 + `test.group(groupName)` - perform nesting of groups.
 Example
@@ -95,7 +97,5 @@ Some features:
 + `test.trace()` - return list *(joined by "\n")* of functions that have been performed to call the current line.
 
 **Not realised yet**
-+ `test.them( [entity1, entity2] )` checks the equality among all entities in an array
-+ `test.type( entity, 'type' )` checks the type (`function`, `object`, ...) of an entity
 + `test.types( [entity1, entity2], 'type' )` checks the equality among the types of all entities in the first argument (array), If 'type' is specified, the types of entities will be compared with it.
 + `test.time( entity )` prints the time spent on the execution of an entity (usually, a function)
