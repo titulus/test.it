@@ -74,17 +74,19 @@ var testit = function() {
     var _makeGroup = function(name,fun) {
         switch (arguments.length) {
             case 1 : {
-                for (i in root.stack) {
-                    if (root.stack[i].type !== 'group') continue;
-                    if (root.stack[i].name === name) {
-                        return Object.create(this,{link:{value:root.stack[i]}});
+                    var stack = (this.link)? this.link.stack : root.stack;
+                    for (i in stack) {
+                        if (stack[i].type !== 'group') continue;
+                        if (stack[i].name === name) {
+                            return Object.create(this,{link:{value:stack[i]}});
+                        }
                     }
-                }
-            } break;
+                    throw new ReferenceError('there are no group with name: '+name);
+                } break;
             case 2 : break;
             default : throw new RangeError("too much arguments");
         }
-
+        
         /** get timestamp */
         var time = new Date().getTime();
 
@@ -140,8 +142,8 @@ var testit = function() {
          * If some of deep nested test will 'fail', root will be 'fail' too.
          * More info in updateStatus() comments.
          */
-        oldRootNest.status = updateStatus(oldRootNest.status,root.status);
-        oldRootChain.status = updateStatus(oldRootChain.status,root.status);
+        // oldRootNest.status = updateStatus(oldRootNest.status,root.status);
+        // oldRootChain.status = updateStatus(oldRootChain.status,root.status);
         
         /** take back old root */
         root = oldRootNest;
@@ -230,7 +232,7 @@ var testit = function() {
         updateCounters(root);
 
         /** reverse inheritance of status */
-        root.status = updateStatus(root.status,newtest.status);
+        // root.status = updateStatus(root.status,newtest.status);
 
         /** finally place this test into container stack */
         root.stack.push(newtest);
@@ -268,9 +270,16 @@ var testit = function() {
         }
 
         /** throw error if argument is not array */
-        if (_typeof(args) !== 'Array') {
+        if (arguments.length === 0 || arguments.length > 1) {
             newtest.status = 'error';
-            var e = new RangeError("test.them expects to receive an array");
+            var e = new RangeError("test.them expects exactly 1 argument");
+            var errorObject = {};
+            generateError(e,errorObject);
+
+            newtest.error = errorObject;
+        } else if (_typeof(args) !== 'Array') {
+            newtest.status = 'error';
+            var e = new TypeError("test.them expects to receive an array");
             var errorObject = {};
             generateError(e,errorObject);
 
@@ -283,7 +292,7 @@ var testit = function() {
         updateCounters(root);
 
         /** reverse inheritance of status */
-        root.status = updateStatus(root.status,newtest.status);
+        // root.status = updateStatus(root.status,newtest.status);
 
         /** finally place this test into container stack */
         root.stack.push(newtest);
@@ -320,6 +329,7 @@ var testit = function() {
             newtest.argument.push(arguments[i]);
         }
         /** throw error if there are not 2 arguments */
+        
         if (arguments.length!==2) {
             newtest.status = 'error';
             var e = new RangeError("test.type expect two arguments");
@@ -332,6 +342,12 @@ var testit = function() {
             var errorObject = {};
             generateError(e,errorObject);
             newtest.error = errorObject;
+        } else if (!arrayConsist(identifiedTypes,type.toLowerCase())) {
+            newtest.status = 'error';
+            var e = new TypeError("second argument must be a standart type");
+            var errorObject = {};
+            generateError(e,errorObject);
+            newtest.error = errorObject;
         } else {
             testType(newtest,[value],type);
         }
@@ -340,7 +356,7 @@ var testit = function() {
         updateCounters(root);
 
         // /** reverse inheritance of status */
-        root.status = updateStatus(root.status,newtest.status);
+        // root.status = updateStatus(root.status,newtest.status);
 
         // /** finally place this test into container stack */
         // console.log(newtest);
@@ -414,7 +430,7 @@ var testit = function() {
         updateCounters(root);
 
         // /** reverse inheritance of status */
-        root.status = updateStatus(root.status,newtest.status);
+        // root.status = updateStatus(root.status,newtest.status);
 
         // /** finally place this test into container stack */
         // console.log(newtest);
@@ -536,7 +552,10 @@ var testit = function() {
                 } break;
             };
         };
-
+        if (link.result.error || link.error) {link.status='error'}
+        else if (link.result.fail) {link.status='fail'}
+        else {link.status='pass'}
+        // console.log(link.name,(link.linkBack)?link.linkBack.name:link.linkBack)
         if (link.linkBack) {
             updateCounters(link.linkBack);
         }
@@ -623,7 +642,11 @@ var testit = function() {
     var _arguments = function() {
         if (this.link) {
             if (this.link.type!=='test') return TypeError('groups does not return arguments');
-            return (this.link.argument.length===1)? this.link.argument[0] : this.link.argument;
+            switch (this.link.argument.length) {
+                case 0 : return undefined
+                case 1 : return this.link.argument[0];
+                default : return this.link.argument;
+            }
         }
         return undefined;
     }
@@ -828,7 +851,9 @@ var testit = function() {
      *   test.typeof(myVar);
      */
     this.typeof = _typeof;
-
+    /** list of type, which _typeof can identify */
+    var identifiedTypes = ['array', 'boolean', 'date', 'error', 'evalerror', 'function', 'html', 'nan', 'nodelist', 'null', 'number', 'object', 'rangeerror', 'referenceerror', 'regexp', 'string', 'syntaxerror', 'typeerror', 'urierror', 'window'];
+    
     /**
      * public interface for getTrace(error)
      * @public
@@ -914,6 +939,16 @@ function getTrace(error) {
  */
 function deepCompare(){function c(d,e){var f;if(isNaN(d)&&isNaN(e)&&"number"==typeof d&&"number"==typeof e)return!0;if(d===e)return!0;if("function"==typeof d&&"function"==typeof e||d instanceof Date&&e instanceof Date||d instanceof RegExp&&e instanceof RegExp||d instanceof String&&e instanceof String||d instanceof Number&&e instanceof Number)return d.toString()===e.toString();if(!(d instanceof Object&&e instanceof Object))return!1;if(d.isPrototypeOf(e)||e.isPrototypeOf(d))return!1;if(d.constructor!==e.constructor)return!1;if(d.prototype!==e.prototype)return!1;if(a.indexOf(d)>-1||b.indexOf(e)>-1)return!1;for(f in e){if(e.hasOwnProperty(f)!==d.hasOwnProperty(f))return!1;if(typeof e[f]!=typeof d[f])return!1}for(f in d){if(e.hasOwnProperty(f)!==d.hasOwnProperty(f))return!1;if(typeof e[f]!=typeof d[f])return!1;switch(typeof d[f]){case"object":case"function":if(a.push(d),b.push(e),!c(d[f],e[f]))return!1;a.pop(),b.pop();break;default:if(d[f]!==e[f])return!1}}return!0}var a,b;if(arguments.length<1)return!0;for(var d=1,e=arguments.length;e>d;d++)if(a=[],b=[],!c(arguments[0],arguments[d]))return!1;return!0}
 
+/**
+ * find val in array
+ * @param  {Array} array  will be searched
+ * @param          val    will be searched for
+ * @return {Boolean}      true if found, false otherwise
+ */
+arrayConsist = function(array, val) {
+    for (i in array) if (array[i] === val) return true;
+    return false;
+}
 /** 
  * make new instance of testit
  * Make it availible from outside.

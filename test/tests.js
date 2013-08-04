@@ -1,78 +1,105 @@
-var Me = {name:'Titulus',lastName:'Desiderio'};
-
-function getMyFamilyName(from) {
-  return from.lastName;
-}
-test.it( 0 ).comment('fail test');
-test.it( 1 ).comment('pass test');
-test.it( 1,0 ).comment('fail test');
-test.it( 1,1 ).comment('pass test');
-test.them( [1,'a',true,window] ).comment('pass test them');
-test.them( [1,0] ).comment('fail test them');
-test.them( 'asd' ).comment('error test them');
-test.type('asd','string').comment('pass test type');
-test.type(1,'string').comment('fail test type');
-test.type('asd','str').comment('fail test type');
-test.type(1).comment('error test type');
-test.type(1,2).comment('error test type');
-test.types(['asd'],'string').comment('pass test types');
-test.types([1],'string').comment('fail test types');
-test.types(['asd','str']).comment('pass test types');
-test.types(1).comment('error test types');
-test.types([1]).comment('error test types');
-test.types(1,2).comment('error test types');
-// console.log(test.trace());
-var myFamily ={name:'Desiderio',cat:'google',Me:'Titulus'};
-test.group('my family',function(){ // first level group
-  test.it( myFamily ).comment('test before');
-  test.group('groupname',function(){
-    test.it( myFamily.Me ).comment('first contrl test');
-  }).comment('group devided into 3 parts');
-  var asd = test.it( myFamily.name, 'Desiderio' ).comment('test between').arguments();
-  // console.l og(asd);
-  var asd = test.group('groupname',function(){ // second level group
-    test.it( myFamily.Me ).comment('second contrl test');
-  }).arguments();
-  // console.log(asd);
+var asdTest = {}
+var asdGroup = {}
+var asdArgs = {}
+var fPass = function(s) {console.log(s,'pass')}
+var fFail = function(s) {console.log(s,'fail')}
+var fError = function(s) {console.log(s,'error')}
+asdGroup.pass = test.group('pass',function(){
+    asdTest.pass = test.it(1)
+      .comment('pass to result')
+      .callback(function(){fPass('passTest')},function(){fFail('passTest')},function(){fError('passTest')})
+      .result();
+})
+  .comment('pass to result')
+  .callback(function(){fPass('passGroup')},function(){fFail('passGroup')},function(){fError('passGroup')})
+  .result();
+asdGroup.fail = test.group('fail',function(){
+    asdTest.fail = test.it(false)
+      .comment('fail to result')
+      .callback(function(){fPass('failTest')},function(){fFail('failTest')},function(){fError('failTest')})
+      .result();
+})
+  .comment('fail to result')
+  .callback(function(){fPass('failGroup')},function(){fFail('failGroup')},function(){fError('failGroup')})
+  .result();
+asdGroup.error = test.group('error',function(){
+    asdTest.error = test.it()
+      .comment('error to result')
+      .callback(function(){fPass('errorTest')},function(){fFail('errorTest')},function(){fError('errorTest')})
+      .result();
+})
+  .comment('error to result')
+  .callback(function(){fPass('errorGroup')},function(){fFail('errorGroup')},function(){fError('errorGroup')})
+  .result();
+test.group('argument tests',function(){
+    asdArgs.it0 = test.it().comment('pass to result').arguments();
+    asdArgs.it1 = test.it('a').comment('pass to result').arguments();
+    asdArgs.it2 = test.it('a','b').comment('pass to result').arguments();
 });
-test.it( myFamily.name, 'Desiderio' ).comment('test between outer groups').arguments();
+console.log(asdTest)
+console.log(asdGroup)
+console.log(asdArgs);
 
-// console.log(test.group('my family'));
-test.group('my family').group('groupname',function(){
-      test.it( myFamily.Me,'ASDDS' )
-          .callback(null, null, function(){console.log('callback',3)})
-          .comment('third contrl test');
-      // asd.a.d;
+test.group('groupname',function(){}).comment('commented group');
+test.group('first level',function(){
+    test.it(true).comment('test in first level');
+    test.group('second level',function(){
+        test.it(true).comment('test in second level');
+        test.group('third level',function(){
+            test.it(true).comment('test in third leve');
+            test.group('last level',function(){
+                test.it(true).comment('test in last level');
+            });
+            test.it(true).comment('test betwen 2 groups');
+            test.group('last level',function(){
+                test.it(true).comment('test added to last level');
+            });
+            test.it(true).comment('test after 2 groups');
+        });
     });
-test.group('my family').comment('comment added outer');
-/*
-var groupresult = test.group('failtests',function(){
-    test.it(null);
-      test.comment('comment1');
-    test.it(undefined).comment('comment2');
-    test.it(NaN);
-    test.it(0);
-    test.it(false);
-    test.it(h.a.b.r);
-    test.it([]);
-    test.it('test',null);
-    test.it('test',undefined);
-    test.it('test',NaN);
-    test.it('test',0);
-    test.it('test',false);
-    test.it('test','');
-    test.it('test',[]);
+});
+test.group('first level')
+    .group('second level')
+    .group('third level')
+    .group('last level',function(){
+        test.it(false).comment('test added to last level last');
+    });
 
-}).comment('chaincomment').result();
-console.log('result of group: ',groupresult);
-console.log('result of this test: ',test.it(1).comment('result will displayed in console').result());
-console.log('result of this test: ',test.it(NaN).comment('result will displayed in console').result());
-
-console.error(fritstGroupOfTest);
-console.log('arguments of this test: ',test.it(Infinity).comment('arguments will displayed in console').arguments());
-console.log('arguments of this test: ',test.it('(:','(:').comment('arguments will displayed in console').arguments());
-console.log('arguments of this test: ',test.it(1,2,3).comment('arguments will displayed in console').arguments());
-
-console.log('deep in arguments: ',test.it({a:'asd',b:'dsa'}).arguments().a);*/
+test.group('it',function(){
+  test.it( 1 ).comment('pass single');
+  test.it( 0 ).comment('fail single');
+  test.it( 1,0 ).comment('fail double');
+  test.it( 1,1 ).comment('pass double');
+  test.it( ).comment('error <1');
+  test.it( 1,2,3 ).comment('error >2');
+});
+test.group('them',function(){
+  test.them( [1,'a'] ).comment('pass');
+  test.them( [1,0] ).comment('fail');
+  test.them( ).comment('error <1');
+  test.them( [1,'a'], 1 ).comment('error >1');
+  test.them( 'asd' ).comment('error type');
+});
+test.group('type',function(){
+  test.type( 'asd','string' ).comment('pass');
+  test.type( 1,'string' ).comment('fail');
+  test.type( 'asd','str' ).comment('error type');
+  test.type( 1 ).comment('error <2');
+  test.type( 1,2 ).comment('error not type');
+  test.type( 1,'string',2 ).comment('error >2');
+});
+test.group('types',function(){
+  test.types(['asd'],'string').comment('pass');
+  test.types([1],'string').comment('fail');
+  test.types(['asd','str']).comment('pass');
+  test.types(['asd',1]).comment('fail');
+  test.types(['asd',1],'string').comment('fail');
+  test.types(1).comment('error not array');
+  test.types([1]).comment('error array.length=1, no type');
+  test.types(1,2).comment('error type'); 
+});
+test.group('error group',function(){
+    a.s.d;
+});
 
 test.done();
