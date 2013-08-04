@@ -264,7 +264,22 @@ var testit = function() {
             /** otherwise throw Range error */
             default : {
                 newtest.status = 'error';
-                newtest.error = new RangeError("too much arguments");
+                /**
+                 * more understandable error object
+                 * @type {Object}
+                 * @property {Error} error      consist basic error object
+                 * @property {String} type      type of error
+                 * @property {String} message   message from basic property
+                 * @property {String} stack     some kind of result of trace()
+                 */
+                var e = new RangeError("too much arguments");
+                var errorObject = {};
+                errorObject.error = e;
+                errorObject.type = _typeof(e);
+                errorObject.message = e.message;
+                errorObject.stack = getTrace(e);
+
+                newtest.error = errorObject;
             }
         }
         
@@ -518,7 +533,14 @@ var testit = function() {
                     } break;
                 }
                 if (obj.description) console.log(obj.description);
-                if (obj.error) console.error(obj.error);
+                /** display error if defined */
+                if (obj.error) {
+                    // console.error(obj.error);
+                    console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
+                        console.log(obj.error.stack);
+                        console.dir(obj.error.error);
+                    console.groupEnd();
+                }
                 console.log(obj.argument);
                 console.groupEnd();
             } break;

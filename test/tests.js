@@ -29,6 +29,7 @@ test.group('my family').group('groupname',function(){
       test.it( myFamily.Me,'ASDDS',1 )
           .callback(null, null, function(){console.log('callback',3)})
           .comment('third contrl test');
+      asd.a.d;
     });
 test.group('my family').comment('comment added outer');
 /*
