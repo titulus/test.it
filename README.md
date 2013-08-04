@@ -96,6 +96,3 @@ Some features:
 + `test.typeof( entity )` determines the type of an entity
   It recognizes `array`, `boolean`, `date`, `error` (`evalerror`, `rangeerror`, `referenceerror`, `syntaxerror`, `typeerror`, `urierror`), `function`, `nan` & `number`, `object`, `regexp`, `string`, `window`, `dom`, `nodelist`. But can't recognize undefined vars.
 + `test.trace()` - return list *(joined by "\n")* of functions that have been performed to call the current line.
-
-**Not realised yet**
-+ `test.time( entity )` prints the time spent on the execution of an entity (usually, a function)
