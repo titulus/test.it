@@ -12,7 +12,7 @@ test.group('my family',function(){ // first level group
   test.it( myFamily ).comment('test before');
   test.group('groupname',function(){
     test.it( myFamily.Me ).comment('first contrl test');
-  }).comment('asd');
+  }).comment('group devided into 3 parts');
   var asd = test.it( myFamily.name, 'Desiderio' ).comment('test between').arguments();
   // console.l og(asd);
   var asd = test.group('groupname',function(){ // second level group
@@ -26,8 +26,9 @@ test.it( myFamily.name, 'Desiderio' ).comment('test between outer groups').argum
 
 // console.log(test.group('my family'));
 test.group('my family').group('groupname',function(){
-      test.it( myFamily.Me, 'asdasd' ).comment('third contrl test');
+      test.it( myFamily.Me ).comment('third contrl test');
     });
+test.group('my family').comment('comment added outer');
 /*
 var groupresult = test.group('failtests',function(){
     test.it(null);

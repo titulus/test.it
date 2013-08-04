@@ -408,7 +408,7 @@ var testit = function() {
             red = "color: red;",
             orange = "color: orange",
             blue = "color: blue",
-            normal = "color: normal";
+            normal = "color: normal; font-weight:normal;";
 
         /** Try to figure out what type of object display and open group */
         switch (obj.type) {
@@ -417,28 +417,28 @@ var testit = function() {
                 switch (obj.status) {
                     /** if object passed - make collapsed group*/
                     case 'pass' : {
-                        console.groupCollapsed("%s - %c%s - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms)"
-                                     ,obj.name,green,obj.status
+                        console.groupCollapsed("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
+                                     ,obj.name,green,obj.status,normal
                                      ,green,(obj.result.tests.passed+obj.result.groups.passed),normal
                                      ,red,(obj.result.tests.failed+obj.result.groups.failed),normal
                                      ,orange,(obj.result.tests.error+obj.result.groups.error),normal
-                                     ,blue,obj.time,normal);
+                                     ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
                     } break;
                     case 'fail' : {
-                        console.group("%s - %c%s - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms)"
-                                     ,obj.name,red,obj.status
+                        console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
+                                     ,obj.name,red,obj.status,normal
                                      ,green,(obj.result.tests.passed+obj.result.groups.passed),normal
                                      ,red,(obj.result.tests.failed+obj.result.groups.failed),normal
                                      ,orange,(obj.result.tests.error+obj.result.groups.error),normal
-                                     ,blue,obj.time,normal);
+                                     ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
                     } break;
                     case 'error' : {
-                        console.group("%s - %c%s - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms)"
-                                     ,obj.name,orange,obj.status
+                        console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
+                                     ,obj.name,orange,obj.status,normal
                                      ,green,(obj.result.tests.passed+obj.result.groups.passed),normal
                                      ,red,(obj.result.tests.failed+obj.result.groups.failed),normal
                                      ,orange,(obj.result.tests.error+obj.result.groups.error),normal
-                                     ,blue,obj.time,normal);
+                                     ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
                     } break;
                     /** if status is not defined - display error; finish displaying */
                     default : {
@@ -450,11 +450,6 @@ var testit = function() {
                 /** display description if defined */
                 if (obj.description) {
                     console.log(obj.description);
-                }
-
-                /** display comment if defined */
-                if (obj.comment) {
-                    console.log(obj.comment);                    
                 }
                 
                 /**
