@@ -21,20 +21,12 @@ var testit = function() {
         this.status = undefined;
         this.comment = undefined;
         this.error = undefined;
-        this.time = new Date().getTime();
+        this.time = 0;
         this.result = {
-            tests: {
-                passed: 0,
-                failed: 0,
-                error: 0,
-                total: 0
-            },
-            groups: {
-                passed: 0,
-                failed: 0,
-                error: 0,
-                total: 0
-            }
+            pass: 0,
+            fail: 0,
+            error: 0,
+            total: 0
         };
         this.stack = [];
     }
@@ -69,6 +61,7 @@ var testit = function() {
     var root = new group();
     this.root = root;
     root.name = 'root';
+    root.time = new Date().getTime();
 
     /**
      * make new instace of group, fill it, add it to previous group.stack, fill some values in previous group
@@ -91,9 +84,10 @@ var testit = function() {
             default : throw new RangeError("too much arguments");
         }
 
-        /**
-         * making a new root, to provide chaining
-         */
+        /** get timestamp */
+        var time = new Date().getTime();
+
+        /** making a new root, to provide chaining */
         var oldRootChain = root;
         root = (this.link)? this.link : root;
         /** var for the new instance of group */
@@ -109,9 +103,15 @@ var testit = function() {
                 break;
             }
         }
-        if (!newgroup) newgroup = new group();
+        if (!groupAlreadyExist) newgroup = new group();
         newgroup.name = name;
+
+        /** add backlink to provide trek back */
+        newgroup.linkBack = root;
+
         /** set to pass as default. it's may be changed in some next lines */
+        var oldstatus;
+        if (groupAlreadyExist) oldstatus = newgroup.status;
         newgroup.status ='pass';
 
 
@@ -148,25 +148,16 @@ var testit = function() {
         /** take back old root */
         root = oldRootChain;
 
-        /** update counters */
-        switch (newgroup.status) {
-            case 'pass' : {
-                root.result.groups.passed++;
-            } break;
-            case 'fail' : {
-                root.result.groups.failed++;
-            } break;
-            case 'error' : {
-                root.result.groups.error++;
-            } break;
-        }
-        root.result.groups.total++;
 
         /** update time */
-        newgroup.time = new Date().getTime() - newgroup.time;
+        newgroup.time += new Date().getTime() - time;
+
 
         /** finally place this group into previous level stack (if it's a new group) */
         if (!groupAlreadyExist) root.stack.push(newgroup);
+
+        /** update counters */
+        updateCounters(newgroup);
 
         /** return testit with link to this group to provide chaining */
         return Object.create(this,{link:{value:newgroup}});
@@ -212,7 +203,10 @@ var testit = function() {
             /** in case of no arguments - throw Reference error */
             case 0 : {
                 newtest.status = 'error';
-                newtest.error = new ReferenceError("at least one argument expected");
+                var e = new RangeError("at least one argument expected");
+                var errorObject = {};
+                generateError(e,errorObject);
+                newtest.error = errorObject;
             } break;
             /** if there only one argument - test it for truth */
             case 1 : {
@@ -228,30 +222,15 @@ var testit = function() {
                 var e = new RangeError("too much arguments");
                 var errorObject = {};
                 generateError(e,errorObject);
-
                 newtest.error = errorObject;
             }
         }
         
         /** update counters of contained object */
-        switch (newtest.status) {
-            case 'pass' : {
-                root.result.tests.passed++;
-            } break;
-            case 'fail' : {
-                root.result.tests.failed++;
-            } break;
-            case 'error' : {
-                root.result.tests.error++;
-            } break;
-        }
-        root.result.tests.total++;
+        updateCounters(root);
 
         /** reverse inheritance of status */
         root.status = updateStatus(root.status,newtest.status);
-
-        /** update time */
-        newtest.time = new Date().getTime() - newtest.time;
 
         /** finally place this test into container stack */
         root.stack.push(newtest);
@@ -269,6 +248,37 @@ var testit = function() {
      *   test.it(myVar,mySecondVar);
      */
     this.it = _it;
+
+    var _them = function(args) {
+        /**
+         * making a new instance of test
+         * Most of code in this function will manipulate whis it.
+         */
+        var newtest = new test();
+
+        if (_typeof[args] !== 'Array') {
+            newtest.status = 'error';
+            var e = new RangeError("test.them expects to receive an array");
+            var errorObject = {};
+            generateError(e,errorObject);
+
+            newtest.error = errorObject;
+        }
+
+        testNonFalse(newtest,args);
+
+        /** update counters of contained object */
+        updateCounters(root);
+
+        /** reverse inheritance of status */
+        root.status = updateStatus(root.status,newtest.status);
+
+        /** finally place this test into container stack */
+        root.stack.push(newtest);
+
+        /** return testit with link to this test to provide chaining */
+        return Object.create(this,{link:{value:newtest}});
+    }
 
     /**
      * Test all values in args for non-false
@@ -326,6 +336,35 @@ var testit = function() {
         /** if code not stopped earlier, test passed */
         test.description = 'arguments are equal';
         test.status = 'pass';
+    }
+
+    /** update counters of contained object */
+    var updateCounters = function(link) {
+        link.result = {
+            pass: 0,
+            fail: 0,
+            error: 0,
+            total: 0
+        };
+        
+        for (i in link.stack) {
+            link.result.total++;
+            switch (link.stack[i].status) {
+                case 'pass' : {
+                    link.result.pass++;
+                } break;
+                case 'fail' : {
+                    link.result.fail++;
+                } break;
+                case 'error' : {
+                    link.result.error++;
+                } break;
+            };
+        };
+
+        if (link.linkBack) {
+            updateCounters(link.linkBack);
+        }
     }
 
     /**
@@ -472,25 +511,25 @@ var testit = function() {
                     case 'pass' : {
                         console.groupCollapsed("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
                                      ,obj.name,green,obj.status,normal
-                                     ,green,(obj.result.tests.passed+obj.result.groups.passed),normal
-                                     ,red,(obj.result.tests.failed+obj.result.groups.failed),normal
-                                     ,orange,(obj.result.tests.error+obj.result.groups.error),normal
+                                     ,green,obj.result.pass,normal
+                                     ,red,obj.result.fail,normal
+                                     ,orange,obj.result.error,normal
                                      ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
                     } break;
                     case 'fail' : {
                         console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
                                      ,obj.name,red,obj.status,normal
-                                     ,green,(obj.result.tests.passed+obj.result.groups.passed),normal
-                                     ,red,(obj.result.tests.failed+obj.result.groups.failed),normal
-                                     ,orange,(obj.result.tests.error+obj.result.groups.error),normal
+                                     ,green,obj.result.pass,normal
+                                     ,red,obj.result.fail,normal
+                                     ,orange,obj.result.error,normal
                                      ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
                     } break;
                     case 'error' : {
                         console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
                                      ,obj.name,orange,obj.status,normal
-                                     ,green,(obj.result.tests.passed+obj.result.groups.passed),normal
-                                     ,red,(obj.result.tests.failed+obj.result.groups.failed),normal
-                                     ,orange,(obj.result.tests.error+obj.result.groups.error),normal
+                                     ,green,obj.result.pass,normal
+                                     ,red,obj.result.fail,normal
+                                     ,orange,obj.result.error,normal
                                      ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
                     } break;
                     /** if status is not defined - display error; finish displaying */
