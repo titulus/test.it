@@ -263,7 +263,9 @@ var testit = function() {
          */
         var newtest = new test();
         
-        newtest.argument = args;
+        for (i in arguments) {
+            newtest.argument.push(arguments[i]);
+        }
 
         /** throw error if argument is not array */
         if (_typeof(args) !== 'Array') {
@@ -298,6 +300,13 @@ var testit = function() {
      */
     this.them = _them;
 
+    /**
+     * test type of first argument (value) to be equal to secon argument
+     * @private
+     * @chainable
+     * @param  {Multiple} value     will be tested
+     * @param  {[type]} type        type to compare with
+     */
     var _type = function(value,type) {
         /**
          * making a new instance of test
@@ -324,12 +333,8 @@ var testit = function() {
             var errorObject = {};
             generateError(e,errorObject);
             newtest.error = errorObject;
-        } else if (_typeof(value).toLowerCase() !== type.toLowerCase()) {
-            newtest.description = 'type of argument is not '+type;
-            newtest.status = 'fail';
         } else {
-            newtest.description = 'type of argument is '+type;
-            newtest.status = 'pass';
+            testType(newtest,[value],type);
         }
         
         /** update counters of contained object */
@@ -345,7 +350,111 @@ var testit = function() {
         /** return testit with link to this test to provide chaining */
         return Object.create(this,{link:{value:newtest}});
     }
+    /**
+     * public interface for _type()
+     * @public
+     * @example
+     *   test.type('asd','String');
+     */
     this.type = _type;
+
+    /** 
+     * compare types of all values in args between each other and 'type' if defined
+     * @private
+     * @chainable
+     * @param  {Array} args         array of values which will be tested
+     * @param  {String} type        type which will be compared whith
+     */
+    var _types = function(args,type) {
+        /**
+         * making a new instance of test
+         * Most of code in this function will manipulate whis it.
+         */
+        var newtest = new test();
+        /**
+         * fill newtest.argument with arguments
+         * (arguments is array-like object, but not array. So i can't just  newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
+         */
+        for (i in arguments) {
+            newtest.argument.push(arguments[i]);
+        }
+        /** throw error if there are not 2 arguments */
+        if (arguments.length>2) {
+            newtest.status = 'error';
+            var e = new RangeError("test.types expect maximum of two arguments");
+            var errorObject = {};
+            generateError(e,errorObject);
+            newtest.error = errorObject;
+        } else if (_typeof(args) !== 'Array') {
+            newtest.status = 'error';
+            var e = new TypeError("test.types expect array in first argument");
+            var errorObject = {};
+            generateError(e,errorObject);
+            newtest.error = errorObject;
+        } else if (type) {
+            if (_typeof(type) !== 'String') {
+                newtest.status = 'error';
+                var e = new TypeError("second argument must be a String");
+                var errorObject = {};
+                generateError(e,errorObject);
+                newtest.error = errorObject;
+            } else {
+                testType(newtest,args,type);
+            }
+        } else if (args.length<2) {
+            newtest.status = 'error';
+            var e = new RangeError("test.types expect array with minimum 2 values, if second argument not defined");
+            var errorObject = {};
+            generateError(e,errorObject);
+            newtest.error = errorObject;
+        } else {
+            testType(newtest,args);
+        }
+        
+        /** update counters of contained object */
+        updateCounters(root);
+
+        // /** reverse inheritance of status */
+        root.status = updateStatus(root.status,newtest.status);
+
+        // /** finally place this test into container stack */
+        // console.log(newtest);
+        root.stack.push(newtest);
+
+        /** return testit with link to this test to provide chaining */
+        return Object.create(this,{link:{value:newtest}});
+    }
+    /**
+     * public interface for _types
+     * @public
+     * @example
+     *   test.type([1,2,3],'Number');
+     */
+    this.types = _types;
+
+    /**
+     * Test types of all values in args
+     * @private
+     * @param  {Objcet} test    will be updated
+     * @param  {Array}  args    consist values which types will be tested
+     * @param  {[type]} type    consist type which will be compared with
+     */
+    var testType = function(test,args,type) {
+        test.description = 'type of argument is ';
+
+        if (!type) type = _typeof(args[0]);
+
+        for (arg in args) {
+            if (_typeof(args[arg]).toLowerCase() !== type.toLowerCase()) {
+                test.description += 'not '+type;
+                test.status = 'fail';
+                return
+            }
+        }
+
+        test.description += type;
+        test.status = 'pass';
+    }
 
     /**
      * Test all values in args for non-false

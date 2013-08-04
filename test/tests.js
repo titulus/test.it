@@ -15,8 +15,12 @@ test.type(1,'string').comment('fail test type');
 test.type('asd','str').comment('fail test type');
 test.type(1).comment('error test type');
 test.type(1,2).comment('error test type');
-test.it( getMyFamilyName(Me), 'Desiderio' ) // pass if getMyFamilyName(Me) return 'Desiderio'
-    .comment('did i write getMyFamilyName() right?');
+test.types(['asd'],'string').comment('pass test types');
+test.types([1],'string').comment('fail test types');
+test.types(['asd','str']).comment('pass test types');
+test.types(1).comment('error test types');
+test.types([1]).comment('error test types');
+test.types(1,2).comment('error test types');
 // console.log(test.trace());
 var myFamily ={name:'Desiderio',cat:'google',Me:'Titulus'};
 test.group('my family',function(){ // first level group
