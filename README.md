@@ -3,9 +3,6 @@ testit
 
 Simple js testing framework
 
-## *!in progress now!*
-
-
 #### Goals:
   + to use dev console instead of page DOM
   + to avoid crashes
