@@ -275,7 +275,6 @@ var testit = function() {
             generateError(e,errorObject);
 
             newtest.error = errorObject;
-            newtest.argument = [args];
         } else {
             testNonFalse(newtest,args);
         }
