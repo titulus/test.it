@@ -265,6 +265,7 @@ var testit = function() {
         
         newtest.argument = args;
 
+        /** throw error if argument is not array */
         if (_typeof(args) !== 'Array') {
             newtest.status = 'error';
             var e = new RangeError("test.them expects to receive an array");
@@ -296,6 +297,55 @@ var testit = function() {
      *   test.them([1,'a',true,window]);
      */
     this.them = _them;
+
+    var _type = function(value,type) {
+        /**
+         * making a new instance of test
+         * Most of code in this function will manipulate whis it.
+         */
+        var newtest = new test();
+        /**
+         * fill newtest.argument with arguments
+         * (arguments is array-like object, but not array. So i can't just  newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
+         */
+        for (i in arguments) {
+            newtest.argument.push(arguments[i]);
+        }
+        /** throw error if there are not 2 arguments */
+        if (arguments.length!==2) {
+            newtest.status = 'error';
+            var e = new RangeError("test.type expect two arguments");
+            var errorObject = {};
+            generateError(e,errorObject);
+            newtest.error = errorObject;
+        } else if (_typeof(type) !== 'String') {
+            newtest.status = 'error';
+            var e = new TypeError("second argument must be a String");
+            var errorObject = {};
+            generateError(e,errorObject);
+            newtest.error = errorObject;
+        } else if (_typeof(value).toLowerCase() !== type.toLowerCase()) {
+            newtest.description = 'type of argument is not '+type;
+            newtest.status = 'fail';
+        } else {
+            newtest.description = 'type of argument is '+type;
+            newtest.status = 'pass';
+        }
+        
+        /** update counters of contained object */
+        updateCounters(root);
+
+        // /** reverse inheritance of status */
+        root.status = updateStatus(root.status,newtest.status);
+
+        // /** finally place this test into container stack */
+        // console.log(newtest);
+        root.stack.push(newtest);
+
+        /** return testit with link to this test to provide chaining */
+        return Object.create(this,{link:{value:newtest}});
+    }
+    this.type = _type;
 
     /**
      * Test all values in args for non-false

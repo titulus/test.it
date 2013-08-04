@@ -10,6 +10,11 @@ test.it( 1,1 ).comment('pass test');
 test.them( [1,'a',true,window] ).comment('pass test them');
 test.them( [1,0] ).comment('fail test them');
 test.them( 'asd' ).comment('error test them');
+test.type('asd','string').comment('pass test type');
+test.type(1,'string').comment('fail test type');
+test.type('asd','str').comment('fail test type');
+test.type(1).comment('error test type');
+test.type(1,2).comment('error test type');
 test.it( getMyFamilyName(Me), 'Desiderio' ) // pass if getMyFamilyName(Me) return 'Desiderio'
     .comment('did i write getMyFamilyName() right?');
 // console.log(test.trace());
