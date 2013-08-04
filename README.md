@@ -77,7 +77,7 @@ test.it('first','second')
     .result() // -> false
 
 test.it('single')
-    .comment('test a simle string')
+    .comment('test a simple string')
     .arguments() // -> 'single'
 test.it('first','second')
     .comment('test two string')
