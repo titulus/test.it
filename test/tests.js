@@ -3,7 +3,10 @@ var Me = {name:'Titulus',lastName:'Desiderio'};
 function getMyFamilyName(from) {
   return from.lastName;
 }
-
+test.it( 0 ).comment('fail test');
+test.it( 1 ).comment('pass test');
+test.it( 1,0 ).comment('fail test');
+test.it( 1,1 ).comment('pass test');
 test.it( getMyFamilyName(Me), 'Desiderio' ) // pass if getMyFamilyName(Me) return 'Desiderio'
     .comment('did i write getMyFamilyName() right?');
 // console.log(test.trace());
@@ -19,17 +22,15 @@ test.group('my family',function(){ // first level group
     test.it( myFamily.Me ).comment('second contrl test');
   }).arguments();
   // console.log(asd);
-  var asd = test.it( myFamily.dog, 'google' ).comment('test after').result();
-  // console.log(asd);
 });
 test.it( myFamily.name, 'Desiderio' ).comment('test between outer groups').arguments();
 
 // console.log(test.group('my family'));
 test.group('my family').group('groupname',function(){
-      test.it( myFamily.Me,'ASDDS',1 )
+      test.it( myFamily.Me,'ASDDS' )
           .callback(null, null, function(){console.log('callback',3)})
           .comment('third contrl test');
-      asd.a.d;
+      // asd.a.d;
     });
 test.group('my family').comment('comment added outer');
 /*
@@ -63,4 +64,3 @@ console.log('arguments of this test: ',test.it(1,2,3).comment('arguments will di
 console.log('deep in arguments: ',test.it({a:'asd',b:'dsa'}).arguments().a);*/
 
 test.done();
-

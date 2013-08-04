@@ -92,10 +92,9 @@ var testit = function() {
         }
 
         /**
-         * replace root with link if defined to provide chaining
-         * Save root in oldRoot
+         * making a new root, to provide chaining
          */
-        var oldRoot = root;
+        var oldRootChain = root;
         root = (this.link)? this.link : root;
         /** var for the new instance of group */
         var newgroup;
@@ -115,14 +114,12 @@ var testit = function() {
         /** set to pass as default. it's may be changed in some next lines */
         newgroup.status ='pass';
 
-        /** return root back */
-        root = oldRoot;
 
         /**
          * making a new root, to provide nesting
          * Nested tests and groups will us it, like first one use root.
          */
-        var oldRoot = root;
+        var oldRootNest = root;
         root = newgroup;
         /**
          * try to execute code with tests and other groups in it
@@ -132,19 +129,8 @@ var testit = function() {
             fun();
         } catch(e) {
             newgroup.status = 'error';
-            /**
-             * more understandable error object
-             * @type {Object}
-             * @property {Error} error      consist basic error object
-             * @property {String} type      type of error
-             * @property {String} message   message from basic property
-             * @property {String} stack     some kind of result of trace()
-             */
             var errorObject = {};
-            errorObject.error = e;
-            errorObject.type = _typeof(e);
-            errorObject.message = e.message;
-            errorObject.stack = getTrace(e);
+            generateError(e,errorObject);
 
             newgroup.error = errorObject;
         }
@@ -153,12 +139,14 @@ var testit = function() {
          * If some of deep nested test will 'fail', root will be 'fail' too.
          * More info in updateStatus() comments.
          */
-        oldRoot.status = updateStatus(oldRoot.status,root.status);
-        /**
-         * take back old root
-         * Next code do not need nesting.
-         */
-        root = oldRoot;
+        oldRootNest.status = updateStatus(oldRootNest.status,root.status);
+        oldRootChain.status = updateStatus(oldRootChain.status,root.status);
+        
+        /** take back old root */
+        root = oldRootNest;
+
+        /** take back old root */
+        root = oldRootChain;
 
         /** update counters */
         switch (newgroup.status) {
@@ -228,56 +216,18 @@ var testit = function() {
             } break;
             /** if there only one argument - test it for truth */
             case 1 : {
-                
-                if (a) {
-                    newtest.description = 'argument exist and not false';
-                    newtest.status = 'pass';
-                } else {
-                    newtest.description = (typeof(a)==='undefined')?'argument is not defined':'argument is not true';
-                    newtest.status = 'fail';
-                }
+                testNonFalse(newtest,[a]);
             } break;
             /** if there are two arguments - test equalence between them */
             case 2 : {
-                
-                
-                if (_typeof(a) !== _typeof(b)) {
-                    newtest.status = 'fail';
-                    newtest.description = 'arguments has different types';
-                } else {
-                    /*switch (_typeof(a)) {
-                        case 'array' : {} break;
-                        case 'object' : {} break;
-                        case 'regexp' : {} break;
-                        case 'dom' : {} break;
-                        case 'nodelist' : {} break;
-                        default : {
-                            newtest.status = (a===b);
-                        }
-                    }*/
-                    var equality = (deepCompare(a,b))? true:false;
-                    newtest.description = (equality)?'arguments are equal':'arguments are not equal';
-                    newtest.status = (equality)? 'pass' : 'fail';
-                }
-                
+                testEquivalence(newtest,[a,b]);
             } break;
             /** otherwise throw Range error */
             default : {
                 newtest.status = 'error';
-                /**
-                 * more understandable error object
-                 * @type {Object}
-                 * @property {Error} error      consist basic error object
-                 * @property {String} type      type of error
-                 * @property {String} message   message from basic property
-                 * @property {String} stack     some kind of result of trace()
-                 */
                 var e = new RangeError("too much arguments");
                 var errorObject = {};
-                errorObject.error = e;
-                errorObject.type = _typeof(e);
-                errorObject.message = e.message;
-                errorObject.stack = getTrace(e);
+                generateError(e,errorObject);
 
                 newtest.error = errorObject;
             }
@@ -319,6 +269,64 @@ var testit = function() {
      *   test.it(myVar,mySecondVar);
      */
     this.it = _it;
+
+    /**
+     * Test all values in args for non-false
+     * @private
+     * @param  {Objcet} test    will be updated
+     * @param  {Array}  args    consist values which will be tested
+     */
+    var testNonFalse = function(test,args) {
+        /** use different text when one and multiple values are tested */
+        test.description = (args.length===1)? 'argument is not ':'arguments is not ';
+
+        /** test every value in args */
+        for (arg in args) {
+            if (!args[arg]) {
+                test.description += 'true';
+                test.status = 'fail';
+                return;
+            }
+        }
+
+        /** if code not stopped in previous step, test passed */
+        test.description += 'false';
+        test.status = 'pass';
+    }
+
+    /**
+     * Test all values in args for equivalence
+     * @private
+     * @param  {Objcet} test    will be updated
+     * @param  {Array}  args    consist values which will be tested
+     */
+    var testEquivalence = function(test,args) {
+        /** first value will be used as model in comparissons */
+        var model = args.shift();
+
+        /** compare all types of values in args with type of model */
+        var type = _typeof(model);
+        for (arg in args) {
+            if (_typeof(args[arg]) !== type) {
+                test.status = 'fail';
+                test.description = 'arguments has different types';
+                return;
+            }
+        }
+
+        /** compare all values in args with model */
+        for (arg in args) {
+            if (!deepCompare(model,args[arg])) {
+                test.description = 'arguments are not equal';
+                test.status = 'fail';
+                return;
+            }
+        }
+
+        /** if code not stopped earlier, test passed */
+        test.description = 'arguments are equal';
+        test.status = 'pass';
+    }
 
     /**
      * add comment for the linked test or group
@@ -616,9 +624,7 @@ var testit = function() {
     this.trace = getTrace;
 
 
-    this.test = function(){
-        console.log(this.link)
-    }
+    
 }
 
 /**
@@ -630,7 +636,7 @@ var testit = function() {
  * @param  {String} newstatus   second compared status
  * @return {String}             status which will be set
  */
-var updateStatus = function(oldstatus,newstatus) {
+function updateStatus(oldstatus,newstatus) {
     if (oldstatus===undefined) return newstatus;
     if (newstatus===undefined) return oldstatus;
     if (oldstatus==='error' || newstatus==='error') return 'error';
@@ -639,11 +645,31 @@ var updateStatus = function(oldstatus,newstatus) {
 }
 
 /**
+ * make more understandable error object
+ * @type {Object}
+ * @param {Error} error         basic error
+ * @param {Object} object       understandable error object
+ */
+function generateError(error,object) {
+    /**
+     * understandable error object
+     * @property {Error} error      consist basic error
+     * @property {String} type      type of error
+     * @property {String} message   message from basic property
+     * @property {String} stack     some kind of result of trace()
+     */
+    object.error = error;
+    object.type = test.typeof(error);
+    object.message = error.message;
+    object.stack = getTrace(error);
+}
+
+/**
  * returns a list of functions that have been performed to call the current line
  * @param  {Error} error    if setted, trace will be based on it stack
  * @return {String}         list of functions joined by "\n";
  */
-var getTrace = function(error) {
+function getTrace(error) {
     if (!error) error = new Error();
     var stack = '';
     error.stack.split(/[\n]/).forEach(function(i,n){
