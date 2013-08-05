@@ -228,14 +228,11 @@ var testit = function() {
             }
         }
         
-        /** update counters of contained object */
-        updateCounters(root);
-
-        /** reverse inheritance of status */
-        // root.status = updateStatus(root.status,newtest.status);
-
         /** finally place this test into container stack */
         root.stack.push(newtest);
+
+        /** update counters of contained object */
+        updateCounters(root);
 
         /** return testit with link to this test to provide chaining */
         return Object.create(this,{link:{value:newtest}});
@@ -288,14 +285,11 @@ var testit = function() {
             testNonFalse(newtest,args);
         }
 
-        /** update counters of contained object */
-        updateCounters(root);
-
-        /** reverse inheritance of status */
-        // root.status = updateStatus(root.status,newtest.status);
-
         /** finally place this test into container stack */
         root.stack.push(newtest);
+
+        /** update counters of contained object */
+        updateCounters(root);
 
         /** return testit with link to this test to provide chaining */
         return Object.create(this,{link:{value:newtest}});
@@ -351,16 +345,12 @@ var testit = function() {
         } else {
             testType(newtest,[value],type);
         }
-        
+
+        /** finally place this test into container stack */
+        root.stack.push(newtest);
+
         /** update counters of contained object */
         updateCounters(root);
-
-        // /** reverse inheritance of status */
-        // root.status = updateStatus(root.status,newtest.status);
-
-        // /** finally place this test into container stack */
-        // console.log(newtest);
-        root.stack.push(newtest);
 
         /** return testit with link to this test to provide chaining */
         return Object.create(this,{link:{value:newtest}});
@@ -425,16 +415,12 @@ var testit = function() {
         } else {
             testType(newtest,args);
         }
-        
+
+        /** finally place this test into container stack */
+        root.stack.push(newtest);
+
         /** update counters of contained object */
         updateCounters(root);
-
-        // /** reverse inheritance of status */
-        // root.status = updateStatus(root.status,newtest.status);
-
-        // /** finally place this test into container stack */
-        // console.log(newtest);
-        root.stack.push(newtest);
 
         /** return testit with link to this test to provide chaining */
         return Object.create(this,{link:{value:newtest}});
@@ -527,38 +513,6 @@ var testit = function() {
         /** if code not stopped earlier, test passed */
         test.description = 'arguments are equal';
         test.status = 'pass';
-    }
-
-    /** update counters of contained object */
-    var updateCounters = function(link) {
-        link.result = {
-            pass: 0,
-            fail: 0,
-            error: 0,
-            total: 0
-        };
-
-        for (i in link.stack) {
-            link.result.total++;
-            switch (link.stack[i].status) {
-                case 'pass' : {
-                    link.result.pass++;
-                } break;
-                case 'fail' : {
-                    link.result.fail++;
-                } break;
-                case 'error' : {
-                    link.result.error++;
-                } break;
-            };
-        };
-        if (link.result.error || link.error) {link.status='error'}
-        else if (link.result.fail) {link.status='fail'}
-        else {link.status='pass'}
-        // console.log(link.name,(link.linkBack)?link.linkBack.name:link.linkBack)
-        if (link.linkBack) {
-            updateCounters(link.linkBack);
-        }
     }
 
     /**
@@ -685,6 +639,40 @@ var testit = function() {
      *   test.done();
      */
     this.done = _done;
+
+
+    /** update counters of contained object */
+    var updateCounters = function(link) {
+        link.result = {
+            pass: 0,
+            fail: 0,
+            error: 0,
+            total: 0
+        };
+        for (i in link.stack) {
+            link.result.total++;
+            switch (link.stack[i].status) {
+                case 'pass' : {
+                    link.result.pass++;
+                } break;
+                case 'fail' : {
+                    link.result.fail++;
+                } break;
+                case 'error' : {
+                    link.result.error++;
+                } break;
+            };
+        };
+        
+        if (link.result.error || link.error) {link.status='error'}
+        else if (link.result.fail) {link.status='fail'}
+        else {link.status='pass'}
+        // console.log(link.name,(link.linkBack)?link.linkBack.name:link.linkBack)
+        if (link.linkBack) {
+            updateCounters(link.linkBack);
+        }
+    }
+
 
     /**
      * pritty display group or test in browser dev console
