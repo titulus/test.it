@@ -49,7 +49,7 @@ var testit = function() {
         this.comment = undefined;
         this.description = undefined;
         this.error = undefined;
-        this.time = new Date().getTime();
+        // this.time = new Date().getTime();
         this.argument = [];
     }
 
