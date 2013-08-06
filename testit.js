@@ -76,7 +76,7 @@ var testit = function() {
             case 0 : throw new RangeError("test.group expect at least 1 argument");
             case 1 : {
                     var stack = (this.link)? this.link.stack : root.stack;
-                    for (i in stack) {
+                    for (var i in stack) {
                         if (stack[i].type !== 'group') continue;
                         if (stack[i].name === name) {
                             return Object.create(this,{link:{value:stack[i]}});
@@ -99,7 +99,7 @@ var testit = function() {
         /** identify new group */
         var groupAlreadyExist = false;
         /** find group in current-level stack */
-        for (i in root.stack) {
+        for (var i in root.stack) {
             if (root.stack[i].type !== 'group') continue;
             if (root.stack[i].name === name) {
                 newgroup = root.stack[i];
@@ -198,7 +198,7 @@ var testit = function() {
          * fill newtest.argument with arguments
          * (arguments is array-like object, but not array. So i can't just  newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
          */
-        for (i in arguments) {
+        for (var i in arguments) {
             newtest.argument.push(arguments[i]);
         }
         /** try to figure out what kind of test expected */
@@ -263,7 +263,7 @@ var testit = function() {
          */
         var newtest = new test();
         
-        for (i in arguments) {
+        for (var i in arguments) {
             newtest.argument.push(arguments[i]);
         }
 
@@ -320,7 +320,7 @@ var testit = function() {
          * fill newtest.argument with arguments
          * (arguments is array-like object, but not array. So i can't just  newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
          */
-        for (i in arguments) {
+        for (var i in arguments) {
             newtest.argument.push(arguments[i]);
         }
         /** throw error if there are not 2 arguments */
@@ -381,7 +381,7 @@ var testit = function() {
          * fill newtest.argument with arguments
          * (arguments is array-like object, but not array. So i can't just  newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
          */
-        for (i in arguments) {
+        for (var i in arguments) {
             newtest.argument.push(arguments[i]);
         }
         /** throw error if there are not 2 arguments */
@@ -656,7 +656,7 @@ var testit = function() {
             error: 0,
             total: 0
         };
-        for (i in link.stack) {
+        for (var i in link.stack) {
             link.result.total++;
             switch (link.stack[i].status) {
                 case 'pass' : {
@@ -741,7 +741,7 @@ var testit = function() {
                  * display all tests and groups in stack
                  * It will make new levels of group, if there are groups in stack.
                  */
-                for (i in obj.stack) {
+                for (var i in obj.stack) {
                     _printConsole(obj.stack[i]);
                 }
 
@@ -941,7 +941,7 @@ function deepCompare(){function c(d,e){var f;if(isNaN(d)&&isNaN(e)&&"number"==ty
  * @return {Boolean}      true if found, false otherwise
  */
 arrayConsist = function(array, val) {
-    for (i in array) if (array[i] === val) return true;
+    for (var i in array) if (array[i] === val) return true;
     return false;
 }
 /** 
