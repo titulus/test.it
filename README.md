@@ -36,3 +36,4 @@ You just need to add
 to the end of  `<body>` tag. That's it!
 
 ### Example
+Look it right [here](./wiki/etc#example)
