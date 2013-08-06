@@ -73,6 +73,7 @@ var testit = function() {
      */
     var _makeGroup = function(name,fun) {
         switch (arguments.length) {
+            case 0 : throw new RangeError("test.group expect at least 1 argument");
             case 1 : {
                     var stack = (this.link)? this.link.stack : root.stack;
                     for (i in stack) {
@@ -84,7 +85,7 @@ var testit = function() {
                     throw new ReferenceError('there are no group with name: '+name);
                 } break;
             case 2 : break;
-            default : throw new RangeError("too much arguments");
+            default : throw new RangeError("test.group expect maximum of 2 arguments");
         }
         
         /** get timestamp */
@@ -400,6 +401,12 @@ var testit = function() {
             if (_typeof(type) !== 'String') {
                 newtest.status = 'error';
                 var e = new TypeError("second argument must be a String");
+                var errorObject = {};
+                generateError(e,errorObject);
+                newtest.error = errorObject;
+             } else if (!arrayConsist(identifiedTypes,type.toLowerCase())) {
+                newtest.status = 'error';
+                var e = new TypeError("second argument must be a standart type");
                 var errorObject = {};
                 generateError(e,errorObject);
                 newtest.error = errorObject;
