@@ -23,14 +23,16 @@ Simple js testing framework
 
 ===
 
-### How to install
-You just need to add 
-    
-    <script src='path/to/testit.js'></script>
-
-to the end of  `<body>` tag. That's it!
-
 ### How to use
 API manual take place in [wiki](./wiki/API)
+
+===
+
+### How to install
+You just need to add 
+```html
+<script src='path/to/testit.js'></script>
+```
+to the end of  `<body>` tag. That's it!
 
 ### Example
