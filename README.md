@@ -16,10 +16,9 @@ Simple js testing framework
   + dev console API
 
 #### Test types
-  + equality between 2 or more entities
-  + non-false result of expression or entity value
-  + entity existence *Not realised yet*
-  + entity type *Not realised yet*
+  + equality between 2 or more values
+  + non-false result of expression or value
+  + type of value
 
 ===
 
