@@ -32,7 +32,7 @@ to the end of  `<body>` tag. That's it!
 ===
 
 ### How to use
-API manual take place in [wiki](./wiki/API)
+You can find the API manual on [wiki](./wiki/API)
 
 ### Example
-Look it right [here](./wiki/etc#example)
+Look at it right [here](./wiki/etc#example)
