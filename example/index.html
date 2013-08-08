@@ -13,7 +13,7 @@
         <span class="github">See it on &nbsp;<a href="https://github.com/titulus/testit">GitHub</a></span>
         <span class="wiki">Read manual on &nbsp;<a href="https://github.com/titulus/testit/wiki">Wiki</a></span>
     </div>
-    <p class="suggestion">// Open FireBug console, or Chrome Dev console and <b>behold the magic</b></p>
+    <p class="suggestion">// Open Chrome Dev Console and <b>behold the magic</b>!<br/></p>
     <div id="code"><pre style="color:#f8f8f8"><span style="color:#fff">console</span><span style="color:white">.log</span>( <span style="color:#aaa;font-style:italic">// look how do test.typeof() work</span>
     test.<span style="color:white">typeof</span>(<span style="color:SkyBlue">1</span>)
    ,test.<span style="color:white">typeof</span>(<span style="color:SkyBlue">"text"</span>)
@@ -114,8 +114,8 @@ test.group(<span style="color:SkyBlue">"here comes strange tests"</span>).group(
 });
 
 test.done();
-</pre></div>
-    <script src='../testit.v1.0.2.js'></script>
+</pre></div><p class=suggestion>// If you are using Firebug - reload the page, if console is blank.</p>
+    <script src='../testit.js'></script>
     <script>
 console.log( // look how do test.typeof() work
     test.typeof(1)
