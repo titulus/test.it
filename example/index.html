@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test.it</title>
+    <style>body{text-align:center;background:#1d1d1d;background-image:url(zenbg.png);color:#bbb;font-family:arial,sans-serif;cursor:default}h1{font-size:72px;line-height:72px;font-style:italic;margin-bottom:0}h1:hover{color:#ddd}h1>span{color:SteelBlue}.description{font-size:28px}#line{line-height:52px}#line>*{margin:0 24px;white-space:nowrap}#line a{color:SteelBlue;text-decoration:none}#line>:hover>a{color:SkyBlue}#line a:hover{color:SkyBlue}#line>span>a:hover{text-decoration:underline}#line>a{display:inline-block;padding:0 16px;background:rgba(48,48,48,.5)}#line>a:hover{background:rgba(128,128,148,.1)}.suggestion{font-family:monospace;font-style:italic;color:#aaa}#code{text-align:left;max-width:800px;overflow-x:auto;margin:auto;cursor:text}#code>pre{padding:1px 16px}</style>
+</head>
+<body>
+    <h1 class="logo">test<span>.</span>it</h1>
+    <p class="description">Simple js testing framework</p>
+    <div id="line">
+        <a href="https://github.com/titulus/testit/archive/v1.0.2.zip" class="download">Download v1.0.2</a>
+        <span class="github">See it on &nbsp;<a href="https://github.com/titulus/testit">GitHub</a></span>
+        <span class="wiki">Read manual on &nbsp;<a href="https://github.com/titulus/testit/wiki">Wiki</a></span>
+    </div>
+    <p class="suggestion">// Open FireBug console, or Chrome Dev console and <b>behold the magic</b></p>
+    <div id="code"><pre style="color:#f8f8f8"><span style="color:#fff">console</span><span style="color:white">.log</span>( <span style="color:#aaa;font-style:italic">// look how do test.typeof() work</span>
+    test.<span style="color:white">typeof</span>(<span style="color:SkyBlue">1</span>)
+   ,test.<span style="color:white">typeof</span>(<span style="color:SkyBlue">"text"</span>)
+   ,test.<span style="color:white">typeof</span>([<span style="color:SkyBlue">1</span>,<span style="color:SkyBlue">2</span>,<span style="color:SkyBlue">3</span>])
+   ,test.<span style="color:white">typeof</span>({a:<span style="color:SkyBlue">1</span>,b:<span style="color:SkyBlue">2</span>})
+   ,test.<span style="color:white">typeof</span>()
+   ,test.<span style="color:white">typeof</span>(<span style="color:SteelBlue">document</span>)
+   ,test.<span style="color:white">typeof</span>(<span style="color:SteelBlue">document</span>.<span style="color:SteelBlue">getElementsByTagName</span>(<span style="color:SkyBlue">"body"</span>))
+   ,test.<span style="color:white">typeof</span>(<span style="color:SteelBlue">window</span>)
+   ,test.<span style="color:white">typeof</span>(<span style="color:blue">/yes it is RegExp/</span>));
+
+(<span style="color:SteelBlue">function</span> <span style="color:#fff">firstFunction</span>() { <span style="color:#aaa;font-style:italic">// look how do test.trace() work</span>
+    (<span style="color:SteelBlue">function</span> <span style="color:#fff">secondFunction</span>() {
+        (<span style="color:SteelBlue">function</span> <span style="color:#fff">lastFunction</span>() {
+            <span style="color:#fff">console</span><span style="color:white">.log</span>(test.trace());
+        })();
+    })();
+})();
+
+<span style="color:SteelBlue">var</span> Family <span style="color:SteelBlue">=</span> { <span style="color:#aaa;font-style:italic">// Here some complex object</span>
+    name: <span style="color:SkyBlue">"Desiderio"</span>,
+    pet: {
+        type: <span style="color:SkyBlue">"dog"</span>,
+        name: <span style="color:SkyBlue">"google"</span>
+    },
+    members: [
+        {
+            name: <span style="color:SkyBlue">"Titulus"</span>,
+            age: <span style="color:SkyBlue">23</span>
+        },
+        {
+            name: <span style="color:SkyBlue">"Dude"</span>,
+            age: <span style="color:SkyBlue">Infinity</span>
+        }
+    ]
+}
+<span style="color:SteelBlue">var</span> myIQ <span style="color:SteelBlue">=</span> <span style="color:SkyBlue">100</span>; <span style="color:#aaa;font-style:italic">// and value</span>
+<span style="color:SteelBlue">var</span> Nothing; <span style="color:#aaa;font-style:italic">// and empty value</span>
+
+test.it(<span style="color:SkyBlue">"hello world"</span>); <span style="color:#aaa;font-style:italic">// Let"s add some simple tests</span>
+test.it(<span style="color:SkyBlue">2</span><span style="color:SteelBlue">+</span><span style="color:SkyBlue">2</span><span style="color:SteelBlue">==</span><span style="color:SkyBlue">5</span>).comment(<span style="color:SkyBlue">"i badly taught algebra at school"</span>); <span style="color:#aaa;font-style:italic">// with comment</span>
+test.it(<span style="color:SkyBlue">Infinity</span><span style="color:SteelBlue">></span><span style="color:SkyBlue">Infinity</span><span style="color:SteelBlue">-</span><span style="color:SkyBlue">1</span>).comment(<span style="color:SkyBlue">"philosophically is not it?"</span>); <span style="color:#aaa;font-style:italic">// with expression</span>
+<span style="color:#aaa;font-style:italic">// check equalence</span>
+test.it(myIQ,<span style="color:SkyBlue">"genious"</span>).comment(<span style="color:SkyBlue">"is I'm genious?"</span>);
+test.it(myIQ,(<span style="color:SkyBlue">1</span><span style="color:SteelBlue">+</span><span style="color:SkyBlue">10</span>)<span style="color:SteelBlue">*</span><span style="color:SkyBlue">12</span> <span style="color:SteelBlue">-</span> <span style="color:SkyBlue">34</span> <span style="color:SteelBlue">+</span> <span style="color:SkyBlue">5</span><span style="color:SteelBlue">*</span><span style="color:SkyBlue">5</span><span style="color:SteelBlue">*</span><span style="color:SkyBlue">5</span> <span style="color:SteelBlue">-</span> <span style="color:SkyBlue">123</span>).comment(<span style="color:SkyBlue">"check my IQ to be a normal"</span>);
+<span style="color:#aaa;font-style:italic">// try some chain staff</span>
+<span style="color:SteelBlue">if</span> (test.it(Family).comment(<span style="color:SkyBlue">"Is Family exist? Is it not empty?"</span>).result()) {
+    <span style="color:#fff">console</span><span style="color:white">.info</span>(<span style="color:SkyBlue">"by if: "</span>,<span style="color:SkyBlue">"Yep! Here it is!"</span>);
+} <span style="color:SteelBlue">else</span> {
+    <span style="color:#fff">console</span><span style="color:white">.warn</span>(<span style="color:SkyBlue">"by if: "</span>,<span style="color:SkyBlue">"ALARM! there are no Family"</span>);
+}
+<span style="color:#aaa;font-style:italic">// do it again in better way</span>
+test.it(Nothing).comment(<span style="color:SkyBlue">"Is Nothing exist? Is it not empty?"</span>).callback(
+    <span style="color:SteelBlue">function</span>(){<span style="color:#fff">console</span><span style="color:white">.info</span>(<span style="color:SkyBlue">"by callback: "</span>,<span style="color:SkyBlue">"Yep! Here it is!"</span>);}
+   ,<span style="color:SteelBlue">function</span>(){<span style="color:#fff">console</span><span style="color:white">.warn</span>(<span style="color:SkyBlue">"by callback: "</span>,<span style="color:SkyBlue">"ALARM! there are no Nothing"</span>);});
+
+test.group(<span style="color:SkyBlue">"Empty group"</span>,<span style="color:SteelBlue">function</span>(){}); <span style="color:#aaa;font-style:italic">// try to make a group</span>
+test.group(<span style="color:SkyBlue">'Family tests'</span>,<span style="color:SteelBlue">function</span>(){ <span style="color:#aaa;font-style:italic">// let's unite it!</span>
+    test.it(Family.<span style="color:SkyBlue">name</span>,<span style="color:SkyBlue">"Zukerberg"</span>).comment(<span style="color:SkyBlue">"Are we test Zukerberg's family?"</span>);
+    test.it(Family.<span style="color:SkyBlue">name</span>,<span style="color:SkyBlue">"Desiderio"</span>).comment(<span style="color:SkyBlue">"Or Desiderio's?"</span>);
+}).comment(<span style="color:SkyBlue">"unite!"</span>);
+test.group(<span style="color:SkyBlue">"Family tests"</span>,<span style="color:SteelBlue">function</span>(){ <span style="color:#aaa;font-style:italic">// and add some test after</span>
+    test.it(Family.pet).comment(<span style="color:SkyBlue">"Do we have a pet?"</span>)
+        .callback(<span style="color:SteelBlue">function</span>(){
+            <span style="color:#aaa;font-style:italic">// I add test in your test, so you can test while you testing</span>
+            test.it(Family.pet,{type:<span style="color:SkyBlue">"dog"</span>, name:<span style="color:SkyBlue">"google"</span>}).comment(<span style="color:SkyBlue">"Is it right pet?"</span>);
+        });
+    test.it(Family.house).comment(<span style="color:SkyBlue">"Do we have a House?"</span>)
+        .callback(<span style="color:SteelBlue">function</span>(){
+            <span style="color:#aaa;font-style:italic">// next test will not be executed</span>
+            test.it(Family.pet,{type:<span style="color:SkyBlue">"Huge"</span>, color:<span style="color:SkyBlue">"green"</span>}).comment(<span style="color:SkyBlue">"Is it right House?"</span>); 
+        });
+});
+test.group(<span style="color:SkyBlue">"here comes strange tests"</span>,<span style="color:SteelBlue">function</span>(){
+    <span style="color:#aaa;font-style:italic">// test existance of most important Family properties</span>
+    test.them([Family.pet, Family.members])
+        .comment(<span style="color:SkyBlue">"There must be memebers with pet, to call it a 'Family'"</span>);
+    <span style="color:#aaa;font-style:italic">// test types of names</span>
+    test.types([Family.pet.<span style="color:SkyBlue">name</span>, Family.<span style="color:SkyBlue">name</span>],<span style="color:SkyBlue">"string"</span>)
+        .comment(<span style="color:SkyBlue">"Is names are string type"</span>);
+    <span style="color:#aaa;font-style:italic">// here some magic</span>
+    <span style="color:SteelBlue">var</span> numberOfMembers <span style="color:SteelBlue">=</span> test.<span style="color:SkyBlue">type</span>(Family.members,<span style="color:SkyBlue">"Array"</span>)
+        .comment(<span style="color:SkyBlue">"Is it a several members, nor a single member?"</span>)
+        .<span style="color:SkyBlue">arguments</span>()[<span style="color:SkyBlue">0</span>].<span style="color:SkyBlue">length</span>;
+    test.it(numberOfMembers<span style="color:SteelBlue">></span><span style="color:SkyBlue">5</span>).comment(<span style="color:SkyBlue">"Is it big family?"</span>);
+    <span style="color:#aaa;font-style:italic">// So if we know how many members there, lets check their age</span>
+    test.group(<span style="color:SkyBlue">"Members age"</span>,<span style="color:SteelBlue">function</span>(){
+        <span style="color:SteelBlue">for</span> (i<span style="color:SteelBlue">=</span><span style="color:SkyBlue">0</span>;i<span style="color:SteelBlue">&lt;</span>numberOfMembers;i<span style="color:SteelBlue">++</span>) {
+            test.it(Family.members[i].age<span style="color:SteelBlue">></span><span style="color:SkyBlue">25</span>)
+                .comment(<span style="color:SkyBlue">"Is "</span><span style="color:SteelBlue">+</span>Family.members[i].<span style="color:SkyBlue">name</span><span style="color:SteelBlue">+</span><span style="color:SkyBlue">" older then 25?"</span>);
+        }
+        test.it().comment(<span style="color:SkyBlue">"yep, here is error"</span>); <span style="color:#aaa;font-style:italic">// add some error to see the trace</span>
+    });
+});
+<span style="color:#aaa;font-style:italic">// add final test deep in group</span>
+test.group(<span style="color:SkyBlue">"here comes strange tests"</span>).group(<span style="color:SkyBlue">"Members age"</span>,<span style="color:SteelBlue">function</span>(){
+    test.it(<span style="color:SkyBlue">"bye"</span>).comment(<span style="color:SkyBlue">"good"</span>);
+});
+
+test.done();
+</pre></div>
+    <script src='../testit.v1.0.2.js'></script>
+    <script>
+console.log( // look how do test.typeof() work
+    test.typeof(1)
+   ,test.typeof("text")
+   ,test.typeof([1,2,3])
+   ,test.typeof({a:1,b:2})
+   ,test.typeof()
+   ,test.typeof(document)
+   ,test.typeof(document.getElementsByTagName("body"))
+   ,test.typeof(window)
+   ,test.typeof(/yes it is RegExp/));
+
+(function firstFunction() { // look how do test.trace() work
+    (function secondFunction() {
+        (function lastFunction() {
+            console.log(test.trace());
+        })();
+    })();
+})();
+
+var Family = { // Here some complex object
+    name: "Desiderio",
+    pet: {
+        type: "dog",
+        name: "google"
+    },
+    members: [
+        {
+            name: "Titulus",
+            age: 23
+        },
+        {
+            name: "Dude",
+            age: Infinity
+        }
+    ]
+}
+var myIQ = 100; // and value
+var Nothing; // and empty value
+
+test.it("hello world"); // Let"s add some simple tests
+test.it(2+2==5).comment("i badly taught algebra at school"); // with comment
+test.it(Infinity>Infinity-1).comment("philosophically is not it?"); // with expression
+// check equalence
+test.it(myIQ,"genious").comment("is I'm genious?");
+test.it(myIQ,(1+10)*12 - 34 + 5*5*5 - 123).comment("check my IQ to be a normal");
+// try some chain staff
+if (test.it(Family).comment("Is Family exist? Is it not empty?").result()) {
+    console.info("by if: ","Yep! Here it is!");
+} else {
+    console.warn("by if: ","ALARM! there are no Family");
+}
+// do it again in better way
+test.it(Nothing).comment("Is Nothing exist? Is it not empty?").callback(
+    function(){console.info("by callback: ","Yep! Here it is!");}
+   ,function(){console.warn("by callback: ","ALARM! there are no Nothing");});
+
+test.group("Empty group",function(){}); // try to make a group
+test.group('Family tests',function(){ // let's unite it!
+    test.it(Family.name,"Zukerberg").comment("Are we test Zukerberg's family?");
+    test.it(Family.name,"Desiderio").comment("Or Desiderio's?");
+}).comment("unite!");
+test.group("Family tests",function(){ // and add some test after
+    test.it(Family.pet).comment("Do we have a pet?")
+        .callback(function(){
+            // I add test in your test, so you can test while you testing
+            test.it(Family.pet,{type:"dog", name:"google"}).comment("Is it right pet?");
+        });
+    test.it(Family.house).comment("Do we have a House?")
+        .callback(function(){
+            // next test will not be executed
+            test.it(Family.pet,{type:"Huge", color:"green"}).comment("Is it right House?"); 
+        });
+});
+test.group("here comes strange tests",function(){
+    // test existance of most important Family properties
+    test.them([Family.pet, Family.members])
+        .comment("There must be memebers with pet, to call it a 'Family'");
+    // test types of names
+    test.types([Family.pet.name, Family.name],"string")
+        .comment("Is names are string type");
+    // here some magic
+    var numberOfMembers = test.type(Family.members,"Array")
+        .comment("Is it a several members, nor a single member?")
+        .arguments()[0].length;
+    test.it(numberOfMembers>5).comment("Is it big family?");
+    // So if we know how many members there, lets check their age
+    test.group("Members age",function(){
+        for (i=0;i<numberOfMembers;i++) {
+            test.it(Family.members[i].age>25)
+                .comment("Is "+Family.members[i].name+" older then 25?");
+        }
+        test.it().comment("yep, here is error"); // add some error to see the trace
+    });
+});
+// add final test deep in group
+test.group("here comes strange tests").group("Members age",function(){
+    test.it("bye").comment("good");
+});
+
+test.done();
+    </script>
+</body>
+</html>
