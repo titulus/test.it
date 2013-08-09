@@ -73,7 +73,7 @@ test.it(Nothing).comment(<span class="value">"Is Nothing exist? Is it not empty?
 
 test.group(<span class="value">"Empty group"</span>,<span class="lang-const">function</span>(){}); <span class="comment">// try to make a group</span>
 test.group(<span class="value">'Family tests'</span>,<span class="lang-const">function</span>(){ <span class="comment">// let's unite it!</span>
-    test.it(Family.<span class="value">name</span>,<span class="value">"Zukerberg"</span>).comment(<span class="value">"Are we test Zukerberg's family?"</span>);
+    test.it(Family.<span class="value">name</span>,<span class="value">"Zukerberg"</span>).comment(<span class="value">"Do we test Zukerberg's family?"</span>);
     test.it(Family.<span class="value">name</span>,<span class="value">"Desiderio"</span>).comment(<span class="value">"Or Desiderio's?"</span>);
 }).comment(<span class="value">"unite!"</span>);
 test.group(<span class="value">"Family tests"</span>,<span class="lang-const">function</span>(){ <span class="comment">// and add some test after</span>
@@ -176,7 +176,7 @@ test.it(Nothing).comment("Is Nothing exist? Is it not empty?").callback(
 
 test.group("Empty group",function(){}); // try to make a group
 test.group('Family tests',function(){ // let's unite it!
-    test.it(Family.name,"Zukerberg").comment("Are we test Zukerberg's family?");
+    test.it(Family.name,"Zukerberg").comment("Do we test Zukerberg's family?");
     test.it(Family.name,"Desiderio").comment("Or Desiderio's?");
 }).comment("unite!");
 test.group("Family tests",function(){ // and add some test after
