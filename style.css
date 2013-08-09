@@ -31,8 +31,8 @@ h1 {
     color: SteelBlue;
     text-decoration: none;
 }
-#line>:hover>a {
-    color: SkyBlue;
+#line>:hover {
+    color: white;
 }
 #line a:hover {
     color: SkyBlue;
