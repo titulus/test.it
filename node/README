@@ -1,0 +1,19 @@
+окружение для запуска test.it под nodejs.
+
+== Установка окружения
+# apt-get install node
+# ln -s /usr/bin/nodejs /usr/bin/node || true
+# git clone ...
+# cd npm
+# ./confugure --prefix=/usr
+# make install
+# npm install jsdom --global
+# npm install node-jquery --global
+# npm install httpxmlrequest --global
+
+== Запуск тестов
+$ node load.js example/testSuite.json
+
+== Выходные данные
+* result.json - полный вывод консоли
+* exit code процесса равен количеству ошибок (0 - успешно)
