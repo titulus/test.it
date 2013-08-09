@@ -58,7 +58,7 @@ test.it(<span class="value">"hello world"</span>); <span class="comment">// Let&
 test.it(<span class="value">2</span><span class="lang-const">+</span><span class="value">2</span><span class="lang-const">==</span><span class="value">5</span>).comment(<span class="value">"i badly taught algebra at school"</span>); <span class="comment">// with comment</span>
 test.it(<span class="value">Infinity</span><span class="lang-const">></span><span class="value">Infinity</span><span class="lang-const">-</span><span class="value">1</span>).comment(<span class="value">"philosophically is not it?"</span>); <span class="comment">// with expression</span>
 <span class="comment">// check equalence</span>
-test.it(myIQ,<span class="value">"genious"</span>).comment(<span class="value">"is I'm genious?"</span>);
+test.it(myIQ,<span class="value">"genius"</span>).comment(<span class="value">"Am I a genius?"</span>);
 test.it(myIQ,(<span class="value">1</span><span class="lang-const">+</span><span class="value">10</span>)<span class="lang-const">*</span><span class="value">12</span> <span class="lang-const">-</span> <span class="value">34</span> <span class="lang-const">+</span> <span class="value">5</span><span class="lang-const">*</span><span class="value">5</span><span class="lang-const">*</span><span class="value">5</span> <span class="lang-const">-</span> <span class="value">123</span>).comment(<span class="value">"check my IQ to be a normal"</span>);
 <span class="comment">// try some chain staff</span>
 <span class="lang-const">if</span> (test.it(Family).comment(<span class="value">"Is Family exist? Is it not empty?"</span>).result()) {
@@ -161,7 +161,7 @@ test.it("hello world"); // Let"s add some simple tests
 test.it(2+2==5).comment("i badly taught algebra at school"); // with comment
 test.it(Infinity>Infinity-1).comment("philosophically is not it?"); // with expression
 // check equalence
-test.it(myIQ,"genious").comment("is I'm genious?");
+test.it(myIQ,"genius").comment("Am I a genius?");
 test.it(myIQ,(1+10)*12 - 34 + 5*5*5 - 123).comment("check my IQ to be a normal");
 // try some chain staff
 if (test.it(Family).comment("Is Family exist? Is it not empty?").result()) {
