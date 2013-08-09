@@ -10,9 +10,9 @@
     <h1 class="logo">test<span>.</span>it</h1>
     <p class="description">Simple js testing framework</p>
     <div id="line">
-        <a href="https://github.com/titulus/testit/archive/v1.0.2.zip" class="download">Download v1.0.2</a>
-        <span class="github">See it on &nbsp;<a href="https://github.com/titulus/testit">GitHub</a></span>
-        <span class="wiki">Read manual on &nbsp;<a href="https://github.com/titulus/testit/wiki">Wiki</a></span>
+        <a href="https://github.com/titulus/testit/archive/v1.0.2.zip" class="download" id="download">Download v1.0.2</a>
+        <span class="github">Fork it on &nbsp;<a href="https://github.com/titulus/testit" id="github" target=_blank>GitHub</a></span>
+        <span class="wiki">Read manual on &nbsp;<a href="https://github.com/titulus/testit/wiki" id="wiki" target=_blank>Wiki</a></span>
     </div>
     <p class="suggestion">// Open Chrome Dev Console and <b>behold the magic</b>!</p>
     <pre id="code"><span class="function">console</span><span class="method">.log</span>( <span class="comment">// look how test.typeof() works</span>
@@ -116,108 +116,27 @@ test.group(<span class="value">"here comes strange tests"</span>).group(<span cl
 
 test.done();
 </pre><p class=suggestion>// If you are using Firebug - reload the page, if console is blank.</p>
-    <script src='../testit.js'></script>
+    <!-- framework -->
+    <script src='./testit.v1.0.2.min.js'></script>
+    <!-- script which is represented above -->
+    <script src='./example.js'></script>
+    <!-- Google Analitycs -->
     <script>
-console.log( // look how do test.typeof() work
-    test.typeof(1)
-   ,test.typeof("text")
-   ,test.typeof([1,2,3])
-   ,test.typeof({a:1,b:2})
-   ,test.typeof()
-   ,test.typeof(document)
-   ,test.typeof(document.getElementsByTagName("body"))
-   ,test.typeof(window)
-   ,test.typeof(/yes it is RegExp/));
-
-(function firstFunction() { // look how do test.trace() work
-    (function secondFunction() {
-        (function lastFunction() {
-            console.log(test.trace());
-        })();
-    })();
-})();
-
-var Family = { // Here some complex object
-    name: "Desiderio",
-    pet: {
-        type: "dog",
-        name: "google"
-    },
-    members: [
-        {
-            name: "Titulus",
-            age: 23
-        },
-        {
-            name: "Dude",
-            age: Infinity
-        }
-    ]
+function addListener(element, type, callback) {
+ if (element.addEventListener) element.addEventListener(type, callback);
+ else if (element.attachEvent) element.attachEvent('on' + type, callback);
 }
-var myIQ = 100; // and value
-var Nothing; // and empty value
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-test.it("hello world"); // Let"s add some simple tests
-test.it(2+2==5).comment("i badly taught algebra at school"); // with comment
-test.it(Infinity>Infinity-1).comment("philosophically is not it?"); // with expression
-// check equalence
-test.it(myIQ,"genius").comment("Am I a genius?");
-test.it(myIQ,(1+10)*12 - 34 + 5*5*5 - 123).comment("check my IQ to be a normal");
-// try some chain staff
-if (test.it(Family).comment("Is Family exist? Is it not empty?").result()) {
-    console.info("by if: ","Yep! Here it is!");
-} else {
-    console.warn("by if: ","ALARM! there are no Family");
-}
-// do it again in better way
-test.it(Nothing).comment("Is Nothing exist? Is it not empty?").callback(
-    function(){console.info("by callback: ","Yep! Here it is!");}
-   ,function(){console.warn("by callback: ","ALARM! there are no Nothing");});
+ga('create', 'UA-43063051-1', 'titulus.github.io');
+ga('send', 'pageview');
 
-test.group("Empty group",function(){}); // try to make a group
-test.group('Family tests',function(){ // let's unite it!
-    test.it(Family.name,"Zukerberg").comment("Do we test Zukerberg's family?");
-    test.it(Family.name,"Desiderio").comment("Or Desiderio's?");
-}).comment("unite!");
-test.group("Family tests",function(){ // and add some test after
-    test.it(Family.pet).comment("Do we have a pet?")
-        .callback(function(){
-            // I add test in your test, so you can test while you testing
-            test.it(Family.pet,{type:"dog", name:"google"}).comment("Is it right pet?");
-        });
-    test.it(Family.house).comment("Do we have a House?")
-        .callback(function(){
-            // next test will not be executed
-            test.it(Family.pet,{type:"Huge", color:"green"}).comment("Is it right House?"); 
-        });
-});
-test.group("here comes strange tests",function(){
-    // test existance of most important Family properties
-    test.them([Family.pet, Family.members])
-        .comment("There must be memebers with pet, to call it a 'Family'");
-    // test types of names
-    test.types([Family.pet.name, Family.name],"string")
-        .comment("Is names are string type");
-    // here some magic
-    var numberOfMembers = test.type(Family.members,"Array")
-        .comment("Is it a several members, nor a single member?")
-        .arguments()[0].length;
-    test.it(numberOfMembers>5).comment("Is it big family?");
-    // So if we know how many members there, lets check their age
-    test.group("Members age",function(){
-        for (i=0;i<numberOfMembers;i++) {
-            test.it(Family.members[i].age>25)
-                .comment("Is "+Family.members[i].name+" older then 25?");
-        }
-        test.it().comment("yep, here is error"); // add some error to see the trace
-    });
-});
-// add final test deep in group
-test.group("here comes strange tests").group("Members age",function(){
-    test.it("bye").comment("good");
-});
-
-test.done();
+addListener(document.getElementById('download'), 'click', function() {ga('send', 'event', 'link', 'click', 'download archive');});
+addListener(document.getElementById('github'), 'click', function() {ga('send', 'event', 'link', 'click', 'fork on github');});
+addListener(document.getElementById('wiki'), 'click', function() {ga('send', 'event', 'link', 'click', 'read manual');});
     </script>
 </body>
 </html>
