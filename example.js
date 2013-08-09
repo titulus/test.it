@@ -41,7 +41,7 @@ test.it("hello world"); // Let"s add some simple tests
 test.it(2+2==5).comment("i badly taught algebra at school"); // with comment
 test.it(Infinity>Infinity-1).comment("philosophically is not it?"); // with expression
 // check equalence
-test.it(myIQ,"genious").comment("is I'm genious?");
+test.it(myIQ,"genius").comment("Am I a genius?");
 test.it(myIQ,(1+10)*12 - 34 + 5*5*5 - 123).comment("check my IQ to be a normal");
 // try some chain staff
 if (test.it(Family).comment("Is Family exist? Is it not empty?").result()) {
@@ -56,7 +56,7 @@ test.it(Nothing).comment("Is Nothing exist? Is it not empty?").callback(
 
 test.group("Empty group",function(){}); // try to make a group
 test.group('Family tests',function(){ // let's unite it!
-    test.it(Family.name,"Zukerberg").comment("Are we test Zukerberg's family?");
+    test.it(Family.name,"Zukerberg").comment("Do we test Zukerberg's family?");
     test.it(Family.name,"Desiderio").comment("Or Desiderio's?");
 }).comment("unite!");
 test.group("Family tests",function(){ // and add some test after

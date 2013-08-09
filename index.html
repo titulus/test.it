@@ -15,7 +15,7 @@
         <span class="wiki">Read manual on &nbsp;<a href="https://github.com/titulus/testit/wiki" id="wiki" target=_blank>Wiki</a></span>
     </div>
     <p class="suggestion">// Open Chrome Dev Console and <b>behold the magic</b>!</p>
-    <pre id="code"><span class="function">console</span><span class="method">.log</span>( <span class="comment">// look how do test.typeof() work</span>
+    <pre id="code"><span class="function">console</span><span class="method">.log</span>( <span class="comment">// look how test.typeof() works</span>
     test.<span class="method">typeof</span>(<span class="value">1</span>)
    ,test.<span class="method">typeof</span>(<span class="value">"text"</span>)
    ,test.<span class="method">typeof</span>([<span class="value">1</span>,<span class="value">2</span>,<span class="value">3</span>])
@@ -26,7 +26,7 @@
    ,test.<span class="method">typeof</span>(<span class="lang-const">window</span>)
    ,test.<span class="method">typeof</span>(<span class="lang-const">/yes it is RegExp/</span>));
 
-(<span class="lang-const">function</span> <span class="function">firstFunction</span>() { <span class="comment">// look how do test.trace() work</span>
+(<span class="lang-const">function</span> <span class="function">firstFunction</span>() { <span class="comment">// look how test.trace() works</span>
     (<span class="lang-const">function</span> <span class="function">secondFunction</span>() {
         (<span class="lang-const">function</span> <span class="function">lastFunction</span>() {
             <span class="function">console</span><span class="method">.log</span>(test.trace());
@@ -54,11 +54,11 @@
 <span class="lang-const">var</span> myIQ <span class="lang-const">=</span> <span class="value">100</span>; <span class="comment">// and value</span>
 <span class="lang-const">var</span> Nothing; <span class="comment">// and empty value</span>
 
-test.it(<span class="value">"hello world"</span>); <span class="comment">// Let"s add some simple tests</span>
+test.it(<span class="value">"hello world"</span>); <span class="comment">// Let's add some simple tests</span>
 test.it(<span class="value">2</span><span class="lang-const">+</span><span class="value">2</span><span class="lang-const">==</span><span class="value">5</span>).comment(<span class="value">"i badly taught algebra at school"</span>); <span class="comment">// with comment</span>
 test.it(<span class="value">Infinity</span><span class="lang-const">></span><span class="value">Infinity</span><span class="lang-const">-</span><span class="value">1</span>).comment(<span class="value">"philosophically is not it?"</span>); <span class="comment">// with expression</span>
 <span class="comment">// check equalence</span>
-test.it(myIQ,<span class="value">"genious"</span>).comment(<span class="value">"is I'm genious?"</span>);
+test.it(myIQ,<span class="value">"genius"</span>).comment(<span class="value">"Am I a genius?"</span>);
 test.it(myIQ,(<span class="value">1</span><span class="lang-const">+</span><span class="value">10</span>)<span class="lang-const">*</span><span class="value">12</span> <span class="lang-const">-</span> <span class="value">34</span> <span class="lang-const">+</span> <span class="value">5</span><span class="lang-const">*</span><span class="value">5</span><span class="lang-const">*</span><span class="value">5</span> <span class="lang-const">-</span> <span class="value">123</span>).comment(<span class="value">"check my IQ to be a normal"</span>);
 <span class="comment">// try some chain staff</span>
 <span class="lang-const">if</span> (test.it(Family).comment(<span class="value">"Is Family exist? Is it not empty?"</span>).result()) {
@@ -73,7 +73,7 @@ test.it(Nothing).comment(<span class="value">"Is Nothing exist? Is it not empty?
 
 test.group(<span class="value">"Empty group"</span>,<span class="lang-const">function</span>(){}); <span class="comment">// try to make a group</span>
 test.group(<span class="value">'Family tests'</span>,<span class="lang-const">function</span>(){ <span class="comment">// let's unite it!</span>
-    test.it(Family.<span class="value">name</span>,<span class="value">"Zukerberg"</span>).comment(<span class="value">"Are we test Zukerberg's family?"</span>);
+    test.it(Family.<span class="value">name</span>,<span class="value">"Zukerberg"</span>).comment(<span class="value">"Do we test Zukerberg's family?"</span>);
     test.it(Family.<span class="value">name</span>,<span class="value">"Desiderio"</span>).comment(<span class="value">"Or Desiderio's?"</span>);
 }).comment(<span class="value">"unite!"</span>);
 test.group(<span class="value">"Family tests"</span>,<span class="lang-const">function</span>(){ <span class="comment">// and add some test after</span>
@@ -116,7 +116,6 @@ test.group(<span class="value">"here comes strange tests"</span>).group(<span cl
 
 test.done();
 </pre><p class=suggestion>// If you are using Firebug - reload the page, if console is blank.</p>
-
     <!-- framework -->
     <script src='./testit.v1.0.2.min.js'></script>
     <!-- script which is represented above -->
