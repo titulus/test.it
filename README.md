@@ -35,4 +35,4 @@ to the end of  `<body>` tag. That's it!
 You can find the API manual on [wiki](https://github.com/titulus/testit/wiki/API)
 
 ### Example
-Look at it right [here](https://github.com/titulus/testit/wiki/etc#example)
+Look at it right [here](http://titulus.github.io/testit/) 
