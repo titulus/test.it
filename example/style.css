@@ -1,0 +1,70 @@
+body {
+    text-align: center;
+    background: #1d1d1d;
+    background-image: url(zenbg.png);
+    color: #bbb;
+    font-family: arial,sans-serif;
+    cursor: default;
+}
+
+h1 {
+    font-size: 72px;
+    line-height: 72px;
+    font-style: italic;
+    margin-bottom: 0;
+}
+    h1:hover {color: #ddd;}
+    h1>span {color: SteelBlue;}
+
+.description {
+    font-size: 28px;
+}
+
+#line {
+    line-height: 52px;
+}
+#line>* {
+    margin: 0 24px;
+    white-space: nowrap;
+}
+#line a {
+    color: SteelBlue;
+    text-decoration: none;
+}
+#line>:hover>a {
+    color: SkyBlue;
+}
+#line a:hover {
+    color: SkyBlue;
+}
+#line>span>a:hover {
+    text-decoration: underline;
+}
+#line>a {
+    display: inline-block;
+    padding: 0 16px;
+    background: rgba(48,48,48,.5);
+}
+#line>a:hover {
+    background: rgba(128,128,148,.1);
+}
+
+.suggestion {
+    font-family: monospace;
+    font-style: italic;
+    color: #aaa;
+}
+
+#code {
+    text-align: left;
+    max-width: 800px;
+    overflow-x: auto;
+    margin: auto;
+    cursor: text;
+    color: white;
+}
+#code .function {color: #ddd;}
+#code .method {color: white;}
+#code .comment {color:#aaa;font-style:italic;}
+#code .value {color:SkyBlue;}
+#code .lang-const {color:SteelBlue;}
