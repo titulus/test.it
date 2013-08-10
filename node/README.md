@@ -19,7 +19,7 @@ $ npm install jquery --global
 #### Запуск тестов
 ```bash
 $ export  NODE_PATH="/usr/lib/node_modules/"
-$ node load.js ../example/dispatcher_test.js
+$ node load.js ../example/jquery.js ../example/dispatcher.js ../example/dispatcher_test.js
 ```
 
 #### Выходные данные

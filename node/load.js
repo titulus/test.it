@@ -30,11 +30,13 @@ process.stdout.write(" ok\n");
 //configure test.it
 window.test.setConsole(nconsole);
 
-testcase = process.argv[2];
 
-process.stdout.write("load '"+testcase+"' ...");
-require(testcase);
-process.stdout.write(" ok\n");
+for (i=2; i<process.argv.length; i++){
+    testcase = process.argv[i];
+    process.stdout.write("load '"+testcase+"' ...");
+    require(testcase);
+    process.stdout.write(" ok\n");
+}
 
 //output nconsole
 nconsole.printOutput();

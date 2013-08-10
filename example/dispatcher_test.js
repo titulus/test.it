@@ -1,7 +1,3 @@
-
-require("./jquery.js");
-require("./dispatcher.js");
-
 var globalCounter;
 
 function clear()
