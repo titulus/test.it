@@ -1,7 +1,0 @@
-{
-autoload:["callback.js"],
-tests:[
-  "tests/eventCheck.js",
-  "tests/failedTest.js"
-  ]
-}

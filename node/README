@@ -8,13 +8,12 @@
 # ./confugure --prefix=/usr
 # make install
 # npm install jsdom --global
-# npm install node-jquery --global
 # npm install httpxmlrequest --global
 # npm install util --global
 
 == Запуск тестов
-$ node load.js example/testSuite.json
+$ node load.js ../example/example.js
 
 == Выходные данные
-* result.json - полный вывод консоли
-* exit code процесса равен количеству ошибок (0 - успешно)
+* полный вывод консоли
+* exit code процесса равен количеству ошибок (0 - успешно, нет ошибок)
