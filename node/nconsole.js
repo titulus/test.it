@@ -5,42 +5,45 @@ var nconsole = function(){
         status: 'opened',
         entries: [] };
   _groupsTree = [ _buffer ];
-  _lastEntry = _buffer;
 
-  this.log = function(){
-    _lastEntry.entries.push(['log', arguments]);
-  }
-
-  this.error = function(){
-    _lastEntry.entries.push(['error', arguments]);
+  _push = function(what) {
+    _groupsTree[_groupsTree.length - 1].entries.push(what)
   }
 
-  this.warn = function(){
-    _lastEntry.entries.push(['warn', arguments]);
+  this.log = function() {
+    _push(['log', arguments]);
   }
 
-  this.info = function(){
-    _lastEntry.entries.push(['info', arguments]);
+  this.error = function() {
+    _push(['error', arguments]);
   }
 
-  this.dir = function(){
-    _lastEntry.entries.push(['dir', arguments]);
+  this.warn = function() {
+    _push(['warn', arguments]);
   }
 
-  this.group = function(){
-    //empty
+  this.info = function() {
+    _push(['info', arguments]);
   }
-  
-  this.groupCollapsed = function(){
-    //empty
+
+  this.dir = function() {
+    _push(['dir', arguments]);
   }
-  
-  this.groupEnd = function(){
-    //empty
+
+  this.group = function(gname) {
+    var newGroup = { name: gname, status:'opened', entries:[] };
+    _push(['group', newGroup]);
+    _groupsTree.push(newGroup);
   }
-  
-  this.printOutput = function(){
-    //empty
+
+  this.groupCollapsed = function(gname) {
+    var newGroup = { name: gname, status:'closed', entries:[] };
+    _push(['group', newGroup]);
+    _groupsTree.push(newGroup);
+  }
+
+  this.groupEnd = function() {
+    _groupsTree = _groupsTree.splice(0, _groupsTree.length-1);
   }
 
   _print = function(method, args, deep) {
@@ -85,8 +88,9 @@ var nconsole = function(){
              break;
            case 'group':
              _printLevel(deep+2, level.entries[i][1], deep + 4);
+             break;
            default:
-             throw "nconsole.printOutput: not implemented: "+level.entries[i][0];
+             throw ("nconsole.printOutput: not implemented: "+level.entries[i][0]);
        }
      }
   }

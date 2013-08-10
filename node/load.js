@@ -11,7 +11,7 @@ global.XMLHttpRequest = require("/usr/lib/node_modules/xmlhttprequest").XMLHttpR
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 //load node-jquery
-jsdom.jQueryify(window, "./jquery.js", function() {
+//jsdom.jQueryify(window, "./jquery.js", function() {
 
     global.$ = window.jQuery;
     global.jQuery = global.$;
@@ -40,4 +40,4 @@ jsdom.jQueryify(window, "./jquery.js", function() {
     nconsole.printOutput();
 
     //exit with code= count of errors
-});
+//});
