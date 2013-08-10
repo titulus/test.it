@@ -73,7 +73,8 @@ var nconsole = function(){
         }
         rargs.push(args[i]);
     }
-    process.stdout.write(util.format.apply(this, rargs));
+    //process.stdout.write(util.format.apply(this, rargs));
+    method(util.format.apply(this, rargs));
   }
 
   _printDeep = function(deep, symbol) {
@@ -91,7 +92,7 @@ var nconsole = function(){
      _printDeep(deep, symbol);
      process.stdout.write(" ");
      _print(console.log, level.name);
-     process.stdout.write("\n");
+//     process.stdout.write("\n");
      if (symbol == "+"){
         return;
      }
@@ -100,23 +101,23 @@ var nconsole = function(){
        switch (level.entries[i][0]) {
            case 'log':
              _print(console.log, level.entries[i][1], deep + 3);
-             process.stdout.write("\n");
+//             process.stdout.write("\n");
              break;
            case 'error':
              _print(console.error, level.entries[i][1], deep + 3);
-             process.stdout.write("\n");
+//             process.stdout.write("\n");
              break;
            case 'warn':
              _print(console.warn, level.entries[i][1], deep + 3);
-             process.stdout.write("\n");
+//             process.stdout.write("\n");
              break;
            case 'info':
              _print(console.info, level.entries[i][1], deep + 3);
-             process.stdout.write("\n");
+//             process.stdout.write("\n");
              break;
            case 'dir':
              _print(console.dir, level.entries[i][1], deep + 3);
-             process.stdout.write("\n");
+//             process.stdout.write("\n");
              break;
            case 'group':
              _printLevel(deep+1, level.entries[i][1], deep + 3);
