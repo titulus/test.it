@@ -19,12 +19,16 @@ jsdom.jQueryify(window, "./jquery.js", function() {
     //load test.it
     require("../testit.js");
     //load nconsole
-    //require("nconsole.js");
     require("./nconsole.js");
     process.stdout.write(" ok\n");
 
     //configure test.it
-    //pl: debug hide: window.test.setConsole(window.nconsole);
+    window.test.setConsole(nconsole);
+
+    process.stdout.write("load example ...");
+    //load example for check test.it with new console
+    require("../example/example.js");
+    process.stdout.write(" ok\n");
 
     //load app env from config
 

@@ -53,15 +53,64 @@ var testit = function() {
         this.argument = [];
     }
 
+
+
     /**
-     * main group
-     * @public
-     * @type {group}
-     */
+    * main group
+    * @public
+    * @type {group}
+    **/
     var root = new group();
     this.root = root;
     root.name = 'root';
     root.time = new Date().getTime();
+
+    /**
+    * console for output
+    * @private
+    * @type {Object}
+    **/
+    var _console = console;
+
+    /**
+    * check {object} compatible with browser console
+    * @private
+    * @param {Object}
+    * @throws Exception if {object} incompatible
+    **/
+    var _checkConsoleInterface = function(konsole){
+        if (typeof konsole.log != "function" ){
+           throw "_checkConsoleInterface: console.log is not a function";
+        }
+        if (typeof konsole.group != "function" ){
+           throw "_checkConsoleInterface: console.group is not a function";
+        }
+        if (typeof konsole.groupCollapsed != "function" ){
+           throw "_checkConsoleInterface: console.groupCollapsed is not a function";
+        }
+        if (typeof konsole.groupEnd != "function" ){
+           throw "_checkConsoleInterface: console.groupEnd is not a function";
+        }
+        if (typeof konsole.dir != "function" ){
+           throw "_checkConsoleInterface: console.dir is not a function";
+        }
+        if (typeof konsole.error != "function" ){
+           throw "_checkConsoleInterface: console.error is not a function";
+        }
+    }
+
+    /**
+    * change default browser console to alternative
+    * @public
+    * @param {Object} compatible with browser console
+    * @throws Exception if {object} incompatible
+    **/
+    var setConsole = function(consoleInterface) {
+      _checkConsoleInterface(consoleInterface);
+      _console = consoleInterface;
+    }
+
+    this.setConsole = setConsole;
 
     /**
      * make new instace of group, fill it, add it to previous group.stack, fill some values in previous group
@@ -702,7 +751,7 @@ var testit = function() {
                 switch (obj.status) {
                     /** if object passed - make collapsed group*/
                     case 'pass' : {
-                        console.groupCollapsed("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
+                        _console.groupCollapsed("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
                                      ,obj.name,green,obj.status,normal
                                      ,green,obj.result.pass,normal
                                      ,red,obj.result.fail,normal
@@ -710,7 +759,7 @@ var testit = function() {
                                      ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
                     } break;
                     case 'fail' : {
-                        console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
+                        _console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
                                      ,obj.name,red,obj.status,normal
                                      ,green,obj.result.pass,normal
                                      ,red,obj.result.fail,normal
@@ -718,7 +767,7 @@ var testit = function() {
                                      ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
                     } break;
                     case 'error' : {
-                        console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
+                        _console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
                                      ,obj.name,orange,obj.status,normal
                                      ,green,obj.result.pass,normal
                                      ,red,obj.result.fail,normal
@@ -727,14 +776,14 @@ var testit = function() {
                     } break;
                     /** if status is not defined - display error; finish displaying */
                     default : {
-                        console.error("No status in object %s",obj.name);
+                        _console.error("No status in object %s",obj.name);
                         return false;
                     }
                 }
 
                 /** display description if defined */
                 if (obj.description) {
-                    console.log(obj.description);
+                    _console.log(obj.description);
                 }
                 
                 /**
@@ -748,14 +797,14 @@ var testit = function() {
                 /** display error if defined */
                 if (obj.error) {
                     // console.error(obj.error);
-                    console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
-                        console.log(obj.error.stack);
-                        console.dir(obj.error.error);
-                    console.groupEnd();
+                    _console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
+                        _console.log(obj.error.stack);
+                        _console.dir(obj.error.error);
+                    _console.groupEnd();
                 }
 
                 /** close opened group (current level) */
-                console.groupEnd();
+                _console.groupEnd();
 
             } break;
             case 'test' : {
@@ -763,26 +812,26 @@ var testit = function() {
                 switch (obj.status) {
                     case 'pass' : {
                         /** if pass - collaps group*/
-                        console.groupCollapsed("%cpass%c: %s",green,normal,(obj.comment)?obj.comment:'');
+                        _console.groupCollapsed("%cpass%c: %s",green,normal,(obj.comment)?obj.comment:'');
                     } break;
                     case 'fail' : {
-                        console.group("%cfail%c: %s",red,normal,(obj.comment)?obj.comment:'');
+                        _console.group("%cfail%c: %s",red,normal,(obj.comment)?obj.comment:'');
                     } break;
                     case 'error' : {
-                        console.group("%cerror%c: %s",orange,normal,(obj.comment)?obj.comment:'');
+                        _console.group("%cerror%c: %s",orange,normal,(obj.comment)?obj.comment:'');
                     } break;
                 }
                 if (obj.description) console.log(obj.description);
                 /** display error if defined */
                 if (obj.error) {
                     // console.error(obj.error);
-                    console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
-                        console.log(obj.error.stack);
-                        console.dir(obj.error.error);
-                    console.groupEnd();
+                    _console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
+                        _console.log(obj.error.stack);
+                        _console.dir(obj.error.error);
+                    _console.groupEnd();
                 }
-                console.log(obj.argument);
-                console.groupEnd();
+                _console.log(obj.argument);
+                _console.groupEnd();
             } break;
         }
     }

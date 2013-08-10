@@ -3,7 +3,13 @@ var nconsole = {
   log : function(msg){
     //empty
   },
-  
+  error : function(msg){
+    //empty
+  },
+  dir : function(){
+    //empty
+  },
+
   group : function(){
     //empty
   },
