@@ -10,6 +10,7 @@
 # npm install jsdom --global
 # npm install node-jquery --global
 # npm install httpxmlrequest --global
+# npm install util --global
 
 == Запуск тестов
 $ node load.js example/testSuite.json
