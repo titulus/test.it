@@ -18,6 +18,7 @@ jsdom.jQueryify(window, "./jquery.js", function() {
 
     //load test.it
     require("../testit.js");
+    global.test = window.test;
     //load nconsole
     require("./nconsole.js");
     process.stdout.write(" ok\n");

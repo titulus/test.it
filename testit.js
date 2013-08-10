@@ -67,7 +67,7 @@ var testit = function() {
 
     /**
     * console for output
-    * @private
+    * @public
     * @type {Object}
     **/
     var _console = console;
@@ -108,9 +108,11 @@ var testit = function() {
     var setConsole = function(consoleInterface) {
       _checkConsoleInterface(consoleInterface);
       _console = consoleInterface;
+      this.console = _console;
     }
 
     this.setConsole = setConsole;
+    this.console = _console;
 
     /**
      * make new instace of group, fill it, add it to previous group.stack, fill some values in previous group
@@ -680,7 +682,7 @@ var testit = function() {
         root.time = new Date().getTime() - root.time;
 
         /** display root */
-        // console.dir(root);
+        // _console.dir(root);
         _printConsole(root);
     }
     /**
@@ -723,7 +725,7 @@ var testit = function() {
         if (link.result.error || link.error) {link.status='error'}
         else if (link.result.fail) {link.status='fail'}
         else {link.status='pass'}
-        // console.log(link.name,(link.linkBack)?link.linkBack.name:link.linkBack)
+        // _console.log(link.name,(link.linkBack)?link.linkBack.name:link.linkBack)
         if (link.linkBack) {
             updateCounters(link.linkBack);
         }
@@ -821,7 +823,7 @@ var testit = function() {
                         _console.group("%cerror%c: %s",orange,normal,(obj.comment)?obj.comment:'');
                     } break;
                 }
-                if (obj.description) console.log(obj.description);
+                if (obj.description) _console.log(obj.description);
                 /** display error if defined */
                 if (obj.error) {
                     // console.error(obj.error);

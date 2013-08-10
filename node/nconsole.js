@@ -6,6 +6,12 @@ var nconsole = {
   error : function(msg){
     //empty
   },
+  warn : function(msg){
+    //empty
+  },
+  info : function(msg){
+    //empty
+  },
   dir : function(){
     //empty
   },
