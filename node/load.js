@@ -15,34 +15,27 @@ global.XMLHttpRequest = require("/usr/lib/node_modules/xmlhttprequest").XMLHttpR
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-//load node-jquery
-//jsdom.jQueryify(window, "./jquery.js", function() {
+global.$ = window.jQuery;
+global.jQuery = global.$;
 
-    global.$ = window.jQuery;
-    global.jQuery = global.$;
+//load test.it
+require("../testit.js");
+global.test = window.test;
+//load nconsole
+require("./nconsole.js");
+process.stdout.write(" ok\n");
 
-    //load test.it
-    require("../testit.js");
-    global.test = window.test;
-    //load nconsole
-    require("./nconsole.js");
-    process.stdout.write(" ok\n");
+//configure test.it
+window.test.setConsole(nconsole);
 
-    //configure test.it
-    window.test.setConsole(nconsole);
+testcase = process.argv[2];
 
-    process.stdout.write("load example ...");
-    //load example for check test.it with new console
-    require("../example/example.js");
-    process.stdout.write(" ok\n");
+process.stdout.write("load '"+testcase+"' ...");
+require(testcase);
+process.stdout.write(" ok\n");
 
-    //load app env from config
+//output nconsole
+nconsole.printOutput();
 
-    //load test.each
-    ////run test
-
-    //output nconsole
-    nconsole.printOutput();
-
-    //exit with code= count of errors
-//});
+//exit with code= count of errors
+process.exit(test.root.result.total - test.root.result.pass);
