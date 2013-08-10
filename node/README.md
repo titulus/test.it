@@ -3,15 +3,16 @@
 
 #### Установка окружения
 ```bash
-# apt-get install node
-# ln -s /usr/bin/nodejs /usr/bin/node || true
-# git clone ...
-# cd npm
-# ./confugure --prefix=/usr
-# make install
-# npm install jsdom --global
-# npm install httpxmlrequest --global
-# npm install util --global
+$ sudo su -
+$ apt-get install node
+$ ln -s /usr/bin/nodejs /usr/bin/node || true
+$ git clone https://github.com/isaacs/npm.git
+$ cd npm
+$ ./confugure --prefix=/usr
+$ make install
+$ npm install jsdom --global
+$ npm install httpxmlrequest --global
+$ npm install util --global
 ```
 
 #### Запуск тестов
