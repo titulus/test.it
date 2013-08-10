@@ -37,6 +37,7 @@ jsdom.jQueryify(window, "./jquery.js", function() {
     ////run test
 
     //output nconsole
+    nconsole.printOutput();
 
     //exit with code= count of errors
 });
