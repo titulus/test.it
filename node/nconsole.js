@@ -1,7 +1,7 @@
 var nconsole = function(){
 
   _buffer = {
-        name: ['console'],
+        name: 'console',
         status: 'opened',
         entries: [] };
   _groupsTree = [ _buffer ];
