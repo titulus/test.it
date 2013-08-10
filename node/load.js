@@ -2,9 +2,14 @@ process.stdout.write("loading env ...");
 
 //load jsdom
 var jsdom = require("/usr/lib/node_modules/jsdom");
+require("/usr/lib/node_modules/util");
 var window = jsdom.jsdom().parentWindow;
 global.window = window;
 global.document = window.document;
+
+var util = require('util');
+global.util = util;
+
 //load HttpXMLRequest
 global.XMLHttpRequest = require("/usr/lib/node_modules/xmlhttprequest").XMLHttpRequest;
 
