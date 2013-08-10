@@ -1,20 +1,37 @@
+process.stdout.write("loading env ...");
+
 //load jsdom
-//load node-jquery
+var jsdom = require("/usr/lib/node_modules/jsdom");
+var window = jsdom.jsdom().parentWindow;
+global.window = window;
+global.document = window.document;
 //load HttpXMLRequest
-//initialize node
+global.XMLHttpRequest = require("/usr/lib/node_modules/xmlhttprequest").XMLHttpRequest;
 
-//load test.it
-require("../testit.js")
-//load nconsole
-require("nconsole.js");
-//configure test.it
-window.test.setConsole(window.nconsole);
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-//load app env from config
+//load node-jquery
+jsdom.jQueryify(window, "./jquery.js", function() {
 
-//load test.each
-////run test
+    global.$ = window.jQuery;
+    global.jQuery = global.$;
 
-//output nconsole
+    //load test.it
+    require("../testit.js");
+    //load nconsole
+    //require("nconsole.js");
+    require("./nconsole.js");
+    process.stdout.write(" ok\n");
 
-//exit with code= count of errors
+    //configure test.it
+    //pl: debug hide: window.test.setConsole(window.nconsole);
+
+    //load app env from config
+
+    //load test.each
+    ////run test
+
+    //output nconsole
+
+    //exit with code= count of errors
+});
