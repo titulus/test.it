@@ -1,11 +1,13 @@
 process.stdout.write("loading env ...");
 
 //load jsdom
-var jsdom = require("/usr/lib/node_modules/jsdom");
-require("/usr/lib/node_modules/util");
+var jsdom = require('jsdom');
+require('util');
 var window = jsdom.jsdom().parentWindow;
 global.window = window;
 global.document = window.document;
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
 
 var util = require('util');
 global.util = util;

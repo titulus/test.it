@@ -13,11 +13,13 @@ $ make install
 $ npm install jsdom --global
 $ npm install httpxmlrequest --global
 $ npm install util --global
+$ npm install jquery --global
 ```
 
 #### Запуск тестов
 ```bash
-$ node load.js ../example/example.js
+$ export  NODE_PATH="/usr/lib/node_modules/"
+$ node load.js ../example/dispatcher_test.js
 ```
 
 #### Выходные данные

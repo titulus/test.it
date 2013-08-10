@@ -683,7 +683,7 @@ var testit = function() {
 
         /** display root */
         // _console.dir(root);
-        _printConsole(root);
+        _printConsole(root, true);
     }
     /**
      * public interface for _done()
@@ -737,7 +737,10 @@ var testit = function() {
      * @private
      * @param  {Object} obj     group or test to display
      */
-    var _printConsole = function(obj) {
+    var _printConsole = function(obj, forceOpen) {
+        if (typeof forceOpen == 'undefined'){
+          forceOpen = false;
+        }
 
         /** colors for console.log %c */
         var green = "color: green",
@@ -753,12 +756,21 @@ var testit = function() {
                 switch (obj.status) {
                     /** if object passed - make collapsed group*/
                     case 'pass' : {
+                       if (forceOpen){
+                        _console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
+                                     ,obj.name,green,obj.status,normal
+                                     ,green,obj.result.pass,normal
+                                     ,red,obj.result.fail,normal
+                                     ,orange,obj.result.error,normal
+                                     ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
+                       }else{
                         _console.groupCollapsed("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
                                      ,obj.name,green,obj.status,normal
                                      ,green,obj.result.pass,normal
                                      ,red,obj.result.fail,normal
                                      ,orange,obj.result.error,normal
                                      ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
+                       }
                     } break;
                     case 'fail' : {
                         _console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
