@@ -749,7 +749,7 @@ var testit = function() {
                 if (obj.error) {
                     // console.error(obj.error);
                     console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
-                        console.log(obj.error.stack);
+                        if (obj.error.stack) console.log(obj.error.stack);
                         console.dir(obj.error.error);
                     console.groupEnd();
                 }
@@ -777,7 +777,7 @@ var testit = function() {
                 if (obj.error) {
                     // console.error(obj.error);
                     console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
-                        console.log(obj.error.stack);
+                        if (obj.error.stack) console.log(obj.error.stack);
                         console.dir(obj.error.error);
                     console.groupEnd();
                 }
@@ -857,8 +857,6 @@ var testit = function() {
      */
     this.trace = getTrace;
 
-
-    
 }
 
 /**
@@ -895,16 +893,19 @@ function generateError(error,object) {
     object.error = error;
     object.type = test.typeof(error);
     object.message = error.message;
-    object.stack = getTrace(error);
+    if (getTrace(error)) object.stack = getTrace(error);
 }
 
 /**
  * returns a list of functions that have been performed to call the current line
  * @param  {Error} error    if setted, trace will be based on it stack
  * @return {String}         list of functions joined by "\n";
+ *                          undefined if error.stack is not supported.
  */
 function getTrace(error) {
     if (!error) error = new Error();
+    if (!error.stack) return;
+
     var stack = '';
     error.stack.split(/[\n]/).forEach(function(i,n){
         var addToStack = true;
