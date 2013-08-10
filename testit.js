@@ -906,7 +906,7 @@ function generateError(error,object) {
 function getTrace(error) {
     if (!error) error = new Error();
     var stack = '';
-    error.stack.split(/[\n]/).forEach(function(i,n){
+    ( error.stack ? error.stack : error.message ).split(/[\n]/).forEach(function(i,n){
         var addToStack = true;
         /** take off empty strings (FireBug) */
         if (i==='') addToStack = false;
