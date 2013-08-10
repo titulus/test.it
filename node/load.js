@@ -38,6 +38,8 @@ for (i=2; i<process.argv.length; i++){
     process.stdout.write(" ok\n");
 }
 
+test.done();
+
 //output nconsole
 nconsole.printOutput();
 

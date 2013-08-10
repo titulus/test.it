@@ -42,4 +42,3 @@ function clear()
         test.it(callback.list_callbacks('callback').callback_2);
     });
 
-test.done();
