@@ -1,3 +1,22 @@
+test.console.log( // look how do test.typeof() work
+    test.typeof(1)
+   ,test.typeof("text")
+   ,test.typeof([1,2,3])
+   ,test.typeof({a:1,b:2})
+   ,test.typeof()
+   ,test.typeof(document)
+   ,test.typeof(document.getElementsByTagName("body"))
+   ,test.typeof(window)
+   ,test.typeof(/yes it is RegExp/));
+
+(function firstFunction() { // look how do test.trace() work
+    (function secondFunction() {
+        (function lastFunction() {
+            test.console.log(test.trace());
+        })();
+    })();
+})();
+
 var Family = { // Here some complex object
     name: "Desiderio",
     pet: {
@@ -15,6 +34,27 @@ var Family = { // Here some complex object
         }
     ]
 }
+var myIQ = 100; // and value
+var Nothing; // and empty value
+
+test.console.log(1);
+
+test.it("hello world"); // Let"s add some simple tests
+test.it(2+2==5).comment("i badly taught algebra at school"); // with comment
+test.it(Infinity>Infinity-1).comment("philosophically is not it?"); // with expression
+// check equalence
+test.it(myIQ,"genius").comment("Am I a genius?");
+test.it(myIQ,(1+10)*12 - 34 + 5*5*5 - 123).comment("check my IQ to be a normal");
+// try some chain staff
+if (test.it(Family).comment("Is Family exist? Is it not empty?").result()) {
+    test.console.info("by if: ","Yep! Here it is!");
+} else {
+    test.console.warn("by if: ","ALARM! there are no Family");
+}
+// do it again in better way
+test.it(Nothing).comment("Is Nothing exist? Is it not empty?").callback(
+    function(){test.console.info("by callback: ","Yep! Here it is!");}
+   ,function(){test.console.warn("by callback: ","ALARM! there are no Nothing");});
 
 test.group("Empty group",function(){}); // try to make a group
 test.group('Family tests',function(){ // let's unite it!
