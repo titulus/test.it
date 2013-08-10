@@ -29,7 +29,6 @@ callback = {
         $.each(callback.list[event],function(k,v){
             try {
                 if (v != null){
-                	//setTimeout('callback.list["'+event+'"]["'+k+'"](\''+param+'\');',0);
 			callback.list[event][k](param);
                 }
             }catch(e){
