@@ -1,4 +1,4 @@
-(function(window) {
+(function(scope) {
 
 var testit = function() {
     /**
@@ -949,6 +949,6 @@ arrayConsist = function(array, val) {
  * make new instance of testit
  * Make it availible from outside.
  */
-window.test = new testit();
+scope.test = new testit();
 
-})(window)
+})(this);
