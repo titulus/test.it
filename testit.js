@@ -64,7 +64,8 @@ var testit = function() {
     root.time = new Date().getTime();
 
     /**
-     * make new instace of group, fill it, add it to previous group.stack, fill some values in previous group
+     * make new instace of group, fill it, add it into previous group.stack, fill some values in previous group
+     * It will be called thrue _makeGroup.call(); this - current level group (can be root)
      * @private
      * @chainable
      * @param  {String}   name          name of new group
@@ -88,7 +89,6 @@ var testit = function() {
                 break;
             }
         }
-        // console.log(1, name, newgroup, this)
         if (!groupAlreadyExist) newgroup = new group();
         newgroup.name = name;
 
@@ -100,10 +100,10 @@ var testit = function() {
         if (groupAlreadyExist) oldstatus = newgroup.status;
         newgroup.status ='pass';
 
-
         /**
          * try to execute code with tests and other groups in it
          * This part provide nesting.
+         * for this reason there are redefinition of root
          */
         try {
             var oldRoot = root;
@@ -130,6 +130,13 @@ var testit = function() {
         /** return testit with link to this group to provide chaining */
         return newgroup;
     }
+    /**
+     * return group by it's name in current level group stack
+     * It will be called thrue _getGroup.call(); this - current level group (can be root)
+     * @private
+     * @param  {String} name    name of group which will be searched for
+     * @return {Object}         group
+     */
     var _getGroup = function (name) {
         var stack = this.stack;
         for (var i in stack) {
@@ -140,7 +147,21 @@ var testit = function() {
         }
         throw new ReferenceError('there are no group with name: '+name);
     }
+    /**
+     * Define wich group() method must be called.
+     * Produce chaining
+     * @private
+     * @param  {String}   name      name of group
+     * @param  {Function} fun       function contains tests and other groups
+     * @return {Object}             testit object with link to specified group (produce chaining)
+     */
     var _group = function(name,fun) {
+        /**
+         * There may be 3 situation:
+         *     this.link is root && root is root        - test.group() called in root scope
+         *     this.link is root && root is some group  - test.group() called in some other group scope
+         *     this.link is some group && root is root  - .group() called in chain
+         */
         var currentLevel = (this.link.name!=='root')?this.link:root;
         var returnedValue;
 
@@ -170,7 +191,6 @@ var testit = function() {
      */
     this.group = _group;
 
-    // this
 
     /**
      * basic test. Make new instance of test, fill it, add it to previous group.stack, fill some values in previous group
@@ -619,12 +639,11 @@ var testit = function() {
      * type {Function}
      * @private
      */
-    var _done = function(obj) {
+    var _done = function() {
         /** update time in root */
         root.time = new Date().getTime() - root.time;
 
         /** display root */
-        // console.dir(root);
         _printConsole(root);
     }
     /**
