@@ -72,46 +72,28 @@ var testit = function() {
      * @return {Object}                     test with link
      */
     var _makeGroup = function(name,fun) {
-        switch (arguments.length) {
-            case 0 : throw new RangeError("test.group expect at least 1 argument");
-            case 1 : {
-                    var stack = (this.link)? this.link.stack : root.stack;
-                    for (var i in stack) {
-                        if (stack[i].type !== 'group') continue;
-                        if (stack[i].name === name) {
-                            return Object.create(this,{link:{value:stack[i]}});
-                        }
-                    }
-                    throw new ReferenceError('there are no group with name: '+name);
-                } break;
-            case 2 : break;
-            default : throw new RangeError("test.group expect maximum of 2 arguments");
-        }
-        
         /** get timestamp */
         var time = new Date().getTime();
-
-        /** making a new root, to provide chaining */
-        var oldRootChain = root;
-        root = (this.link)? this.link : root;
+        
         /** var for the new instance of group */
         var newgroup;
         /** identify new group */
         var groupAlreadyExist = false;
         /** find group in current-level stack */
-        for (var i in root.stack) {
-            if (root.stack[i].type !== 'group') continue;
-            if (root.stack[i].name === name) {
-                newgroup = root.stack[i];
+        for (var i in this.stack) {
+            if (this.stack[i].type !== 'group') continue;
+            if (this.stack[i].name === name) {
+                newgroup = this.stack[i];
                 groupAlreadyExist = true;
                 break;
             }
         }
+        // console.log(1, name, newgroup, this)
         if (!groupAlreadyExist) newgroup = new group();
         newgroup.name = name;
 
         /** add backlink to provide trek back */
-        newgroup.linkBack = root;
+        newgroup.linkBack = this;
 
         /** set to pass as default. it's may be changed in some next lines */
         var oldstatus;
@@ -120,17 +102,14 @@ var testit = function() {
 
 
         /**
-         * making a new root, to provide nesting
-         * Nested tests and groups will us it, like first one use root.
-         */
-        var oldRootNest = root;
-        root = newgroup;
-        /**
          * try to execute code with tests and other groups in it
          * This part provide nesting.
          */
-        try{
+        try {
+            var oldRoot = root;
+            root = newgroup;
             fun();
+            root = oldRoot;
         } catch(e) {
             newgroup.status = 'error';
             var errorObject = {};
@@ -138,33 +117,45 @@ var testit = function() {
 
             newgroup.error = errorObject;
         }
-        /** 
-         * reverse inheritance of status
-         * If some of deep nested test will 'fail', root will be 'fail' too.
-         * More info in updateStatus() comments.
-         */
-        // oldRootNest.status = updateStatus(oldRootNest.status,root.status);
-        // oldRootChain.status = updateStatus(oldRootChain.status,root.status);
-        
-        /** take back old root */
-        root = oldRootNest;
-
-        /** take back old root */
-        root = oldRootChain;
-
 
         /** update time */
         newgroup.time += new Date().getTime() - time;
 
-
         /** finally place this group into previous level stack (if it's a new group) */
-        if (!groupAlreadyExist) root.stack.push(newgroup);
+        if (!groupAlreadyExist) this.stack.push(newgroup);
 
         /** update counters */
         updateCounters(newgroup);
 
         /** return testit with link to this group to provide chaining */
-        return Object.create(this,{link:{value:newgroup}});
+        return newgroup;
+    }
+    var _getGroup = function (name) {
+        var stack = this.stack;
+        for (var i in stack) {
+            if (stack[i].type !== 'group') continue;
+            if (stack[i].name === name) {
+                return stack[i];
+            }
+        }
+        throw new ReferenceError('there are no group with name: '+name);
+    }
+    var _group = function(name,fun) {
+        var currentLevel = (this.link.name!=='root')?this.link:root;
+        var returnedValue;
+
+        switch (arguments.length) {
+            case 0 : throw new RangeError("test.group expect at least 1 argument");
+            case 1 : {
+                    returnedValue = _getGroup.call(currentLevel,name);
+                } break;
+            case 2 : {
+                    returnedValue = _makeGroup.call(currentLevel,name,fun);
+                } break;
+            default : throw new RangeError("test.group expect maximum of 2 arguments");
+        }
+
+        return Object.create(this,{link:{value:returnedValue}});
     }
     /**
      * public interface for _makeGroup
@@ -177,7 +168,9 @@ var testit = function() {
      *      });
      *  });
      */
-    this.group = _makeGroup;
+    this.group = _group;
+
+    // this
 
     /**
      * basic test. Make new instance of test, fill it, add it to previous group.stack, fill some values in previous group
@@ -228,7 +221,7 @@ var testit = function() {
                 newtest.error = errorObject;
             }
         }
-        
+        // console.log(2, root);
         /** finally place this test into container stack */
         root.stack.push(newtest);
 
@@ -857,7 +850,9 @@ var testit = function() {
      */
     this.trace = getTrace;
 
-}
+    // return this;
+    return Object.create(this,{link:{value:root}});
+}  
 
 /**
  * figure out what status will be used
