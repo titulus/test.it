@@ -929,10 +929,8 @@ function getTrace(error) {
         if (i.indexOf(test.typeof(error))!==-1) addToStack = false;
         /** take of reference to this function */
         if (i.indexOf('getTrace')!==-1) addToStack = false;
-        /** take off any references to testit methods */
-        for (prop in test) {    
-            if (i.indexOf('[as '+prop+']')!==-1) addToStack = false;
-        }
+        /** take off any references to testit lines */
+        if (i.indexOf('/testit.')!==-1) addToStack = false;
         /** fill the stack */
         if (addToStack) {
             stack += (stack)?'\n':'';
