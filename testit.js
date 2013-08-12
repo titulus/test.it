@@ -646,7 +646,8 @@ var testit = function() {
         /** update time in root */
         root.time = new Date().getTime() - root.time;
 
-        var currentLevel = (this.link.name!=='root')?this.link:root;
+        /** made _done() chain-closer */
+        var currentLevel = (this.link.type==='group')?this.link:root;
 
         /** display root */
         _printConsole(currentLevel);
@@ -691,7 +692,7 @@ var testit = function() {
         if (link.result.error || link.error) {link.status='error'}
         else if (link.result.fail) {link.status='fail'}
         else {link.status='pass'}
-        
+
         if (link.linkBack) {
             updateCounters(link.linkBack);
         }
