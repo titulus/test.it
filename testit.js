@@ -158,9 +158,12 @@ var testit = function() {
     var _group = function(name,fun) {
         /**
          * There may be 3 situation:
-         *     this.link is root && root is root        - test.group() called in root scope
-         *     this.link is root && root is some group  - test.group() called in some other group scope
-         *     this.link is some group && root is root  - .group() called in chain
+         *     this.link is root && root is root                - test.group() called in root scope
+         *     this.link is root && root is some group          - test.group() called in some other group scope
+         *     this.link is some group && root is root          - .group() called in chain
+         *     this.link is some group && root is some group    - .group() called in chain in some other group scope
+         * look at it with:
+         *     console.log(name,'\nlink: ',this.link,'\nroot: ',root);
          */
         var currentLevel = (this.link.name!=='root')?this.link:root;
         var returnedValue;
