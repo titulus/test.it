@@ -112,10 +112,7 @@ var testit = function() {
             root = oldRoot;
         } catch(e) {
             newgroup.status = 'error';
-            var errorObject = {};
-            generateError(e,errorObject);
-
-            newgroup.error = errorObject;
+            newgroup.error = generateError(e);
         }
 
         /** update time */
@@ -195,6 +192,29 @@ var testit = function() {
     this.group = _group;
 
 
+    var _doTest = function (type,args) {
+        /**
+         * making a new instance of test
+         * Most of code in this function will manipulate whis it.
+         */
+        var newtest = new test();
+
+        /** fill test.agrument from method arguments */
+        newtest.argument = Array(args);
+
+
+
+        /** finally place this test into container stack */
+        root.stack.push(newtest);
+
+        /** update counters of contained object */
+        updateCounters(root);
+
+        /** return testit with link to this test to provide chaining */
+        return Object.create(this,{link:{value:newtest}});
+    }
+    this.doit = function(){return _doTest.call(this,'it',arguments)};
+
     /**
      * basic test. Make new instance of test, fill it, add it to previous group.stack, fill some values in previous group
      * @private
@@ -222,10 +242,7 @@ var testit = function() {
             /** in case of no arguments - throw Reference error */
             case 0 : {
                 newtest.status = 'error';
-                var e = new RangeError("at least one argument expected");
-                var errorObject = {};
-                generateError(e,errorObject);
-                newtest.error = errorObject;
+                newtest.error = generateError(new RangeError("at least one argument expected"));
             } break;
             /** if there only one argument - test it for truth */
             case 1 : {
@@ -238,10 +255,7 @@ var testit = function() {
             /** otherwise throw Range error */
             default : {
                 newtest.status = 'error';
-                var e = new RangeError("too much arguments");
-                var errorObject = {};
-                generateError(e,errorObject);
-                newtest.error = errorObject;
+                newtest.error = generateError(new RangeError("too much arguments"));
             }
         }
         // console.log(2, root);
@@ -286,18 +300,10 @@ var testit = function() {
         /** throw error if argument is not array */
         if (arguments.length === 0 || arguments.length > 1) {
             newtest.status = 'error';
-            var e = new RangeError("test.them expects exactly 1 argument");
-            var errorObject = {};
-            generateError(e,errorObject);
-
-            newtest.error = errorObject;
+            newtest.error = generateError(new RangeError("test.them expects exactly 1 argument"));
         } else if (_typeof(args) !== 'Array') {
             newtest.status = 'error';
-            var e = new TypeError("test.them expects to receive an array");
-            var errorObject = {};
-            generateError(e,errorObject);
-
-            newtest.error = errorObject;
+            newtest.error = generateError(new TypeError("test.them expects to receive an array"));
         } else {
             testNonFalse(newtest,args);
         }
@@ -343,22 +349,13 @@ var testit = function() {
         
         if (arguments.length!==2) {
             newtest.status = 'error';
-            var e = new RangeError("test.type expect two arguments");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
+            newtest.error = generateError(new RangeError("test.type expect two arguments"));
         } else if (_typeof(type) !== 'String') {
             newtest.status = 'error';
-            var e = new TypeError("second argument must be a String");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
+            newtest.error = generateError(new TypeError("second argument must be a String"));
         } else if (!arrayConsist(identifiedTypes,type.toLowerCase())) {
             newtest.status = 'error';
-            var e = new TypeError("second argument must be a standart type");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
+            newtest.error = generateError(new TypeError("second argument must be a standart type"));
         } else {
             testType(newtest,[value],type);
         }
@@ -403,38 +400,23 @@ var testit = function() {
         /** throw error if there are not 2 arguments */
         if (arguments.length>2) {
             newtest.status = 'error';
-            var e = new RangeError("test.types expect maximum of two arguments");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
+            newtest.error = generateError(new RangeError("test.types expect maximum of two arguments"));
         } else if (_typeof(args) !== 'Array') {
             newtest.status = 'error';
-            var e = new TypeError("test.types expect array in first argument");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
+            newtest.error = generateError(new TypeError("test.types expect array in first argument"));
         } else if (type) {
             if (_typeof(type) !== 'String') {
                 newtest.status = 'error';
-                var e = new TypeError("second argument must be a String");
-                var errorObject = {};
-                generateError(e,errorObject);
-                newtest.error = errorObject;
+                newtest.error = generateError(new TypeError("second argument must be a String"));
              } else if (!arrayConsist(identifiedTypes,type.toLowerCase())) {
                 newtest.status = 'error';
-                var e = new TypeError("second argument must be a standart type");
-                var errorObject = {};
-                generateError(e,errorObject);
-                newtest.error = errorObject;
+                newtest.error = generateError(new TypeError("second argument must be a standart type"));
             } else {
                 testType(newtest,args,type);
             }
         } else if (args.length<2) {
             newtest.status = 'error';
-            var e = new RangeError("test.types expect array with minimum 2 values, if second argument not defined");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
+            newtest.error = generateError(new RangeError("test.types expect array with minimum 2 values, if second argument not defined"));
         } else {
             testType(newtest,args);
         }
@@ -897,12 +879,11 @@ function updateStatus(oldstatus,newstatus) {
 }
 
 /**
- * make more understandable error object
- * @type {Object}
+ * makes and returns more understandable error object
  * @param {Error} error         basic error
- * @param {Object} object       understandable error object
+ * @return {Object}             new understandable error object
  */
-function generateError(error,object) {
+function generateError(error) {
     /**
      * understandable error object
      * @property {Error} error      consist basic error
@@ -910,10 +891,14 @@ function generateError(error,object) {
      * @property {String} message   message from basic property
      * @property {String} stack     some kind of result of trace()
      */
-    object.error = error;
-    object.type = test.typeof(error);
-    object.message = error.message;
+    var object = {
+        error: error,
+        type: test.typeof(error),
+        message: error.message,
+    }
     if (getTrace(error)) object.stack = getTrace(error);
+
+    return object;
 }
 
 /**
