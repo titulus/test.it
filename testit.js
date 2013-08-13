@@ -191,7 +191,14 @@ var testit = function() {
      */
     this.group = _group;
 
-
+    /**
+     * Base for all tests. Make new instance of test, fill it through test-functions, add it to previous group.stack
+     * @private
+     * @chainable chain-start
+     * @param {String} type   determinate wich test-function will be used
+     * @param {Array} args    arguments array
+     * @return {Object}       test with link
+     */
     var _doTest = function (type,args) {
         /**
          * making a new instance of test
@@ -200,10 +207,15 @@ var testit = function() {
         var newtest = new test();
 
         /** fill test.agrument from method arguments */
-        newtest.argument = Array(args);
-
-
-
+        for (var i in args) {
+            newtest.argument.push(args[i]);
+        }
+        switch (type) {
+            case 'it' : _testIt(newtest); break;
+            case 'them' : _testThem(newtest); break;
+            case 'type' : _testType(newtest); break;
+            case 'types' : _testTypes(newtest); break;
+        }
         /** finally place this test into container stack */
         root.stack.push(newtest);
 
@@ -213,117 +225,92 @@ var testit = function() {
         /** return testit with link to this test to provide chaining */
         return Object.create(this,{link:{value:newtest}});
     }
-    this.doit = function(){return _doTest.call(this,'it',arguments)};
+    this.it = function(){return _doTest.call(this,'it',arguments)};
+    this.them = function(){return _doTest.call(this,'them',arguments)};
+    this.type = function(){return _doTest.call(this,'type',arguments)};
 
     /**
-     * basic test. Make new instance of test, fill it, add it to previous group.stack, fill some values in previous group
+     * test value to be true-like
      * @private
-     * @chainable
-     * @param  {Multiple} a @required       first argument, which will check for truth it only transmitted
-     * @param  {Multiple} b                 second argument which will compared with a if transmitted 
-     * @return {Object}                     test with link
+     * @param {Object}  testobj     test object, wich will be filled with result
      */
-    var _it = function(a,b) {
-        /**
-         * making a new instance of test
-         * Most of code in this function will manipulate whis it.
-         */
-        var newtest = new test();
-
-        /**
-         * fill newtest.argument with arguments
-         * (arguments is array-like object, but not array. So i can't just  newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
-         */
-        for (var i in arguments) {
-            newtest.argument.push(arguments[i]);
-        }
-        /** try to figure out what kind of test expected */
-        switch (arguments.length) {
+    var _testIt = function(testobj){
+        switch (testobj.argument.length) {
             /** in case of no arguments - throw Reference error */
             case 0 : {
-                newtest.status = 'error';
-                newtest.error = generateError(new RangeError("at least one argument expected"));
+                testobj.status = 'error';
+                testobj.error = generateError(new RangeError("at least one argument expected"));
             } break;
             /** if there only one argument - test it for truth */
             case 1 : {
-                testNonFalse(newtest,[a]);
+                if (testobj.argument[0]) {
+                    testobj.description = 'argument is true-like';
+                    testobj.status = 'pass';
+                } else {
+                    testobj.description = 'argument is false-like';
+                    testobj.status = 'fail';
+                }
             } break;
             /** if there are two arguments - test equalence between them */
             case 2 : {
-                testEquivalence(newtest,[a,b]);
+                if (_typeof(testobj.argument[0]) !== _typeof(testobj.argument[1])) {
+                    testobj.description = 'argument hase different types';
+                    testobj.status = 'fail';
+                } else if (deepCompare(testobj.argument[0],testobj.argument[1])) {
+                    testobj.description = 'arguments are equal';
+                    testobj.status = 'pass';
+                } else {
+                    testobj.description = 'argument are not equal';
+                    testobj.status = 'fail';
+                }
             } break;
             /** otherwise throw Range error */
             default : {
-                newtest.status = 'error';
-                newtest.error = generateError(new RangeError("too much arguments"));
+                testobj.status = 'error';
+                testobj.error = generateError(new RangeError("maximum of 2 arguments expected"));
             }
         }
-        // console.log(2, root);
-        /** finally place this test into container stack */
-        root.stack.push(newtest);
-
-        /** update counters of contained object */
-        updateCounters(root);
-
-        /** return testit with link to this test to provide chaining */
-        return Object.create(this,{link:{value:newtest}});
     }
-    /**
-     * public interface for _it()
-     * @public
-     * @example
-     *   test.it(someThing);
-     *   test.it(myFunction());
-     *   test.it(myVar>5);
-     *   test.it(myVar,mySecondVar);
-     */
-    this.it = _it;
 
     /**
-     * test array of values for non-false
-     * @private
-     * @chainable
-     * @param  {Array} args     array of values which will be tested
-     * @return {Object}         test with link
+     * Test array of values to be true-like
+     * @param  {Object} testobj     test object, wich will be filled with result
      */
-    var _them = function(args) {
-        /**
-         * making a new instance of test
-         * Most of code in this function will manipulate whis it.
-         */
-        var newtest = new test();
-        
-        for (var i in arguments) {
-            newtest.argument.push(arguments[i]);
+    var _testThem = function(testobj){
+        switch (testobj.argument.length) {
+            /** in case of no arguments - throw Reference error */
+            case 0 : {
+                testobj.status = 'error';
+                testobj.error = generateError(new RangeError("at least one argument expected"));
+            } break;
+            /** if there only one argument - do staff */
+            case 1 : {
+                /** if first argument is not an Array - throw TypeError */
+                if (_typeof(testobj.argument[0]) !== 'Array') {
+                    testobj.status = 'error';
+                    testobj.error = generateError(new TypeError("argument must be an array"));
+                } else {
+                    /** test elements of array to be true-like */
+                    for (var i in testobj.argument[0]) {
+                        if (!testobj.argument[0][i]) {
+                            testobj.status = 'fail';
+                            testobj.description = 'there are at least one false-like argument';
+                        }
+                    }
+                    /** test passed if there are no false-like elements found */
+                    if (testobj.status !== 'fail') {
+                        testobj.status = 'pass';
+                        testobj.description = 'arguments are true-like';
+                    }
+                }
+            } break;
+            /** otherwise throw Range error */
+            default : {
+                testobj.status = 'error';
+                testobj.error = generateError(new RangeError("maximum of 1 arguments expected"));
+            }
         }
-
-        /** throw error if argument is not array */
-        if (arguments.length === 0 || arguments.length > 1) {
-            newtest.status = 'error';
-            newtest.error = generateError(new RangeError("test.them expects exactly 1 argument"));
-        } else if (_typeof(args) !== 'Array') {
-            newtest.status = 'error';
-            newtest.error = generateError(new TypeError("test.them expects to receive an array"));
-        } else {
-            testNonFalse(newtest,args);
-        }
-
-        /** finally place this test into container stack */
-        root.stack.push(newtest);
-
-        /** update counters of contained object */
-        updateCounters(root);
-
-        /** return testit with link to this test to provide chaining */
-        return Object.create(this,{link:{value:newtest}});
     }
-    /**
-     * public interface for _them()
-     * @public
-     * @example
-     *   test.them([1,'a',true,window]);
-     */
-    this.them = _them;
 
     /**
      * test type of first argument (value) to be equal to secon argument
@@ -471,7 +458,6 @@ var testit = function() {
     var testNonFalse = function(test,args) {
         /** use different text when one and multiple values are tested */
         test.description = (args.length===1)? 'argument is not ':'arguments is not ';
-
         /** test every value in args */
         for (arg in args) {
             if (!args[arg]) {
@@ -480,7 +466,6 @@ var testit = function() {
                 return;
             }
         }
-
         /** if code not stopped in previous step, test passed */
         test.description += 'false';
         test.status = 'pass';
