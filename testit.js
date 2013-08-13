@@ -228,6 +228,7 @@ var testit = function() {
     this.it = function(){return _doTest.call(this,'it',arguments)};
     this.them = function(){return _doTest.call(this,'them',arguments)};
     this.type = function(){return _doTest.call(this,'type',arguments)};
+    this.types = function(){return _doTest.call(this,'types',arguments)};
 
     /**
      * test value to be true-like
@@ -274,6 +275,7 @@ var testit = function() {
 
     /**
      * Test array of values to be true-like
+     * @private
      * @param  {Object} testobj     test object, wich will be filled with result
      */
     var _testThem = function(testobj){
@@ -294,7 +296,7 @@ var testit = function() {
                     for (var i in testobj.argument[0]) {
                         if (!testobj.argument[0][i]) {
                             testobj.status = 'fail';
-                            testobj.description = 'there are at least one false-like argument';
+                            testobj.description = 'there are at least one false-like element';
                         }
                     }
                     /** test passed if there are no false-like elements found */
@@ -313,196 +315,76 @@ var testit = function() {
     }
 
     /**
-     * test type of first argument (value) to be equal to secon argument
+     * test type of value to be equal to specified
      * @private
-     * @chainable
-     * @param  {Multiple} value     will be tested
-     * @param  {[type]} type        type to compare with
+     * @param  {Object} testobj     test object, wich will be filled with result
      */
-    var _type = function(value,type) {
-        /**
-         * making a new instance of test
-         * Most of code in this function will manipulate whis it.
-         */
-        var newtest = new test();
-        /**
-         * fill newtest.argument with arguments
-         * (arguments is array-like object, but not array. So i can't just  newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
-         */
-        for (var i in arguments) {
-            newtest.argument.push(arguments[i]);
-        }
-        /** throw error if there are not 2 arguments */
-        
-        if (arguments.length!==2) {
-            newtest.status = 'error';
-            newtest.error = generateError(new RangeError("test.type expect two arguments"));
-        } else if (_typeof(type) !== 'String') {
-            newtest.status = 'error';
-            newtest.error = generateError(new TypeError("second argument must be a String"));
-        } else if (!arrayConsist(identifiedTypes,type.toLowerCase())) {
-            newtest.status = 'error';
-            newtest.error = generateError(new TypeError("second argument must be a standart type"));
+    var _testType = function(testobj) {
+        if (testobj.argument.length!==2) {
+            testobj.status = 'error';
+            testobj.error = generateError(new RangeError("expect two arguments"));
+        } else if (_typeof(testobj.argument[1]) !== 'String') {
+            testobj.status = 'error';
+            testobj.error = generateError(new TypeError("second argument must be a String"));
+        } else if (!arrayConsist(identifiedTypes,testobj.argument[1].toLowerCase())) {
+            testobj.status = 'error';
+            testobj.error = generateError(new TypeError("second argument must be a standart type"));
         } else {
-            testType(newtest,[value],type);
-        }
-
-        /** finally place this test into container stack */
-        root.stack.push(newtest);
-
-        /** update counters of contained object */
-        updateCounters(root);
-
-        /** return testit with link to this test to provide chaining */
-        return Object.create(this,{link:{value:newtest}});
-    }
-    /**
-     * public interface for _type()
-     * @public
-     * @example
-     *   test.type('asd','String');
-     */
-    this.type = _type;
-
-    /** 
-     * compare types of all values in args between each other and 'type' if defined
-     * @private
-     * @chainable
-     * @param  {Array} args         array of values which will be tested
-     * @param  {String} type        type which will be compared whith
-     */
-    var _types = function(args,type) {
-        /**
-         * making a new instance of test
-         * Most of code in this function will manipulate whis it.
-         */
-        var newtest = new test();
-        /**
-         * fill newtest.argument with arguments
-         * (arguments is array-like object, but not array. So i can't just  newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
-         */
-        for (var i in arguments) {
-            newtest.argument.push(arguments[i]);
-        }
-        /** throw error if there are not 2 arguments */
-        if (arguments.length>2) {
-            newtest.status = 'error';
-            newtest.error = generateError(new RangeError("test.types expect maximum of two arguments"));
-        } else if (_typeof(args) !== 'Array') {
-            newtest.status = 'error';
-            newtest.error = generateError(new TypeError("test.types expect array in first argument"));
-        } else if (type) {
-            if (_typeof(type) !== 'String') {
-                newtest.status = 'error';
-                newtest.error = generateError(new TypeError("second argument must be a String"));
-             } else if (!arrayConsist(identifiedTypes,type.toLowerCase())) {
-                newtest.status = 'error';
-                newtest.error = generateError(new TypeError("second argument must be a standart type"));
+            testobj.description = 'type of argument is ';
+            if (_typeof(testobj.argument[0]).toLowerCase() !== testobj.argument[1].toLowerCase()) {
+                testobj.description += 'not '+_typeof(testobj.argument[0]);
+                testobj.status = 'fail';
             } else {
-                testType(newtest,args,type);
+                testobj.description += _typeof(testobj.argument[0]);
+                testobj.status = 'pass';
             }
-        } else if (args.length<2) {
-            newtest.status = 'error';
-            newtest.error = generateError(new RangeError("test.types expect array with minimum 2 values, if second argument not defined"));
+        }
+    }
+
+    /**
+     * test type of elements in array to be equal to specified or/and between each other
+     * @private
+     * @param  {Object} testobj     test object, wich will be filled with result
+     */
+    var _testTypes = function(testobj) {
+        if (testobj.argument.length==0) {
+            testobj.status = 'error';
+            testobj.error = generateError(new RangeError("at least one argument expected"));
+        } else if (testobj.argument.length>2) {
+            testobj.status = 'error';
+            testobj.error = generateError(new RangeError("maximum of two arguments expected"));
+        } else if (_typeof(testobj.argument[0]) !== 'Array') {
+            testobj.status = 'error';
+            testobj.error = generateError(new TypeError("first argument must be an array"));
         } else {
-            testType(newtest,args);
-        }
-
-        /** finally place this test into container stack */
-        root.stack.push(newtest);
-
-        /** update counters of contained object */
-        updateCounters(root);
-
-        /** return testit with link to this test to provide chaining */
-        return Object.create(this,{link:{value:newtest}});
-    }
-    /**
-     * public interface for _types
-     * @public
-     * @example
-     *   test.type([1,2,3],'Number');
-     */
-    this.types = _types;
-
-    /**
-     * Test types of all values in args
-     * @private
-     * @param  {Objcet} test    will be updated
-     * @param  {Array}  args    consist values which types will be tested
-     * @param  {[type]} type    consist type which will be compared with
-     */
-    var testType = function(test,args,type) {
-        test.description = 'type of argument is ';
-
-        if (!type) type = _typeof(args[0]);
-
-        for (arg in args) {
-            if (_typeof(args[arg]).toLowerCase() !== type.toLowerCase()) {
-                test.description += 'not '+type;
-                test.status = 'fail';
-                return
+            var type, types;
+            if (_typeof(testobj.argument[1]) === 'undefined') {
+                type = _typeof(testobj.argument[0][0]);
+                types = 'same';
+            } else if (_typeof(testobj.argument[1]) !== 'String') {
+                testobj.status = 'error';
+                testobj.error = generateError(new TypeError("second argument must be a String"));
+             } else if (!arrayConsist(identifiedTypes,testobj.argument[1].toLowerCase())) {
+                testobj.status = 'error';
+                testobj.error = generateError(new TypeError("second argument must be a standart type"));
+            } else {
+                type = testobj.argument[1];
+                types = 'right';
+            }
+            if (testobj.status !== 'error') {
+                type = type.toLowerCase();
+                for (var i in testobj.argument[0]) {
+                    if (_typeof(testobj.argument[0][i]).toLowerCase() !== type) {
+                        testobj.status = 'fail';
+                        testobj.description = 'There are at least one element with different type';
+                    }
+                }
+                if (testobj.status !== 'fail') {
+                    testobj.status = 'pass';
+                    testobj.description = 'arguments are '+types+' type';
+                }
             }
         }
-
-        test.description += type;
-        test.status = 'pass';
-    }
-
-    /**
-     * Test all values in args for non-false
-     * @private
-     * @param  {Objcet} test    will be updated
-     * @param  {Array}  args    consist values which will be tested
-     */
-    var testNonFalse = function(test,args) {
-        /** use different text when one and multiple values are tested */
-        test.description = (args.length===1)? 'argument is not ':'arguments is not ';
-        /** test every value in args */
-        for (arg in args) {
-            if (!args[arg]) {
-                test.description += 'true';
-                test.status = 'fail';
-                return;
-            }
-        }
-        /** if code not stopped in previous step, test passed */
-        test.description += 'false';
-        test.status = 'pass';
-    }
-
-    /**
-     * Test all values in args for equivalence
-     * @private
-     * @param  {Objcet} test    will be updated
-     * @param  {Array}  args    consist values which will be tested
-     */
-    var testEquivalence = function(test,args) {
-        /** first value will be used as model in comparissons */
-        var model = args.shift();
-
-        /** compare all types of values in args with type of model */
-        var type = _typeof(model);
-        for (arg in args) {
-            if (_typeof(args[arg]) !== type) {
-                test.status = 'fail';
-                test.description = 'arguments has different types';
-                return;
-            }
-        }
-
-        /** compare all values in args with model */
-        for (arg in args) {
-            if (!deepCompare(model,args[arg])) {
-                test.description = 'arguments are not equal';
-                test.status = 'fail';
-                return;
-            }
-        }
-
-        /** if code not stopped earlier, test passed */
-        test.description = 'arguments are equal';
-        test.status = 'pass';
     }
 
     /**
