@@ -166,7 +166,7 @@ var testit = function() {
          * look at it with:
          *     console.log(name,'\nlink: ',this.link,'\nroot: ',root);
          */
-        var currentLevel = (this.link)?this.link:root;
+        var currentLevel = (this.link && this.link.name!=='root')?this.link:root;
         var linkToGroup;
 
         switch (arguments.length) {
