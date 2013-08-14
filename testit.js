@@ -163,20 +163,23 @@ var testit = function() {
          *     console.log(name,'\nlink: ',this.link,'\nroot: ',root);
          */
         var currentLevel = (this.link.name!=='root')?this.link:root;
-        var returnedValue;
+        var linkToGroup;
 
         switch (arguments.length) {
             case 0 : throw new RangeError("test.group expect at least 1 argument");
             case 1 : {
-                    returnedValue = _getGroup.call(currentLevel,name);
+                    linkToGroup = _getGroup.call(currentLevel,name);
                 } break;
             case 2 : {
-                    returnedValue = _makeGroup.call(currentLevel,name,fun);
+                    linkToGroup = _makeGroup.call(currentLevel,name,fun);
                 } break;
             default : throw new RangeError("test.group expect maximum of 2 arguments");
         }
 
-        return Object.create(this,{link:{value:returnedValue}});
+        /** get trace for this group */
+        var trace = getTrace();
+
+        return Object.create(this,{link:{value:linkToGroup},trace:{value:trace}});
     }
     /**
      * public interface for _makeGroup
@@ -200,6 +203,8 @@ var testit = function() {
      * @return {Object}       test with link
      */
     var _doTest = function (type,args) {
+        var timestamp = new Date().getTime();
+
         /**
          * making a new instance of test
          * Most of code in this function will manipulate whis it.
@@ -222,8 +227,18 @@ var testit = function() {
         /** update counters of contained object */
         updateCounters(root);
 
-        /** return testit with link to this test to provide chaining */
-        return Object.create(this,{link:{value:newtest}});
+        /** get time in ms spended on test */
+        timestamp = new Date().getTime() - timestamp;
+
+        /** get trace for this test */
+        var trace = getTrace();
+
+        /** return testit with
+         *      link to this test to provide chaining
+         *      time in ms spended on test
+         *      trace for this test
+         */
+        return Object.create(this,{link:{value:newtest},timestamp:{value:timestamp},trace:{value:trace}});
     }
     this.it = function(){return _doTest.call(this,'it',arguments)};
     this.them = function(){return _doTest.call(this,'them',arguments)};
@@ -441,6 +456,18 @@ var testit = function() {
      */
     this.callback = _callback;
 
+    var _addTrace = function(level) {
+        if (!this.link) throw new ReferenceError('callback can only be used in testit chain');
+        if (this.trace) {
+            var trace = this.trace
+            if (_typeof(level) === 'Number') trace = trace.split('\n').slice(0,level+1).join('\n');
+            this.link.trace = trace;
+        }
+
+        return this;
+    }
+    this.addTrace = _addTrace;
+
     /**
      * Final chain-link: will return result of test or group
      * @private
@@ -603,6 +630,11 @@ var testit = function() {
                 if (obj.description) {
                     console.log(obj.description);
                 }
+
+                /** display trace if defined */
+                if (obj.trace) {
+                    console.log(obj.trace);
+                }
                 
                 /**
                  * display all tests and groups in stack
@@ -639,7 +671,15 @@ var testit = function() {
                         console.group("%cerror%c: %s",orange,normal,(obj.comment)?obj.comment:'');
                     } break;
                 }
+
+                /** display description if defined */
                 if (obj.description) console.log(obj.description);
+                
+                /** display trace if defined */
+                if (obj.trace) {
+                    console.log(obj.trace);
+                }
+
                 /** display error if defined */
                 if (obj.error) {
                     // console.error(obj.error);
