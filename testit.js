@@ -148,6 +148,7 @@ var testit = function() {
      * Define wich group() method must be called.
      * Produce chaining
      * @private
+     * @chainable chain-opener
      * @param  {String}   name      name of group
      * @param  {Function} fun       function contains tests and other groups
      * @return {Object}             testit object with link to specified group (produce chaining)
@@ -197,13 +198,12 @@ var testit = function() {
     /**
      * Base for all tests. Make new instance of test, fill it through test-functions, add it to previous group.stack
      * @private
-     * @chainable chain-start
+     * @chainable chain-opener
      * @param {String} type   determinate wich test-function will be used
      * @param {Array} args    arguments array
      * @return {Object}       test with link
      */
     var _doTest = function (type,args) {
-        var timestamp = new Date().getTime();
 
         /**
          * making a new instance of test
@@ -221,14 +221,15 @@ var testit = function() {
             case 'type' : _testType(newtest); break;
             case 'types' : _testTypes(newtest); break;
         }
+        
+        /** calculate time, if .time was called before this test */
+        if (this.timestamp) newtest.time = new Date().getTime() - this.timestamp;
+
         /** finally place this test into container stack */
         root.stack.push(newtest);
 
         /** update counters of contained object */
         updateCounters(root);
-
-        /** get time in ms spended on test */
-        timestamp = new Date().getTime() - timestamp;
 
         /** get trace for this test */
         var trace = getTrace();
@@ -238,7 +239,7 @@ var testit = function() {
          *      time in ms spended on test
          *      trace for this test
          */
-        return Object.create(this,{link:{value:newtest},timestamp:{value:timestamp},trace:{value:trace}});
+        return Object.create(this,{link:{value:newtest},trace:{value:trace}});
     }
     this.it = function(){return _doTest.call(this,'it',arguments)};
     this.them = function(){return _doTest.call(this,'them',arguments)};
@@ -403,9 +404,24 @@ var testit = function() {
     }
 
     /**
+     * add spended time to result of test
+     * @private
+     * @chainable chain-opener
+     * @type {Object}
+     */
+    var _time = Object.create(this,{timestamp:{value:new Date().getTime()}});
+    /**
+     * public interface for _time
+     * @public
+     * @example
+     *   test.time.it(someThing());
+     */
+    this.time = _time;
+
+    /**
      * add comment for the linked test or group
      * @private
-     * @chainable
+     * @chainable chain-link
      * @type {Function}
      * @param  {String} text        user defined text, which will be used as a comment
      */
@@ -431,7 +447,7 @@ var testit = function() {
     /**
      * try to execute functions in arguments, depend on test|group result
      * @private
-     * @chainable
+     * @chainable chain-link
      * @param  {Function} pass  function to execute if test|group passed
      * @param  {Function} fail  function to execute if test|group failed
      * @param  {Function} error function to execute if test|group cause error
@@ -456,8 +472,14 @@ var testit = function() {
      */
     this.callback = _callback;
 
+    /**
+     * add trace to test/group
+     * @private
+     * @chainable chain-link
+     * @param  {Number} level       Number of trace lines which will be added
+     */
     var _addTrace = function(level) {
-        if (!this.link) throw new ReferenceError('callback can only be used in testit chain');
+        if (!this.link) throw new ReferenceError('addTrace can only be used in testit chain');
         if (this.trace) {
             var trace = this.trace
             if (_typeof(level) === 'Number') trace = trace.split('\n').slice(0,level+1).join('\n');
@@ -466,6 +488,13 @@ var testit = function() {
 
         return this;
     }
+    /**
+     * public interface for _addTrace()
+     * @public
+     * @example
+     *   test.it(someThing).addTrace(); // add full trace
+     *   test.it(someThing).addTrace(0); // add only first line of trace
+     */
     this.addTrace = _addTrace;
 
     /**
@@ -662,13 +691,31 @@ var testit = function() {
                 switch (obj.status) {
                     case 'pass' : {
                         /** if pass - collaps group*/
-                        console.groupCollapsed("%cpass%c: %s",green,normal,(obj.comment)?obj.comment:'');
+                        console.groupCollapsed("%cpass%c: %s%s%c%s%c%s",green,normal
+                                              ,(obj.comment)?obj.comment:''
+                                              ,(obj.time)?' (':''
+                                              ,(obj.time)?blue:''
+                                              ,(obj.time)?obj.time:''
+                                              ,(obj.time)?normal:''
+                                              ,(obj.time)?' ms)':'');
                     } break;
                     case 'fail' : {
-                        console.group("%cfail%c: %s",red,normal,(obj.comment)?obj.comment:'');
+                        console.group("%cfail%c: %s",red,normal
+                                              ,(obj.comment)?obj.comment:''
+                                              ,(obj.time)?' (':''
+                                              ,(obj.time)?blue:''
+                                              ,(obj.time)?obj.time:''
+                                              ,(obj.time)?normal:''
+                                              ,(obj.time)?' ms)':'');
                     } break;
                     case 'error' : {
-                        console.group("%cerror%c: %s",orange,normal,(obj.comment)?obj.comment:'');
+                        console.group("%cerror%c: %s",orange,normal
+                                              ,(obj.comment)?obj.comment:''
+                                              ,(obj.time)?' (':''
+                                              ,(obj.time)?blue:''
+                                              ,(obj.time)?obj.time:''
+                                              ,(obj.time)?normal:''
+                                              ,(obj.time)?' ms)':'');
                     } break;
                 }
 
