@@ -29,6 +29,18 @@ You just need to add
 ```
 to the end of  `<body>` tag. That's it!
 
+btw you can use this construction:
+```html
+<!-- framework -->
+<script src='../testit.js'></script>
+<!-- your script -->
+<script src='./script.js'></script>
+<!-- your tests -->
+<script src='./tests.js'></script>
+<!-- trick to not worry about the test.done(); call -->
+<script>test.done();</script>
+```
+
 ===
 
 ### How to use
