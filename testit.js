@@ -72,9 +72,10 @@ var testit = function() {
      * @chainable
      * @param  {String}   name          name of new group
      * @param  {Function} fun           function witch will be tryed to execute (commonly consist of tests and other groups)
-     * @return {Object}                     test with link
+     * @param  {Boolean}  excluded      if true - newgroup will not be added into currentlevel stack;
+     * @return {Object}                 testit with link to new group
      */
-    var _makeGroup = function(name,fun) {
+    var _makeGroup = function(name,fun,excluded) {
         /** get timestamp */
         var time = new Date().getTime();
         
@@ -121,7 +122,7 @@ var testit = function() {
         newgroup.time += new Date().getTime() - time;
 
         /** finally place this group into previous level stack (if it's a new group) */
-        if (!groupAlreadyExist) this.stack.push(newgroup);
+        if (!groupAlreadyExist && !excluded) this.stack.push(newgroup);
 
         /** update counters */
         updateCounters(newgroup);
@@ -165,7 +166,7 @@ var testit = function() {
          * look at it with:
          *     console.log(name,'\nlink: ',this.link,'\nroot: ',root);
          */
-        var currentLevel = (this.link.name!=='root')?this.link:root;
+        var currentLevel = (this.link)?this.link:root;
         var linkToGroup;
 
         switch (arguments.length) {
@@ -174,7 +175,7 @@ var testit = function() {
                     linkToGroup = _getGroup.call(currentLevel,name);
                 } break;
             case 2 : {
-                    linkToGroup = _makeGroup.call(currentLevel,name,fun);
+                    linkToGroup = _makeGroup.call(currentLevel,name,fun,this.excluded);
                 } break;
             default : throw new RangeError("test.group expect maximum of 2 arguments");
         }
@@ -198,7 +199,7 @@ var testit = function() {
     this.group = _group;
 
     /**
-     * Base for all tests. Make new instance of test, fill it through test-functions, add it to previous group.stack
+     * Base for all tests. Make new instance of test, fill it through test-functions, add it to previous group.stack (if not excluded)
      * @private
      * @chainable chain-opener
      * @param {String} type   determinate wich test-function will be used
@@ -227,7 +228,7 @@ var testit = function() {
         if (this.timestamp) newtest.time = new Date().getTime() - this.timestamp;
 
         /** finally place this test into container stack */
-        root.stack.push(newtest);
+        if (!this.excluded) root.stack.push(newtest);
 
         /** update counters of contained object */
         updateCounters(root);
@@ -407,7 +408,7 @@ var testit = function() {
     /**
      * add spended time to result of test
      * @private
-     * @chainable chain-opener
+     * @chainable chain-preparatory
      * @type {Object}
      */
     var _time = Object.create(this,{timestamp:{value:new Date().getTime()}});
@@ -418,6 +419,22 @@ var testit = function() {
      *   test.time.it(someThing());
      */
     this.time = _time;
+
+    /**
+     * set test/group to be not pushed into current level stack
+     * @private
+     * @chainable chain-preparatory
+     * @type {Object}
+     */
+    var _exclude = Object.create(this,{excluded:{value:true}});
+    /**
+     * public interface for _exclude
+     * @public
+     * @example
+     *   test.exclude.it(someThing).done();
+     *   test.exclude.group('some group',function(){ ... }).done();
+     */
+    this.exclude = _exclude;
 
     /**
      * add comment for the linked test or group
@@ -542,7 +559,6 @@ var testit = function() {
      */
     this.arguments = _arguments;
 
-
     /** 
      * apply last stuff and display results
      * type {Function}
@@ -554,7 +570,7 @@ var testit = function() {
         rootTimeDone = true;
 
         /** made _done() chain-closer */
-        var currentLevel = (this.link.type==='group')?this.link:root;
+        var currentLevel = this.link;
 
         /** display root */
         _printConsole(currentLevel);
