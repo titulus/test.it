@@ -1,5 +1,7 @@
 (function(scope) {
 
+var rootTimeDone = false;
+
 var testit = function() {
     /**
      * group class, which will contain tests
@@ -204,7 +206,6 @@ var testit = function() {
      * @return {Object}       test with link
      */
     var _doTest = function (type,args) {
-
         /**
          * making a new instance of test
          * Most of code in this function will manipulate whis it.
@@ -549,7 +550,8 @@ var testit = function() {
      */
     var _done = function() {
         /** update time in root */
-        root.time = new Date().getTime() - root.time;
+        if (!rootTimeDone) root.time = new Date().getTime() - root.time;
+        rootTimeDone = true;
 
         /** made _done() chain-closer */
         var currentLevel = (this.link.type==='group')?this.link:root;
