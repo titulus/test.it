@@ -332,7 +332,7 @@ var testit = function() {
         } else {
             testobj.description = 'type of argument is ';
             if (_typeof(testobj.argument[0]).toLowerCase() !== testobj.argument[1].toLowerCase()) {
-                testobj.description += 'not '+_typeof(testobj.argument[0]);
+                testobj.description += 'not '+testobj.argument[1];
                 testobj.status = 'fail';
             } else {
                 testobj.description += _typeof(testobj.argument[0]);
