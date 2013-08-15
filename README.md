@@ -8,8 +8,11 @@ Simple js testing framework
   + to avoid crashes
   + to avoid differences in results of tests of one and the same code
   + to provide the ease of use
+  + to provide async testing
+  + to provide particular group or test
   + multilevel nesting
   + chaining
+
 
 #### Techniques:
   + OOP

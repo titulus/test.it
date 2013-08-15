@@ -164,7 +164,7 @@ var testit = function() {
          * look at it with:
          *     console.log(name,'\nlink: ',this.link,'\nroot: ',root);
          */
-        var currentLevel = (this.link && this.link.name!=='root')?this.link:root;
+        var currentLevel = (this.link)?this.link:root;
         var linkToGroup;
 
         switch (arguments.length) {
@@ -567,11 +567,15 @@ var testit = function() {
      */
     var _done = function() {
         /** update time in root */
-        if (!rootTimeDone) root.time = new Date().getTime() - root.time;
-        rootTimeDone = true;
+        if (!rootTimeDone && root.name==='root') {
+            root.time = new Date().getTime() - root.time;
+            rootTimeDone = true;
+        }
+
+        curentLevel = (this.link)?this.link:root;
 
         /** display result */
-        _printConsole(this.link);
+        _printConsole(curentLevel);
     }
     /**
      * public interface for _done()
@@ -828,7 +832,7 @@ var testit = function() {
     this.trace = getTrace;
 
     // return this;
-    return Object.create(this,{link:{value:root}});
+    return this;
 }  
 
 /**
