@@ -40,15 +40,24 @@ var Nothing; // and empty value
 test.it("hello world"); // Let"s add some simple tests
 test.it(2+2==5).comment("i badly taught algebra at school"); // with comment
 test.it(Infinity>Infinity-1).comment("philosophically is not it?"); // with expression
+
 // check equalence
 test.it(myIQ,"genius").comment("Am I a genius?");
 test.it(myIQ,(1+10)*12 - 34 + 5*5*5 - 123).comment("check my IQ to be a normal");
+
 // try some chain staff
 if (test.it(Family).comment("Is Family exist? Is it not empty?").result()) {
     console.info("by if: ","Yep! Here it is!");
 } else {
     console.warn("by if: ","ALARM! there are no Family");
 }
+
+// test something without pushing it to stack
+test.exclude
+    .it('exclude')
+    .comment('this test will not be added to stack of curent level group')
+    .done();
+
 // do it again in better way
 test.it(Nothing).comment("Is Nothing exist? Is it not empty?").callback(
     function(){console.info("by callback: ","Yep! Here it is!");}
@@ -92,9 +101,33 @@ test.group("here comes strange tests",function(){
         test.it().comment("yep, here is error"); // add some error to see the trace
     });
 });
-// add final test deep in group
+
+// add test deep in group
 test.group("here comes strange tests").group("Members age",function(){
-    test.it("bye").comment("good");
+    test.it("here").comment("it is");
 });
+
+// add couple of test with their trace
+(function firstFunction() {
+    (function secondFunction() {
+        (function lastFunction() {
+            test.it(1).addTrace(0); // adds to test result only curent line
+            test.it(1).addTrace();  // adds to test result every lines of trace
+        })();
+    })();
+})();
+
+// async testing
+var a = false; // will be changed by async function
+setTimeout(function () {a=true}, 2000) // async function
+setTimeout(function () {
+     test.group('async tests',function(){
+        test.it(a).comment('a must be a true');
+     }).comment('async group').done(); // .done() is required to output result
+}, 1000);
+setTimeout(function () {
+    // this will not be pushed into root stack because of .exclude
+    test.exclude.it(a).comment('single async test').done();
+}, 3000);
 
 test.done();

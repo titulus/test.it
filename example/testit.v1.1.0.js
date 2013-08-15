@@ -1,4 +1,6 @@
-(function(window) {
+(function(scope) {
+
+var rootTimeDone = false;
 
 var testit = function() {
     /**
@@ -64,45 +66,27 @@ var testit = function() {
     root.time = new Date().getTime();
 
     /**
-     * make new instace of group, fill it, add it to previous group.stack, fill some values in previous group
+     * make new instace of group, fill it, push it into current level group stack
      * @private
      * @chainable
      * @param  {String}   name          name of new group
      * @param  {Function} fun           function which will be executed (mainly consist of tests and other groups)
-     * @return {Object}                     test with link
+     * @param  {Boolean}  excluded      if true - newgroup will not be added into currentlevel stack;
+     * @return {Object}                 testit with link to new group
      */
-    var _makeGroup = function(name,fun) {
-        switch (arguments.length) {
-            case 0 : throw new RangeError("test.group expect at least 1 argument");
-            case 1 : {
-                    var stack = (this.link)? this.link.stack : root.stack;
-                    for (var i in stack) {
-                        if (stack[i].type !== 'group') continue;
-                        if (stack[i].name === name) {
-                            return Object.create(this,{link:{value:stack[i]}});
-                        }
-                    }
-                    throw new ReferenceError('there is no group with name: '+name);
-                } break;
-            case 2 : break;
-            default : throw new RangeError("test.group expect no more than 2 arguments");
-        }
-        
+    var _makeGroup = function(name,fun,excluded) {
         /** get timestamp */
         var time = new Date().getTime();
-
-        /** make a new root, to provide chaining */
-        var oldRootChain = root;
-        root = (this.link)? this.link : root;
+        
         /** var for the new instance of group */
         var newgroup;
         /** identify new group */
         var groupAlreadyExist = false;
         /** find group in current-level stack */
-        for (var i in root.stack) {
-            if (root.stack[i].type !== 'group') continue;
-            if (root.stack[i].name === name) {
-                newgroup = root.stack[i];
+        for (var i in this.stack) {
+            if (this.stack[i].type !== 'group') continue;
+            if (this.stack[i].name === name) {
+                newgroup = this.stack[i];
                 groupAlreadyExist = true;
                 break;
             }
@@ -111,63 +95,96 @@ var testit = function() {
         newgroup.name = name;
 
         /** add backlink to provide trace */
-        newgroup.linkBack = root;
+        newgroup.linkBack = this;
 
         /** set to pass as default. it's may be changed in some next lines */
         var oldstatus;
         if (groupAlreadyExist) oldstatus = newgroup.status;
         newgroup.status ='pass';
 
-
         /**
-         * make a new root, to provide nesting
-         * Nested tests and groups will us it, like first one use root.
+         * try to execute fun() with tests and other groups in
+         * This part provides nesting.
+         * For this reason there are redefinition of root.
          */
-        var oldRootNest = root;
-        root = newgroup;
-        /**
-         * try to execute code with tests and other groups in it
-         * This part provide nesting.
-         */
-        try{
+        try {
+            var oldRoot = root;
+            root = newgroup;
             fun();
+            root = oldRoot;
         } catch(e) {
             newgroup.status = 'error';
-            var errorObject = {};
-            generateError(e,errorObject);
-
-            newgroup.error = errorObject;
+            newgroup.error = generateError(e);
         }
-        /** 
-         * reverse inheritance of status
-         * If one nested test 'fail', root will 'fail' too.
-         * More info in updateStatus() comments.
-         */
-        // oldRootNest.status = updateStatus(oldRootNest.status,root.status);
-        // oldRootChain.status = updateStatus(oldRootChain.status,root.status);
-        
-        /** take back old root */
-        root = oldRootNest;
-
-        /** take back old root */
-        root = oldRootChain;
-
 
         /** update time */
         newgroup.time += new Date().getTime() - time;
 
-
         /** finally place this group into previous level stack (if it's a new group) */
-        if (!groupAlreadyExist) root.stack.push(newgroup);
+        if (!groupAlreadyExist && !excluded) this.stack.push(newgroup);
 
         /** update counters */
         updateCounters(newgroup);
 
-        /** return testit with link to this group to provide chaining */
-        return Object.create(this,{link:{value:newgroup}});
+        /** return testit with link to this group */
+        return newgroup;
     }
     /**
-     * public interface for _makeGroup
+     * return group by it's name in current level group stack
+     * @private
+     * @param  {String} name    name of group which will be searched for
+     * @return {Object}         group
+     */
+    var _getGroup = function (name) {
+        var stack = this.stack;
+        for (var i in stack) {
+            if (stack[i].type !== 'group') continue;
+            if (stack[i].name === name) {
+                return stack[i];
+            }
+        }
+        throw new ReferenceError('there is no group with name: '+name);
+    }
+    /**
+     * Interface for _makeGroup() and _getGroup() methods.
+     * Definition, which method will be executed, depends on arguments number.
+     * @private
+     * @chainable chain-opener
+     * @param  {String}   name      name of group
+     * @param  {Function} fun       function contains tests and other groups
+     * @return {Object}             testit with link to specified group
+     */
+    var _group = function(name,fun) {
+        /**
+         * Here may be 3 situation:
+         *     this.link is root && root is root                - test.group() called in root scope
+         *     this.link is root && root is some group          - test.group() called in some other group scope
+         *     this.link is some group && root is root          - .group() called in chain in root scope
+         *     this.link is some group && root is some group    - .group() called in chain in some other group scope
+         * look at it with:
+         *     console.log(name,'\nlink: ',this.link,'\nroot: ',root);
+         */
+        var currentLevel = (this.link && this.link.name!=='root')?this.link:root;
+        var linkToGroup;
+
+        switch (arguments.length) {
+            case 0 : throw new RangeError("test.group expect at least 1 argument");
+            case 1 : {
+                    linkToGroup = _getGroup.call(currentLevel,name);
+                } break;
+            case 2 : {
+                    linkToGroup = _makeGroup.call(currentLevel,name,fun,this.excluded);
+                } break;
+            default : throw new RangeError("test.group expect no more than 2 arguments");
+        }
+
+        /** get trace for this group */
+        var trace = getTrace();
+
+        return Object.create(this,{link:{value:linkToGroup},trace:{value:trace}});
+    }
+    /**
+     * public interface for _group
      * @public
      * @example
      *  test.group('name of group',function(){
@@ -176,356 +193,254 @@ var testit = function() {
      *          test.it('deep nested test');
      *      });
      *  });
+     *  test.group('name of group')
+     *      .group('nested group',function(){
+     *          test.it('additional deep nested test');
+     *      });
      */
-    this.group = _makeGroup;
+    this.group = _group;
 
     /**
-     * basic test. Make new instance of test, fill it, add it to previous group.stack, fill some values in previous group
+     * Base for all tests. Make new instance of test, fill it using test-functions, push it into current level group stack
      * @private
-     * @chainable
-     * @param  {Multiple} a @required       first argument, which will check for truth it only transmitted
-     * @param  {Multiple} b                 second argument which will compared with a if transmitted 
-     * @return {Object}                     test with link
+     * @chainable chain-opener
+     * @param {String} type   determines test-function which will be used
+     * @param {Array} args    array of arguments
+     * @return {Object}       testit with link to this test
      */
-    var _it = function(a,b) {
+    var _doTest = function (type,args) {
         /**
-         * make a new instance of test
+         * new instance of test
          * Most of code in this function will manipulate with it.
          */
         var newtest = new test();
 
-        /**
-         * fill newtest.argument with arguments
-         * (arguments is array-like object, but not an array. So i can't just do newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
-         */
-        for (var i in arguments) {
-            newtest.argument.push(arguments[i]);
+        /** fill newtest.agrument from method arguments */
+        for (var i in args) {
+            newtest.argument.push(args[i]);
         }
-        /** try to figure out what kind of test expected */
-        switch (arguments.length) {
+
+        /** execute test-function specified by type */
+        switch (type) {
+            case 'it' : _testIt(newtest); break;
+            case 'them' : _testThem(newtest); break;
+            case 'type' : _testType(newtest); break;
+            case 'types' : _testTypes(newtest); break;
+        }
+        
+        /** calculate time, if .time was called before this test */
+        if (this.timestamp) newtest.time = new Date().getTime() - this.timestamp;
+
+        /** finally place this test into container stack */
+        if (!this.excluded) root.stack.push(newtest);
+
+        /** update counters of contained group */
+        updateCounters(root);
+
+        /** get trace for this test */
+        var trace = getTrace();
+
+        /** return testit with
+         *      link to this test
+         *      trace for this test
+         */
+        return Object.create(this,{link:{value:newtest},trace:{value:trace}});
+    }
+    this.it = function(){return _doTest.call(this,'it',arguments)};
+    this.them = function(){return _doTest.call(this,'them',arguments)};
+    this.type = function(){return _doTest.call(this,'type',arguments)};
+    this.types = function(){return _doTest.call(this,'types',arguments)};
+
+    /**
+     * checks the argument for the true-like value
+     * @private
+     * @param {Object}  testobj     test object, wich will be filled with result
+     */
+    var _testIt = function(testobj){
+        switch (testobj.argument.length) {
             /** in case of no arguments - throw Reference error */
             case 0 : {
-                newtest.status = 'error';
-                var e = new RangeError("at least one argument expected");
-                var errorObject = {};
-                generateError(e,errorObject);
-                newtest.error = errorObject;
+                testobj.status = 'error';
+                testobj.error = generateError(new RangeError("at least one argument expected"));
             } break;
-            /** if there is only one argument - test it for truth */
+            /** if there is only one argument - check it for truth */
             case 1 : {
-                testNonFalse(newtest,[a]);
+                if (testobj.argument[0]) {
+                    testobj.description = 'argument is true-like';
+                    testobj.status = 'pass';
+                } else {
+                    testobj.description = 'argument is false-like';
+                    testobj.status = 'fail';
+                }
             } break;
-            /** if there are two arguments - test equalence between them */
+            /** if there are two arguments - check equalence between them */
             case 2 : {
-                testEquivalence(newtest,[a,b]);
+                if (_typeof(testobj.argument[0]) !== _typeof(testobj.argument[1])) {
+                    testobj.description = 'argument hase different types';
+                    testobj.status = 'fail';
+                } else if (deepCompare(testobj.argument[0],testobj.argument[1])) {
+                    testobj.description = 'arguments are equal';
+                    testobj.status = 'pass';
+                } else {
+                    testobj.description = 'argument are not equal';
+                    testobj.status = 'fail';
+                }
             } break;
             /** otherwise throw Range error */
             default : {
-                newtest.status = 'error';
-                var e = new RangeError("too much arguments");
-                var errorObject = {};
-                generateError(e,errorObject);
-                newtest.error = errorObject;
+                testobj.status = 'error';
+                testobj.error = generateError(new RangeError("maximum of 2 arguments expected"));
             }
         }
-        
-        /** finally place this test into container stack */
-        root.stack.push(newtest);
-
-        /** update counters of contained object */
-        updateCounters(root);
-
-        /** return testit with link to this test to provide chaining */
-        return Object.create(this,{link:{value:newtest}});
     }
-    /**
-     * public interface for _it()
-     * @public
-     * @example
-     *   test.it(someThing);
-     *   test.it(myFunction());
-     *   test.it(myVar>5);
-     *   test.it(myVar,mySecondVar);
-     */
-    this.it = _it;
 
     /**
-     * test array of values for non-false
+     * checks array of values to be true-like
      * @private
-     * @chainable
-     * @param  {Array} args     array of values which will be tested
-     * @return {Object}         test with link
+     * @param  {Object} testobj     test object, wich will be filled with result
      */
-    var _them = function(args) {
-        /**
-         * making a new instance of test
-         * Most of code in this function will manipulate with it.
-         */
-        var newtest = new test();
-        
-        for (var i in arguments) {
-            newtest.argument.push(arguments[i]);
+    var _testThem = function(testobj){
+        switch (testobj.argument.length) {
+            /** in case of no arguments - throw Reference error */
+            case 0 : {
+                testobj.status = 'error';
+                testobj.error = generateError(new RangeError("at least one argument expected"));
+            } break;
+            /** if there is only one argument - continue */
+            case 1 : {
+                /** if first argument is not an Array - throw TypeError */
+                if (_typeof(testobj.argument[0]) !== 'Array') {
+                    testobj.status = 'error';
+                    testobj.error = generateError(new TypeError("argument should be an array"));
+                } else {
+                    /** check elements of array to be true-like */
+                    for (var i in testobj.argument[0]) {
+                        if (!testobj.argument[0][i]) {
+                            testobj.status = 'fail';
+                            testobj.description = 'there are at least one false-like element';
+                        }
+                    }
+                    /** test passed if there are no false-like elements found */
+                    if (testobj.status !== 'fail') {
+                        testobj.status = 'pass';
+                        testobj.description = 'arguments are true-like';
+                    }
+                }
+            } break;
+            /** otherwise throw Range error */
+            default : {
+                testobj.status = 'error';
+                testobj.error = generateError(new RangeError("maximum of 1 arguments expected"));
+            }
         }
+    }
 
-        /** throw error if argument is not an array */
-        if (arguments.length === 0 || arguments.length > 1) {
-            newtest.status = 'error';
-            var e = new RangeError("test.them expects exactly 1 argument");
-            var errorObject = {};
-            generateError(e,errorObject);
-
-            newtest.error = errorObject;
-        } else if (_typeof(args) !== 'Array') {
-            newtest.status = 'error';
-            var e = new TypeError("test.them expects to receive an array");
-            var errorObject = {};
-            generateError(e,errorObject);
-
-            newtest.error = errorObject;
+    /**
+     * checks type of value to be equal to specified
+     * @private
+     * @param  {Object} testobj     test object, wich will be filled with result
+     */
+    var _testType = function(testobj) {
+        if (testobj.argument.length!==2) {
+            testobj.status = 'error';
+            testobj.error = generateError(new RangeError("expect two arguments"));
+        } else if (_typeof(testobj.argument[1]) !== 'String') {
+            testobj.status = 'error';
+            testobj.error = generateError(new TypeError("second argument should be a String"));
+        } else if (!arrayConsist(identifiedTypes,testobj.argument[1].toLowerCase())) {
+            testobj.status = 'error';
+            testobj.error = generateError(new TypeError("second argument should be a standart type"));
         } else {
-            testNonFalse(newtest,args);
-        }
-
-        /** finally place this test into container stack */
-        root.stack.push(newtest);
-
-        /** update counters of contained object */
-        updateCounters(root);
-
-        /** return testit with link to this test to provide chaining */
-        return Object.create(this,{link:{value:newtest}});
-    }
-    /**
-     * public interface for _them()
-     * @public
-     * @example
-     *   test.them([1,'a',true,window]);
-     */
-    this.them = _them;
-
-    /**
-     * test if type of first argument (value) is equal to second argument
-     * @private
-     * @chainable
-     * @param  {Multiple} value     will be tested
-     * @param  {[type]} type        type to compare with
-     */
-    var _type = function(value,type) {
-        /**
-         * make a new instance of test
-         * Most of code in this function will manipulate with it.
-         */
-        var newtest = new test();
-        /**
-         * fill newtest.argument with arguments
-         * (arguments is array-like object, but not an array. So i can't just do newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
-         */
-        for (var i in arguments) {
-            newtest.argument.push(arguments[i]);
-        }
-        /** throw an error if there are not 2 arguments */
-        
-        if (arguments.length!==2) {
-            newtest.status = 'error';
-            var e = new RangeError("test.type expect two arguments");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
-        } else if (_typeof(type) !== 'String') {
-            newtest.status = 'error';
-            var e = new TypeError("second argument should be a String");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
-        } else if (!arrayConsist(identifiedTypes,type.toLowerCase())) {
-            newtest.status = 'error';
-            var e = new TypeError("second argument should be standart type");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
-        } else {
-            testType(newtest,[value],type);
-        }
-
-        /** finally place this test into container stack */
-        root.stack.push(newtest);
-
-        /** update counters of contained object */
-        updateCounters(root);
-
-        /** return testit with link to this test to provide chaining */
-        return Object.create(this,{link:{value:newtest}});
-    }
-    /**
-     * public interface for _type()
-     * @public
-     * @example
-     *   test.type('asd','String');
-     */
-    this.type = _type;
-
-    /** 
-     * compare types of all values in args with each other and 'type' if defined
-     * @private
-     * @chainable
-     * @param  {Array} args         array of values which will be tested
-     * @param  {String} type        type which will be compared with
-     */
-    var _types = function(args,type) {
-        /**
-         * make a new instance of test
-         * Most of code in this function will manipulate with it.
-         */
-        var newtest = new test();
-        /**
-         * fill newtest.argument with arguments
-         * (arguments is array-like object, but not an array. So i can't just do newtest.argument = newtest.argument.concat(arguments); or newtest.argument = arguments)
-         */
-        for (var i in arguments) {
-            newtest.argument.push(arguments[i]);
-        }
-        /** throw error if there are not 2 arguments */
-        if (arguments.length>2) {
-            newtest.status = 'error';
-            var e = new RangeError("test.types expect maximum of two arguments");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
-        } else if (_typeof(args) !== 'Array') {
-            newtest.status = 'error';
-            var e = new TypeError("test.types expect an array in first argument");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
-        } else if (type) {
-            if (_typeof(type) !== 'String') {
-                newtest.status = 'error';
-                var e = new TypeError("second argument should be a String");
-                var errorObject = {};
-                generateError(e,errorObject);
-                newtest.error = errorObject;
-             } else if (!arrayConsist(identifiedTypes,type.toLowerCase())) {
-                newtest.status = 'error';
-                var e = new TypeError("second argument should be standart type");
-                var errorObject = {};
-                generateError(e,errorObject);
-                newtest.error = errorObject;
+            testobj.description = 'type of argument is ';
+            if (_typeof(testobj.argument[0]).toLowerCase() !== testobj.argument[1].toLowerCase()) {
+                testobj.description += 'not '+testobj.argument[1];
+                testobj.status = 'fail';
             } else {
-                testType(newtest,args,type);
+                testobj.description += _typeof(testobj.argument[0]);
+                testobj.status = 'pass';
             }
-        } else if (args.length<2) {
-            newtest.status = 'error';
-            var e = new RangeError("test.types expect an array with at least 2 values if second argument not defined");
-            var errorObject = {};
-            generateError(e,errorObject);
-            newtest.error = errorObject;
-        } else {
-            testType(newtest,args);
         }
-
-        /** finally place this test into container stack */
-        root.stack.push(newtest);
-
-        /** update counters of contained object */
-        updateCounters(root);
-
-        /** return testit with link to this test to provide chaining */
-        return Object.create(this,{link:{value:newtest}});
     }
+
     /**
-     * public interface for _types
+     * checks types of elements in array to be equal to specified and between each other
+     * @private
+     * @param  {Object} testobj     test object, wich will be filled with result
+     */
+    var _testTypes = function(testobj) {
+        if (testobj.argument.length==0) {
+            testobj.status = 'error';
+            testobj.error = generateError(new RangeError("at least one argument expected"));
+        } else if (testobj.argument.length>2) {
+            testobj.status = 'error';
+            testobj.error = generateError(new RangeError("maximum of two arguments expected"));
+        } else if (_typeof(testobj.argument[0]) !== 'Array') {
+            testobj.status = 'error';
+            testobj.error = generateError(new TypeError("first argument should be an array"));
+        } else {
+            var type, types;
+            if (_typeof(testobj.argument[1]) === 'undefined') {
+                type = _typeof(testobj.argument[0][0]);
+                types = 'same';
+            } else if (_typeof(testobj.argument[1]) !== 'String') {
+                testobj.status = 'error';
+                testobj.error = generateError(new TypeError("second argument should be a String"));
+             } else if (!arrayConsist(identifiedTypes,testobj.argument[1].toLowerCase())) {
+                testobj.status = 'error';
+                testobj.error = generateError(new TypeError("second argument should be a standart type"));
+            } else {
+                type = testobj.argument[1];
+                types = 'right';
+            }
+            if (testobj.status !== 'error') {
+                type = type.toLowerCase();
+                for (var i in testobj.argument[0]) {
+                    if (_typeof(testobj.argument[0][i]).toLowerCase() !== type) {
+                        testobj.status = 'fail';
+                        testobj.description = 'There are at least one element with different type';
+                    }
+                }
+                if (testobj.status !== 'fail') {
+                    testobj.status = 'pass';
+                    testobj.description = 'arguments are '+types+' type';
+                }
+            }
+        }
+    }
+
+    /**
+     * adds the time spent on test, into his result
+     * @private
+     * @chainable chain-preparatory
+     */
+    var _time = Object.create(this,{timestamp:{value:new Date().getTime()}});
+    /**
+     * public interface for _time
      * @public
      * @example
-     *   test.type([1,2,3],'Number');
+     *   test.time.it(someThing());
      */
-    this.types = _types;
+    this.time = _time;
 
     /**
-     * Test types of all values in args
+     * makes test/group unpushable into current level group stack
      * @private
-     * @param  {Objcet} test    will be updated
-     * @param  {Array}  args    consist of values which types will be tested
-     * @param  {[type]} type    type which will be compared with
+     * @chainable chain-preparatory
      */
-    var testType = function(test,args,type) {
-        test.description = 'type of argument is ';
-
-        if (!type) type = _typeof(args[0]);
-
-        for (arg in args) {
-            if (_typeof(args[arg]).toLowerCase() !== type.toLowerCase()) {
-                test.description += 'not '+type;
-                test.status = 'fail';
-                return
-            }
-        }
-
-        test.description += type;
-        test.status = 'pass';
-    }
-
+    var _exclude = Object.create(this,{excluded:{value:true}});
     /**
-     * Test all values in args for non-false
-     * @private
-     * @param  {Objcet} test    will be updated
-     * @param  {Array}  args    consist of values which will be tested
+     * public interface for _exclude
+     * @public
+     * @example
+     *   test.exclude.it(someThing).done();
+     *   test.exclude.group('some group',function(){ ... }).done();
      */
-    var testNonFalse = function(test,args) {
-        /** use different text when one and multiple values are tested */
-        test.description = (args.length===1)? 'argument is not ':'arguments is not ';
-
-        /** test every value in args */
-        for (arg in args) {
-            if (!args[arg]) {
-                test.description += 'true';
-                test.status = 'fail';
-                return;
-            }
-        }
-
-        /** if code not stopped in previous step, test passed */
-        test.description += 'false';
-        test.status = 'pass';
-    }
-
-    /**
-     * Test all values in args for equivalence
-     * @private
-     * @param  {Objcet} test    will be updated
-     * @param  {Array}  args    consist of values which will be tested
-     */
-    var testEquivalence = function(test,args) {
-        /** first value will be used as model in comparisons */
-        var model = args.shift();
-
-        /** compare all types of values in args with type of model */
-        var type = _typeof(model);
-        for (arg in args) {
-            if (_typeof(args[arg]) !== type) {
-                test.status = 'fail';
-                test.description = 'arguments have different types';
-                return;
-            }
-        }
-
-        /** compare all values in args with model */
-        for (arg in args) {
-            if (!deepCompare(model,args[arg])) {
-                test.description = 'arguments are not equal';
-                test.status = 'fail';
-                return;
-            }
-        }
-
-        /** if code wasn't stopped earlier, test passed */
-        test.description = 'arguments are equal';
-        test.status = 'pass';
-    }
+    this.exclude = _exclude;
 
     /**
      * add a comment for the linked test or group
      * @private
-     * @chainable
+     * @chainable chain-link
      * @type {Function}
      * @param  {String} text        user defined text, which will be used as a comment
      */
@@ -551,7 +466,7 @@ var testit = function() {
     /**
      * try to execute functions in arguments depending on test|group result
      * @private
-     * @chainable
+     * @chainable chain-link
      * @param  {Function} pass  function to execute if test|group pass
      * @param  {Function} fail  function to execute if test|group fail
      * @param  {Function} error function to execute if test|group cause an error
@@ -569,15 +484,40 @@ var testit = function() {
      * @public
      * @example
      *   test.it(someThing).callback(
-     *       function() {...} // - will be executed if test pass
-     *      ,function() {...} // - will be executed if test fail
-     *      ,function() {...} // - will be executed if test cause an error
+     *       function() {...} // - will be execute if test pass
+     *      ,function() {...} // - will be execute if test fail
+     *      ,function() {...} // - will be execute if test cause an error 
      *   );
      */
     this.callback = _callback;
 
     /**
-     * Final chain-link: will return result of test or group
+     * add trace to test/group
+     * @private
+     * @chainable chain-link
+     * @param  {Number} level       Number of trace lines which will be added
+     */
+    var _addTrace = function(level) {
+        if (!this.link) throw new ReferenceError('addTrace can only be used in testit chain');
+        if (this.trace) {
+            var trace = this.trace
+            if (_typeof(level) === 'Number') trace = trace.split('\n').slice(0,level+1).join('\n');
+            this.link.trace = trace;
+        }
+
+        return this;
+    }
+    /**
+     * public interface for _addTrace()
+     * @public
+     * @example
+     *   test.it(someThing).addTrace(); // add full trace
+     *   test.it(someThing).addTrace(0); // add only first line of trace
+     */
+    this.addTrace = _addTrace;
+
+    /**
+     * Final chain-link: returns result of test or group
      * @private
      * @return {boolean}            true - if test or group passed, false - otherwise.
      */
@@ -596,13 +536,13 @@ var testit = function() {
     this.result = _result;
 
     /**
-     * Final chain-link: will return arguments of test (not of group!)
+     * Final chain-link: returns arguments of test (not of group!)
      * @private
-     * @return                      a single argument or array of arguments
+     * @return                      single argument or array of arguments
      */
     var _arguments = function() {
         if (this.link) {
-            if (this.link.type!=='test') return TypeError("groups don't return arguments");
+            if (this.link.type!=='test') return TypeError('groups don\'t return arguments');
             switch (this.link.argument.length) {
                 case 0 : return undefined
                 case 1 : return this.link.argument[0];
@@ -620,19 +560,18 @@ var testit = function() {
      */
     this.arguments = _arguments;
 
-
     /** 
-     * apply last stuff and display results
+     * apply last stuff and display result
      * type {Function}
      * @private
      */
-    var _done = function(obj) {
+    var _done = function() {
         /** update time in root */
-        root.time = new Date().getTime() - root.time;
+        if (!rootTimeDone) root.time = new Date().getTime() - root.time;
+        rootTimeDone = true;
 
-        /** display root */
-        // console.dir(root);
-        _printConsole(root);
+        /** display result */
+        _printConsole(this.link);
     }
     /**
      * public interface for _done()
@@ -674,7 +613,7 @@ var testit = function() {
         if (link.result.error || link.error) {link.status='error'}
         else if (link.result.fail) {link.status='fail'}
         else {link.status='pass'}
-        // console.log(link.name,(link.linkBack)?link.linkBack.name:link.linkBack)
+
         if (link.linkBack) {
             updateCounters(link.linkBack);
         }
@@ -682,7 +621,7 @@ var testit = function() {
 
 
     /**
-     * prettify display of group or test in browser dev console
+     * prittify display of group or test in browser dev console
      * @private
      * @param  {Object} obj     group or test to display
      */
@@ -736,6 +675,11 @@ var testit = function() {
                 if (obj.description) {
                     console.log(obj.description);
                 }
+
+                /** display trace if defined */
+                if (obj.trace) {
+                    console.log(obj.trace);
+                }
                 
                 /**
                  * display all tests and groups in stack
@@ -763,16 +707,42 @@ var testit = function() {
                 switch (obj.status) {
                     case 'pass' : {
                         /** if pass - collapse group*/
-                        console.groupCollapsed("%cpass%c: %s",green,normal,(obj.comment)?obj.comment:'');
+                        console.groupCollapsed("%cpass%c: %s%s%c%s%c%s",green,normal
+                                              ,(obj.comment)?obj.comment:''
+                                              ,(obj.time)?' (':''
+                                              ,(obj.time)?blue:''
+                                              ,(obj.time)?obj.time:''
+                                              ,(obj.time)?normal:''
+                                              ,(obj.time)?' ms)':'');
                     } break;
                     case 'fail' : {
-                        console.group("%cfail%c: %s",red,normal,(obj.comment)?obj.comment:'');
+                        console.group("%cfail%c: %s",red,normal
+                                              ,(obj.comment)?obj.comment:''
+                                              ,(obj.time)?' (':''
+                                              ,(obj.time)?blue:''
+                                              ,(obj.time)?obj.time:''
+                                              ,(obj.time)?normal:''
+                                              ,(obj.time)?' ms)':'');
                     } break;
                     case 'error' : {
-                        console.group("%cerror%c: %s",orange,normal,(obj.comment)?obj.comment:'');
+                        console.group("%cerror%c: %s",orange,normal
+                                              ,(obj.comment)?obj.comment:''
+                                              ,(obj.time)?' (':''
+                                              ,(obj.time)?blue:''
+                                              ,(obj.time)?obj.time:''
+                                              ,(obj.time)?normal:''
+                                              ,(obj.time)?' ms)':'');
                     } break;
                 }
+
+                /** display description if defined */
                 if (obj.description) console.log(obj.description);
+                
+                /** display trace if defined */
+                if (obj.trace) {
+                    console.log(obj.trace);
+                }
+
                 /** display error if defined */
                 if (obj.error) {
                     // console.error(obj.error);
@@ -796,7 +766,7 @@ var testit = function() {
     this.print = _printConsole;
 
     /**
-     * determinate type of argument
+     * determinates type of argument
      * More powerfull then typeof().
      * @private
      * @return {String}     type name of the argument
@@ -846,7 +816,7 @@ var testit = function() {
      *   test.typeof(myVar);
      */
     this.typeof = _typeof;
-    /** list of type, which _typeof can identify */
+    /** list of types, which can be identified by _typeof */
     var identifiedTypes = ['array', 'boolean', 'date', 'error', 'evalerror', 'function', 'html', 'nan', 'nodelist', 'null', 'number', 'object', 'rangeerror', 'referenceerror', 'regexp', 'string', 'syntaxerror', 'typeerror', 'urierror', 'window'];
     
     /**
@@ -857,7 +827,9 @@ var testit = function() {
      */
     this.trace = getTrace;
 
-}
+    // return this;
+    return Object.create(this,{link:{value:root}});
+}  
 
 /**
  * figure out what status will be used
@@ -877,28 +849,31 @@ function updateStatus(oldstatus,newstatus) {
 }
 
 /**
- * make the error object more clear
- * @type {Object}
+ * make the error object more clear and returns it
  * @param {Error} error         basic error
- * @param {Object} object       clear error object
+ * @return {Object}             clear error object
  */
-function generateError(error,object) {
+function generateError(error) {
     /**
-     * clear error object
-     * @property {Error} error      basic error
-     * @property {String} type      type of the error
+     * understandable error object
+     * @property {Error} error      consist basic error
+     * @property {String} type      type of error
      * @property {String} message   message from basic property
      * @property {String} stack     result of trace()
      */
-    object.error = error;
-    object.type = test.typeof(error);
-    object.message = error.message;
+    var object = {
+        error: error,
+        type: test.typeof(error),
+        message: error.message,
+    }
     if (getTrace(error)) object.stack = getTrace(error);
+
+    return object;
 }
 
 /**
  * returns a list of functions that have been performed to call the current line
- * @param  {Error} error    if set, trace will be based on its stack
+ * @param  {Error} error    if set, trace will be based on its stack 
  * @return {String}         list of functions joined by "\n";
  *                          undefined if error.stack is not supported.
  */
@@ -915,10 +890,8 @@ function getTrace(error) {
         if (i.indexOf(test.typeof(error))!==-1) addToStack = false;
         /** take of reference to this function */
         if (i.indexOf('getTrace')!==-1) addToStack = false;
-        /** take off any references to testit methods */
-        for (prop in test) {    
-            if (i.indexOf('[as '+prop+']')!==-1) addToStack = false;
-        }
+        /** take off any references to testit lines */
+        if (i.indexOf('/testit.')!==-1) addToStack = false;
         /** fill the stack */
         if (addToStack) {
             stack += (stack)?'\n':'';
@@ -937,8 +910,8 @@ function deepCompare(){function c(d,e){var f;if(isNaN(d)&&isNaN(e)&&"number"==ty
 
 /**
  * finds val in array
- * @param  {Array} array  where to search
- * @param          val    what to search for
+ * @param  {Array} array  where to search 
+ * @param          val    what to search for 
  * @return {Boolean}      true if found, false otherwise
  */
 arrayConsist = function(array, val) {
@@ -946,9 +919,8 @@ arrayConsist = function(array, val) {
     return false;
 }
 /** 
- * make new instance of testit
- * Make it availible from outside.
+ * new instance of testit, availible from outside.
  */
-window.test = new testit();
+scope.test = new testit();
 
-})(window)
+})(this);
