@@ -66,7 +66,7 @@ var testit = function() {
     root.time = new Date().getTime();
 
     /**
-     * make new instace of group, fill it, push it into current level group stack
+     * make new instace of group, fill it, push it into stack of current level group
      * @private
      * @chainable
      * @param  {String}   name          name of new group
@@ -130,7 +130,7 @@ var testit = function() {
         return newgroup;
     }
     /**
-     * return group by it's name in current level group stack
+     * return group by it's name in stack of current level group
      * @private
      * @param  {String} name    name of group which will be searched for
      * @return {Object}         group
@@ -201,7 +201,7 @@ var testit = function() {
     this.group = _group;
 
     /**
-     * Base for all tests. Make new instance of test, fill it using test-functions, push it into current level group stack
+     * Base for all tests. Make new instance of test, fill it using test-functions, push it into stack of current level group
      * @private
      * @chainable chain-opener
      * @param {String} type   determines test-function which will be used
@@ -423,7 +423,7 @@ var testit = function() {
     this.time = _time;
 
     /**
-     * makes test/group unpushable into current level group stack
+     * makes test/group unpushable into stack of current level group
      * @private
      * @chainable chain-preparatory
      */
