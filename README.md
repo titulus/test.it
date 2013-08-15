@@ -37,7 +37,7 @@ btw you can use this construction:
 <script src='./script.js'></script>
 <!-- your tests -->
 <script src='./tests.js'></script>
-<!-- trick to not worry about the test.done(); call -->
+<!-- a trick to not worry about the call of test.done() -->
 <script>test.done();</script>
 ```
 
