@@ -128,8 +128,3 @@ var NodeNonInteractiveConsole = function(){
   }
 
 };
-
-nconsole = new nconsole();
-
-global.nconsole = nconsole;
-
