@@ -1,4 +1,4 @@
-var nconsole = function(){
+var NodeNonInteractiveConsole = function(){
 
   _buffer = {
         name: ['console'],
