@@ -1,5 +1,46 @@
 (function(window) {
 
+/**
+* Context For Strategy Patterm (multi console idea implementation)
+**/
+var _consoleContext = function(strategy){
+    this.strategy = strategy;
+  
+    this.log = function() {
+        this.strategy.log(arguments);
+    }
+
+    this.error = function() {
+        this.strategy.error(arguments);
+    }
+
+    this.warn = function() {
+        this.strategy.warn(arguments);
+    }
+
+    this.info = function() {
+        this.strategy.info(arguments);
+    }
+
+    this.dir = function() {
+        this.strategy.dir(arguments);
+    }
+
+    this.group = function() {
+        this.strategy.group(arguments);
+    }
+
+    this.groupCollapsed = function() {
+        this.strategy.groupCollapsed(arguments);
+    }
+
+    this.groupEnd = function() {
+        this.strategy.groupEnd();
+    }
+
+};
+
+
 var testit = function() {
     /**
      * group class, which will contain tests
@@ -66,53 +107,30 @@ var testit = function() {
     root.time = new Date().getTime();
 
     /**
-    * console for output
-    * @public
-    * @type {Object}
-    **/
-    var _console = console;
-
-    /**
-    * check {object} compatible with browser console
-    * @private
-    * @param {Object}
-    * @throws Exception if {object} incompatible
-    **/
-    var _checkConsoleInterface = function(konsole){
-        if (typeof konsole.log != "function" ){
-           throw "_checkConsoleInterface: console.log is not a function";
-        }
-        if (typeof konsole.group != "function" ){
-           throw "_checkConsoleInterface: console.group is not a function";
-        }
-        if (typeof konsole.groupCollapsed != "function" ){
-           throw "_checkConsoleInterface: console.groupCollapsed is not a function";
-        }
-        if (typeof konsole.groupEnd != "function" ){
-           throw "_checkConsoleInterface: console.groupEnd is not a function";
-        }
-        if (typeof konsole.dir != "function" ){
-           throw "_checkConsoleInterface: console.dir is not a function";
-        }
-        if (typeof konsole.error != "function" ){
-           throw "_checkConsoleInterface: console.error is not a function";
-        }
-    }
-
-    /**
     * change default browser console to alternative
     * @public
     * @param {Object} compatible with browser console
     * @throws Exception if {object} incompatible
     **/
-    var setConsole = function(consoleInterface) {
-      _checkConsoleInterface(consoleInterface);
-      _console = consoleInterface;
-      this.console = _console;
+    var setConsole = function(variant) {
+        
+        var _console = null;
+        
+        swtich (variant){
+            case 'nodeNoInteractive':
+                _console = new NodeNonInteractiveConsole();
+                break
+            case 'default':
+            default:
+                _console = console;
+    
+        }
+      
+        this.console = new _consoleContext(_console);
     }
 
     this.setConsole = setConsole;
-    this.console = _console;
+    this.console = new _consoleContext(console);
 
     /**
      * make new instace of group, fill it, add it to previous group.stack, fill some values in previous group
