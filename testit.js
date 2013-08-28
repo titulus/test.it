@@ -4,7 +4,7 @@
 
 var rootTimeDone = false;
 
-var testit = function() {
+function Testit () {
     /**
      * group class which will contain tests
      * In addition it will be used to prevent wrong code from falling.
@@ -19,7 +19,7 @@ var testit = function() {
      * @attribute {Object} result       counters for tests and groups
      * @attribute {array}  stack        array of tests and groups
      */
-    var group = function() {
+    function Group() {
         this.type = 'group';
         this.name = undefined;
         this.status = undefined;
@@ -47,7 +47,7 @@ var testit = function() {
      * @attribute {Number} time         time in ms spent on test
      * @attribute {Array}  argument     all received arguments
      */
-    var test = function() {
+    function Test() {
         this.type = 'test';
         this.status = undefined;
         this.comment = undefined;
@@ -62,7 +62,7 @@ var testit = function() {
      * @public
      * @type {group}
      */
-    var root = new group();
+    var root = new Group();
     this.root = root;
     root.name = 'root';
     root.time = new Date().getTime();
@@ -93,7 +93,7 @@ var testit = function() {
                 break;
             }
         }
-        if (!groupAlreadyExist) newgroup = new group();
+        if (!groupAlreadyExist) newgroup = new Group();
         newgroup.name = name;
 
         /** add backlink to provide trace */
@@ -215,7 +215,7 @@ var testit = function() {
          * new instance of test
          * Most of code in this function will manipulate with it.
          */
-        var newtest = new test();
+        var newtest = new Test();
 
         /** fill newtest.agrument from method arguments */
         for (var i in args) {
@@ -277,7 +277,7 @@ var testit = function() {
             } break;
             /** if there are two arguments - check equalence between them */
             case 2 : {
-                if (_typeof(testobj.argument[0]) !== _typeof(testobj.argument[1])) {
+                if (typeOf(testobj.argument[0]) !== typeOf(testobj.argument[1])) {
                     testobj.description = 'argument hase different types';
                     testobj.status = 'fail';
                 } else if (deepCompare(testobj.argument[0],testobj.argument[1])) {
@@ -311,7 +311,7 @@ var testit = function() {
             /** if there is only one argument - continue */
             case 1 : {
                 /** if first argument is not an Array - throw TypeError */
-                if (_typeof(testobj.argument[0]) !== 'Array') {
+                if (typeOf(testobj.argument[0]) !== 'Array') {
                     testobj.status = 'error';
                     testobj.error = generateError(new TypeError("argument should be an array"));
                 } else {
@@ -346,7 +346,7 @@ var testit = function() {
         if (testobj.argument.length!==2) {
             testobj.status = 'error';
             testobj.error = generateError(new RangeError("expect two arguments"));
-        } else if (_typeof(testobj.argument[1]) !== 'String') {
+        } else if (typeOf(testobj.argument[1]) !== 'String') {
             testobj.status = 'error';
             testobj.error = generateError(new TypeError("second argument should be a String"));
         } else if (!arrayConsist(identifiedTypes,testobj.argument[1].toLowerCase())) {
@@ -354,11 +354,11 @@ var testit = function() {
             testobj.error = generateError(new TypeError("second argument should be a standart type"));
         } else {
             testobj.description = 'type of argument is ';
-            if (_typeof(testobj.argument[0]).toLowerCase() !== testobj.argument[1].toLowerCase()) {
+            if (typeOf(testobj.argument[0]).toLowerCase() !== testobj.argument[1].toLowerCase()) {
                 testobj.description += 'not '+testobj.argument[1];
                 testobj.status = 'fail';
             } else {
-                testobj.description += _typeof(testobj.argument[0]);
+                testobj.description += typeOf(testobj.argument[0]);
                 testobj.status = 'pass';
             }
         }
@@ -376,15 +376,15 @@ var testit = function() {
         } else if (testobj.argument.length>2) {
             testobj.status = 'error';
             testobj.error = generateError(new RangeError("maximum of two arguments expected"));
-        } else if (_typeof(testobj.argument[0]) !== 'Array') {
+        } else if (typeOf(testobj.argument[0]) !== 'Array') {
             testobj.status = 'error';
             testobj.error = generateError(new TypeError("first argument should be an array"));
         } else {
             var type, types;
-            if (_typeof(testobj.argument[1]) === 'undefined') {
-                type = _typeof(testobj.argument[0][0]);
+            if (typeOf(testobj.argument[1]) === 'undefined') {
+                type = typeOf(testobj.argument[0][0]);
                 types = 'same';
-            } else if (_typeof(testobj.argument[1]) !== 'String') {
+            } else if (typeOf(testobj.argument[1]) !== 'String') {
                 testobj.status = 'error';
                 testobj.error = generateError(new TypeError("second argument should be a String"));
              } else if (!arrayConsist(identifiedTypes,testobj.argument[1].toLowerCase())) {
@@ -397,7 +397,7 @@ var testit = function() {
             if (testobj.status !== 'error') {
                 type = type.toLowerCase();
                 for (var i in testobj.argument[0]) {
-                    if (_typeof(testobj.argument[0][i]).toLowerCase() !== type) {
+                    if (typeOf(testobj.argument[0][i]).toLowerCase() !== type) {
                         testobj.status = 'fail';
                         testobj.description = 'There are at least one element with different type';
                     }
@@ -475,9 +475,9 @@ var testit = function() {
      */
     function _callback(pass,fail,error) {
         if (!this.link) throw new ReferenceError('callback can only be used in testit chain');
-        if (this.link.status === 'pass' && _typeof(pass) === 'Function' ) try {pass();} catch(e) {throw e;}
-        if (this.link.status === 'fail' && _typeof(fail) === 'Function' ) try {fail();} catch(e) {throw e;}
-        if (this.link.status === 'error' && _typeof(error) === 'Function' ) try {error();} catch(e) {throw e;}
+        if (this.link.status === 'pass' && typeOf(pass) === 'Function' ) try {pass();} catch(e) {throw e;}
+        if (this.link.status === 'fail' && typeOf(fail) === 'Function' ) try {fail();} catch(e) {throw e;}
+        if (this.link.status === 'error' && typeOf(error) === 'Function' ) try {error();} catch(e) {throw e;}
 
         return this;
     }
@@ -503,7 +503,7 @@ var testit = function() {
         if (!this.link) throw new ReferenceError('addTrace can only be used in testit chain');
         if (this.trace) {
             var trace = this.trace
-            if (_typeof(level) === 'Number') trace = trace.split('\n').slice(0,level+1).join('\n');
+            if (typeOf(level) === 'Number') trace = trace.split('\n').slice(0,level+1).join('\n');
             this.link.trace = trace;
         }
 
@@ -772,12 +772,12 @@ var testit = function() {
     this.print = _printConsole;
 
     /**
-     * public interface for _typeof
+     * public interface for typeOf
      * @public
      * @example
      *   test.typeof(myVar);
      */
-    this.typeof = _typeof;
+    this.typeof = typeOf;
     
     /**
      * public interface for getTrace(error)
@@ -798,7 +798,7 @@ var testit = function() {
  * @return {String}     type name of the argument
  *                      undefined, if type was not determinated
  */
-function _typeof (argument) {
+function typeOf (argument) {
     var type;
     try {
         switch (argument.constructor) {
@@ -835,7 +835,7 @@ function _typeof (argument) {
     }
     return type;
 }
-/** list of types, which can be identified by _typeof */
+/** list of types, which can be identified by typeOf */
 var identifiedTypes = ['array', 'boolean', 'date', 'error', 'evalerror', 'function', 'html', 'nan', 'nodelist', 'null', 'number', 'object', 'rangeerror', 'referenceerror', 'regexp', 'string', 'syntaxerror', 'typeerror', 'urierror', 'window'];
     
 
@@ -871,7 +871,7 @@ function generateError(error) {
      */
     var object = {
         error: error
-       ,type: _typeof(error)
+       ,type: typeOf(error)
        ,message: error.message
     }
     if (getTrace(error)) object.stack = getTrace(error);
@@ -895,7 +895,7 @@ function getTrace(error) {
         /** take off empty strings (FireBug) */
         if (i==='') addToStack = false;
         /** take off Errors (Chrome) */
-        if (i.indexOf(_typeof(error))!==-1) addToStack = false;
+        if (i.indexOf(typeOf(error))!==-1) addToStack = false;
         /** take of reference to this function */
         if (i.indexOf('getTrace')!==-1) addToStack = false;
         /** take off any references to testit lines */
@@ -929,6 +929,6 @@ function arrayConsist(array, val) {
 /** 
  * new instance of testit, availible from outside.
  */
-scope.test = new testit();
+scope.test = new Testit();
 
 })(this);
