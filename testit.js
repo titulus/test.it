@@ -772,58 +772,12 @@ var testit = function() {
     this.print = _printConsole;
 
     /**
-     * determinates type of argument
-     * More powerfull then typeof().
-     * @private
-     * @return {String}     type name of the argument
-     *                      undefined, if type was not determinated
-     */
-    function _typeof (argument) {
-        var type;
-        try {
-            switch (argument.constructor) {
-                case Array : type='Array';break;
-                case Boolean : type='Boolean';break;
-                case Date : type='Date';break;
-                case Error : type='Error';break;
-                case EvalError : type='EvalError';break;
-                case Function : type='Function';break;
-                // case Math : type='math';break;
-                case Number : {type=(isNaN(argument))?'NaN':'Number';}break;
-                case Object : type='Object';break;
-                case RangeError : type='RangeError';break;
-                case ReferenceError : type='ReferenceError';break;
-                case RegExp : type='RegExp';break;
-                case String : type='String';break;
-                case SyntaxError : type='SyntaxError';break;
-                case TypeError : type='TypeError';break;
-                case URIError : type='URIError';break;
-                case Window : type='Window';break;
-                case HTMLDocument : type='HTML';break;
-                case NodeList : type='NodeList';break;
-                default : {
-                    if (typeof argument === 'object'
-                     && argument.toString().indexOf('HTML') !== -1) {
-                        type = 'HTML';
-                    } else {
-                        type = undefined;
-                    }
-                }
-            }
-        } catch (e) {
-            type = (argument === null)? 'null' : typeof argument;
-        }
-        return type;
-    }
-    /**
      * public interface for _typeof
      * @public
      * @example
      *   test.typeof(myVar);
      */
     this.typeof = _typeof;
-    /** list of types, which can be identified by _typeof */
-    var identifiedTypes = ['array', 'boolean', 'date', 'error', 'evalerror', 'function', 'html', 'nan', 'nodelist', 'null', 'number', 'object', 'rangeerror', 'referenceerror', 'regexp', 'string', 'syntaxerror', 'typeerror', 'urierror', 'window'];
     
     /**
      * public interface for getTrace(error)
@@ -836,6 +790,54 @@ var testit = function() {
     // return this;
     return this;
 }  
+
+/**
+ * determinates type of argument
+ * More powerfull then typeof().
+ * @private
+ * @return {String}     type name of the argument
+ *                      undefined, if type was not determinated
+ */
+function _typeof (argument) {
+    var type;
+    try {
+        switch (argument.constructor) {
+            case Array : type='Array';break;
+            case Boolean : type='Boolean';break;
+            case Date : type='Date';break;
+            case Error : type='Error';break;
+            case EvalError : type='EvalError';break;
+            case Function : type='Function';break;
+            // case Math : type='math';break;
+            case Number : {type=(isNaN(argument))?'NaN':'Number';}break;
+            case Object : type='Object';break;
+            case RangeError : type='RangeError';break;
+            case ReferenceError : type='ReferenceError';break;
+            case RegExp : type='RegExp';break;
+            case String : type='String';break;
+            case SyntaxError : type='SyntaxError';break;
+            case TypeError : type='TypeError';break;
+            case URIError : type='URIError';break;
+            case Window : type='Window';break;
+            case HTMLDocument : type='HTML';break;
+            case NodeList : type='NodeList';break;
+            default : {
+                if (typeof argument === 'object'
+                 && argument.toString().indexOf('HTML') !== -1) {
+                    type = 'HTML';
+                } else {
+                    type = undefined;
+                }
+            }
+        }
+    } catch (e) {
+        type = (argument === null)? 'null' : typeof argument;
+    }
+    return type;
+}
+/** list of types, which can be identified by _typeof */
+var identifiedTypes = ['array', 'boolean', 'date', 'error', 'evalerror', 'function', 'html', 'nan', 'nodelist', 'null', 'number', 'object', 'rangeerror', 'referenceerror', 'regexp', 'string', 'syntaxerror', 'typeerror', 'urierror', 'window'];
+    
 
 /**
  * figure out what status will be used
@@ -869,7 +871,7 @@ function generateError(error) {
      */
     var object = {
         error: error
-       ,type: test.typeof(error)
+       ,type: _typeof(error)
        ,message: error.message
     }
     if (getTrace(error)) object.stack = getTrace(error);
@@ -893,7 +895,7 @@ function getTrace(error) {
         /** take off empty strings (FireBug) */
         if (i==='') addToStack = false;
         /** take off Errors (Chrome) */
-        if (i.indexOf(test.typeof(error))!==-1) addToStack = false;
+        if (i.indexOf(_typeof(error))!==-1) addToStack = false;
         /** take of reference to this function */
         if (i.indexOf('getTrace')!==-1) addToStack = false;
         /** take off any references to testit lines */
