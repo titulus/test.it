@@ -74,7 +74,7 @@ var testit = function() {
      * @param  {Boolean}  excluded      if true - newgroup will not be added into currentlevel stack;
      * @return {Object}                 testit with link to new group
      */
-    var _makeGroup = function(name,fun,excluded) {
+    function _makeGroup(name,fun,excluded) {
         /** get timestamp */
         var time = new Date().getTime();
         
@@ -135,7 +135,7 @@ var testit = function() {
      * @param  {String} name    name of group which will be searched for
      * @return {Object}         group
      */
-    var _getGroup = function (name) {
+    function _getGroup(name) {
         var stack = this.stack;
         for (var i in stack) {
             if (stack[i].type !== 'group') continue;
@@ -154,7 +154,7 @@ var testit = function() {
      * @param  {Function} fun       function contains tests and other groups
      * @return {Object}             testit with link to specified group
      */
-    var _group = function(name,fun) {
+    function _group(name,fun) {
         /**
          * Here may be 3 situation:
          *     this.link is root && root is root                - test.group() called in root scope
@@ -208,7 +208,7 @@ var testit = function() {
      * @param {Array} args    array of arguments
      * @return {Object}       testit with link to this test
      */
-    var _doTest = function (type,args) {
+    function _doTest(type,args) {
         /**
          * new instance of test
          * Most of code in this function will manipulate with it.
@@ -256,7 +256,7 @@ var testit = function() {
      * @private
      * @param {Object}  testobj     test object, wich will be filled with result
      */
-    var _testIt = function(testobj){
+    function _testIt(testobj){
         switch (testobj.argument.length) {
             /** in case of no arguments - throw Reference error */
             case 0 : {
@@ -299,7 +299,7 @@ var testit = function() {
      * @private
      * @param  {Object} testobj     test object, wich will be filled with result
      */
-    var _testThem = function(testobj){
+    function _testThem(testobj){
         switch (testobj.argument.length) {
             /** in case of no arguments - throw Reference error */
             case 0 : {
@@ -340,7 +340,7 @@ var testit = function() {
      * @private
      * @param  {Object} testobj     test object, wich will be filled with result
      */
-    var _testType = function(testobj) {
+    function _testType(testobj) {
         if (testobj.argument.length!==2) {
             testobj.status = 'error';
             testobj.error = generateError(new RangeError("expect two arguments"));
@@ -367,7 +367,7 @@ var testit = function() {
      * @private
      * @param  {Object} testobj     test object, wich will be filled with result
      */
-    var _testTypes = function(testobj) {
+    function _testTypes(testobj) {
         if (testobj.argument.length==0) {
             testobj.status = 'error';
             testobj.error = generateError(new RangeError("at least one argument expected"));
@@ -444,7 +444,7 @@ var testit = function() {
      * @type {Function}
      * @param  {String} text        user defined text, which will be used as a comment
      */
-    var _comment = function(text) {
+    function _comment(text) {
         /** add a comment, if there is something can be commented */
         if (!this.link) throw new ReferenceError('comment can only be used in testit chain');
         this.link.comment = text;
@@ -471,7 +471,7 @@ var testit = function() {
      * @param  {Function} fail  function to execute if test|group fail
      * @param  {Function} error function to execute if test|group cause an error
      */
-    var _callback = function(pass,fail,error) {
+    function _callback(pass,fail,error) {
         if (!this.link) throw new ReferenceError('callback can only be used in testit chain');
         if (this.link.status === 'pass' && _typeof(pass) === 'Function' ) try {pass();} catch(e) {throw e;}
         if (this.link.status === 'fail' && _typeof(fail) === 'Function' ) try {fail();} catch(e) {throw e;}
@@ -497,7 +497,7 @@ var testit = function() {
      * @chainable chain-link
      * @param  {Number} level       Number of trace lines which will be added
      */
-    var _addTrace = function(level) {
+    function _addTrace(level) {
         if (!this.link) throw new ReferenceError('addTrace can only be used in testit chain');
         if (this.trace) {
             var trace = this.trace
@@ -521,7 +521,7 @@ var testit = function() {
      * @private
      * @return {boolean}            true - if test or group passed, false - otherwise.
      */
-    var _result = function() {
+    function _result() {
         if (this.link) {
             return (this.link.status == 'pass')? true : false;
         }
@@ -540,7 +540,7 @@ var testit = function() {
      * @private
      * @return                      single argument or array of arguments
      */
-    var _arguments = function() {
+    function _arguments() {
         if (this.link) {
             if (this.link.type!=='test') return TypeError('groups don\'t return arguments');
             switch (this.link.argument.length) {
@@ -565,7 +565,7 @@ var testit = function() {
      * type {Function}
      * @private
      */
-    var _done = function() {
+    function _done() {
         /** update time in root */
         if (!rootTimeDone && root.name==='root') {
             root.time = new Date().getTime() - root.time;
@@ -592,7 +592,7 @@ var testit = function() {
 
 
     /** update counters of contained object */
-    var updateCounters = function(link) {
+    function updateCounters(link) {
         link.result = {
             pass: 0,
             fail: 0,
@@ -629,7 +629,7 @@ var testit = function() {
      * @private
      * @param  {Object} obj     group or test to display
      */
-    var _printConsole = function(obj) {
+    function _printConsole(obj) {
 
         /** colors for console.log %c */
         var green = "color: green",
@@ -776,7 +776,7 @@ var testit = function() {
      * @return {String}     type name of the argument
      *                      undefined, if type was not determinated
      */
-    var _typeof = function (argument) {
+    function _typeof (argument) {
         var type;
         try {
             switch (argument.constructor) {
@@ -918,7 +918,7 @@ function deepCompare(){function c(d,e){var f;if(isNaN(d)&&isNaN(e)&&"number"==ty
  * @param          val    what to search for 
  * @return {Boolean}      true if found, false otherwise
  */
-arrayConsist = function(array, val) {
+function arrayConsist(array, val) {
     for (var i in array) if (array[i] === val) return true;
     return false;
 }
