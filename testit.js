@@ -1,5 +1,7 @@
 (function(scope) {
 
+'use strict'
+
 var rootTimeDone = false;
 
 var testit = function() {
@@ -572,7 +574,7 @@ var testit = function() {
             rootTimeDone = true;
         }
 
-        curentLevel = (this.link)?this.link:root;
+        var curentLevel = (this.link)?this.link:root;
 
         /** display result */
         _printConsole(curentLevel);
@@ -866,9 +868,9 @@ function generateError(error) {
      * @property {String} stack     result of trace()
      */
     var object = {
-        error: error,
-        type: test.typeof(error),
-        message: error.message,
+        error: error
+       ,type: test.typeof(error)
+       ,message: error.message
     }
     if (getTrace(error)) object.stack = getTrace(error);
 
