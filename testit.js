@@ -822,3 +822,6 @@ function deepCompare(){function c(d,e){var f;if(isNaN(d)&&isNaN(e)&&"number"==ty
 scope.test = new Testit();
 
 })(this);
+
+/** provide node.js */
+if (!module) var module={}; module.exports = this.test;
