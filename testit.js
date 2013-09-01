@@ -218,15 +218,15 @@ function Testit () {
          * This part provides nesting.
          * For this reason there are redefinition of root.
          */
-        try {
             var oldRoot = root;
             root = newgroup;
+        try {
             fun();
-            root = oldRoot;
         } catch(e) {
             newgroup.status = 'error';
             newgroup.error = generateError(e);
         }
+            root = oldRoot;
 
         /** update time */
         newgroup.time += new Date().getTime() - time;
@@ -690,8 +690,8 @@ function Testit () {
         console.warn(curentLevel);
 
         /** display result */
-        // printer.group(curentLevel);
-        printConsole(curentLevel);
+        printer.group(curentLevel);
+        // printConsole(curentLevel);
     }
     /**
      * public interface for _done()
