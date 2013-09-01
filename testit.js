@@ -613,7 +613,14 @@ function Testit () {
         var curentLevel = (this.link)?this.link:root;
 
         /** display result (if printer is set) */
-        if (printer) printer.group(curentLevel);
+        if (printer) {
+            if (curentLevel.type==="group") {
+                printer.group(curentLevel)
+            } else if (curentLevel.type==="test") {
+                printer.test(curentLevel)
+            } else throw new TypeError('test or group expected');
+            // printer.group(curentLevel);
+        }
     }
     /**
      * public interface for _done()
