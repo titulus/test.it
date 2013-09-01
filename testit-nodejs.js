@@ -15,12 +15,12 @@ function nodeConsole(){
     this.print = _print;
 
     function _error(error){
-        console.log('%s%s%s%s: %s',prefix.join('')+'.'+normal,orange,error.type,normal,error.message);
-        prefix.push(orange+'|');
+        console.log('%s%s%s%s: %s',prefix.join('')+'  '+normal,orange,error.type,normal,error.message);
+        prefix.push(orange+'  >');
         // console.log(prefix+'.'+normal, error.stack.split(/\n/).length)
         var stack = error.stack.split(/\n/)
         for (var i in stack) {
-            console.log(prefix.join('')+':'+normal,stack[i]);
+            console.log(prefix.join('')+normal,stack[i]);
         }
         prefix.pop();
         // console.dir(prefix+'_'+normal,error.error);
@@ -35,7 +35,7 @@ function nodeConsole(){
 
         var passed = (test.status==='pass')?true:false;
         
-        var sign = (passed)?' ':'.';
+        var sign = (passed)?'.':',';
 
         var args = ['%s%s%s%s',prefix.join('')+color+sign+normal,color,test.status,normal];
         
@@ -54,8 +54,8 @@ function nodeConsole(){
         console.log.apply(console, args);
 
         if (!passed) {
-            prefix.push(color+'|');
-            if (test.description) console.log(prefix.join('')+':'+normal,test.description);
+            prefix.push(color+':');
+            if (test.description) console.log(prefix.join('')+' '+normal,test.description);
 
             if (test.error) _error(test.error);
         
@@ -73,7 +73,7 @@ function nodeConsole(){
 
         var passed = (group.status==='pass')?true:false;
         
-        var sign = (passed)?' ':'.';
+        var sign = (passed)?'.':',';
 
         var args = ['%s%s%s - %s%s%s',prefix.join('')+color+sign+normal,magenta,group.name,color,group.status,normal];
 
