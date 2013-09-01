@@ -577,7 +577,8 @@ function Testit () {
         var curentLevel = (this.link)?this.link:root;
 
         /** display result */
-        _printConsole(curentLevel);
+        _print(curentLevel);
+        // _printConsole(curentLevel);
     }
     /**
      * public interface for _done()
@@ -627,149 +628,13 @@ function Testit () {
 
 
     /**
-     * prittify display of group or test in browser dev console
-     * @private
-     * @param  {Object} obj     group or test to display
-     */
-    function _printConsole(obj) {
-
-        /** colors for console.log %c */
-        var green = "color: green",
-            red = "color: red;",
-            orange = "color: orange",
-            blue = "color: blue",
-            normal = "color: normal; font-weight:normal;";
-
-        /** Try to figure out what type of object display and open group */
-        switch (obj.type) {
-            case 'group' : {
-                /** different behavior depending on status */
-                switch (obj.status) {
-                    /** if object have passed - make collapsed group*/
-                    case 'pass' : {
-                        console.groupCollapsed("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
-                                     ,obj.name,green,obj.status,normal
-                                     ,green,obj.result.pass,normal
-                                     ,red,obj.result.fail,normal
-                                     ,orange,obj.result.error,normal
-                                     ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
-                    } break;
-                    case 'fail' : {
-                        console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
-                                     ,obj.name,red,obj.status,normal
-                                     ,green,obj.result.pass,normal
-                                     ,red,obj.result.fail,normal
-                                     ,orange,obj.result.error,normal
-                                     ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
-                    } break;
-                    case 'error' : {
-                        console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
-                                     ,obj.name,orange,obj.status,normal
-                                     ,green,obj.result.pass,normal
-                                     ,red,obj.result.fail,normal
-                                     ,orange,obj.result.error,normal
-                                     ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
-                    } break;
-                    /** if status is not defined - display error; finish displaying */
-                    default : {
-                        console.error("No status in object %s",obj.name);
-                        return false;
-                    }
-                }
-
-                /** display description if defined */
-                if (obj.description) {
-                    console.log(obj.description);
-                }
-
-                /** display trace if defined */
-                if (obj.trace) {
-                    console.log(obj.trace);
-                }
-                
-                /**
-                 * display all tests and groups in stack
-                 * It will make new levels of group, if there are groups in stack.
-                 */
-                for (var i in obj.stack) {
-                    _printConsole(obj.stack[i]);
-                }
-
-                /** display error if defined */
-                if (obj.error) {
-                    // console.error(obj.error);
-                    console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
-                        if (obj.error.stack) console.log(obj.error.stack);
-                        console.dir(obj.error.error);
-                    console.groupEnd();
-                }
-
-                /** close opened group (current level) */
-                console.groupEnd();
-
-            } break;
-            case 'test' : {
-                /** display different results depending on status */
-                switch (obj.status) {
-                    case 'pass' : {
-                        /** if pass - collapse group*/
-                        console.groupCollapsed("%cpass%c: %s%s%c%s%c%s",green,normal
-                                              ,(obj.comment)?obj.comment:''
-                                              ,(obj.time)?' (':''
-                                              ,(obj.time)?blue:''
-                                              ,(obj.time)?obj.time:''
-                                              ,(obj.time)?normal:''
-                                              ,(obj.time)?' ms)':'');
-                    } break;
-                    case 'fail' : {
-                        console.group("%cfail%c: %s",red,normal
-                                              ,(obj.comment)?obj.comment:''
-                                              ,(obj.time)?' (':''
-                                              ,(obj.time)?blue:''
-                                              ,(obj.time)?obj.time:''
-                                              ,(obj.time)?normal:''
-                                              ,(obj.time)?' ms)':'');
-                    } break;
-                    case 'error' : {
-                        console.group("%cerror%c: %s",orange,normal
-                                              ,(obj.comment)?obj.comment:''
-                                              ,(obj.time)?' (':''
-                                              ,(obj.time)?blue:''
-                                              ,(obj.time)?obj.time:''
-                                              ,(obj.time)?normal:''
-                                              ,(obj.time)?' ms)':'');
-                    } break;
-                }
-
-                /** display description if defined */
-                if (obj.description) console.log(obj.description);
-                
-                /** display trace if defined */
-                if (obj.trace) {
-                    console.log(obj.trace);
-                }
-
-                /** display error if defined */
-                if (obj.error) {
-                    // console.error(obj.error);
-                    console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
-                        if (obj.error.stack) console.log(obj.error.stack);
-                        console.dir(obj.error.error);
-                    console.groupEnd();
-                }
-                console.log(obj.argument);
-                console.groupEnd();
-            } break;
-        }
-    }
-    /**
      * public interface for _printConsole
      * @type {Function}
      * @public
      * @example
-     *   test.ptint(test.root);
+     *   test.print(test.root);
      */
-    this.print = _printConsole;
+    this.print = _print;
 
     /**
      * public interface for typeOf
@@ -910,13 +775,6 @@ function getTrace(error) {
 }
 
 /**
- * Compares any type of variables
- * @return {Boolean}            result of comparison
- * {@link http://stackoverflow.com/a/1144249/1771942}
- */
-function deepCompare(){function c(d,e){var f;if(isNaN(d)&&isNaN(e)&&"number"==typeof d&&"number"==typeof e)return!0;if(d===e)return!0;if("function"==typeof d&&"function"==typeof e||d instanceof Date&&e instanceof Date||d instanceof RegExp&&e instanceof RegExp||d instanceof String&&e instanceof String||d instanceof Number&&e instanceof Number)return d.toString()===e.toString();if(!(d instanceof Object&&e instanceof Object))return!1;if(d.isPrototypeOf(e)||e.isPrototypeOf(d))return!1;if(d.constructor!==e.constructor)return!1;if(d.prototype!==e.prototype)return!1;if(a.indexOf(d)>-1||b.indexOf(e)>-1)return!1;for(f in e){if(e.hasOwnProperty(f)!==d.hasOwnProperty(f))return!1;if(typeof e[f]!=typeof d[f])return!1}for(f in d){if(e.hasOwnProperty(f)!==d.hasOwnProperty(f))return!1;if(typeof e[f]!=typeof d[f])return!1;switch(typeof d[f]){case"object":case"function":if(a.push(d),b.push(e),!c(d[f],e[f]))return!1;a.pop(),b.pop();break;default:if(d[f]!==e[f])return!1}}return!0}var a,b;if(arguments.length<1)return!0;for(var d=1,e=arguments.length;e>d;d++)if(a=[],b=[],!c(arguments[0],arguments[d]))return!1;return!0}
-
-/**
  * finds val in array
  * @param  {Array} array  where to search 
  * @param          val    what to search for 
@@ -926,6 +784,159 @@ function arrayConsist(array, val) {
     for (var i in array) if (array[i] === val) return true;
     return false;
 }
+
+function Printer(strategy) {
+    this.strategy = strategy;
+
+    this.print = function() {
+        throw new ReferenceError('This strategy don\'t has no `print` method.');
+    }
+}
+
+/**
+ * prittify display of group or test in browser dev console
+ * @private
+ * @param  {Object} obj     group or test to display
+ */
+function printConsole(obj) {
+
+    /** colors for console.log %c */
+    var green = "color: green",
+        red = "color: red;",
+        orange = "color: orange",
+        blue = "color: blue",
+        normal = "color: normal; font-weight:normal;";
+
+    /** Try to figure out what type of object display and open group */
+    switch (obj.type) {
+        case 'group' : {
+            /** different behavior depending on status */
+            switch (obj.status) {
+                /** if object have passed - make collapsed group*/
+                case 'pass' : {
+                    console.groupCollapsed("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
+                                 ,obj.name,green,obj.status,normal
+                                 ,green,obj.result.pass,normal
+                                 ,red,obj.result.fail,normal
+                                 ,orange,obj.result.error,normal
+                                 ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
+                } break;
+                case 'fail' : {
+                    console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
+                                 ,obj.name,red,obj.status,normal
+                                 ,green,obj.result.pass,normal
+                                 ,red,obj.result.fail,normal
+                                 ,orange,obj.result.error,normal
+                                 ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
+                } break;
+                case 'error' : {
+                    console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
+                                 ,obj.name,orange,obj.status,normal
+                                 ,green,obj.result.pass,normal
+                                 ,red,obj.result.fail,normal
+                                 ,orange,obj.result.error,normal
+                                 ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
+                } break;
+                /** if status is not defined - display error; finish displaying */
+                default : {
+                    console.error("No status in object %s",obj.name);
+                    return false;
+                }
+            }
+
+            /** display description if defined */
+            if (obj.description) {
+                console.log(obj.description);
+            }
+
+            /** display trace if defined */
+            if (obj.trace) {
+                console.log(obj.trace);
+            }
+            
+            /**
+             * display all tests and groups in stack
+             * It will make new levels of group, if there are groups in stack.
+             */
+            for (var i in obj.stack) {
+                printConsole(obj.stack[i]);
+            }
+
+            /** display error if defined */
+            if (obj.error) {
+                // console.error(obj.error);
+                console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
+                    if (obj.error.stack) console.log(obj.error.stack);
+                    console.dir(obj.error.error);
+                console.groupEnd();
+            }
+
+            /** close opened group (current level) */
+            console.groupEnd();
+
+        } break;
+        case 'test' : {
+            /** display different results depending on status */
+            switch (obj.status) {
+                case 'pass' : {
+                    /** if pass - collapse group*/
+                    console.groupCollapsed("%cpass%c: %s%s%c%s%c%s",green,normal
+                                          ,(obj.comment)?obj.comment:''
+                                          ,(obj.time)?' (':''
+                                          ,(obj.time)?blue:''
+                                          ,(obj.time)?obj.time:''
+                                          ,(obj.time)?normal:''
+                                          ,(obj.time)?' ms)':'');
+                } break;
+                case 'fail' : {
+                    console.group("%cfail%c: %s",red,normal
+                                          ,(obj.comment)?obj.comment:''
+                                          ,(obj.time)?' (':''
+                                          ,(obj.time)?blue:''
+                                          ,(obj.time)?obj.time:''
+                                          ,(obj.time)?normal:''
+                                          ,(obj.time)?' ms)':'');
+                } break;
+                case 'error' : {
+                    console.group("%cerror%c: %s",orange,normal
+                                          ,(obj.comment)?obj.comment:''
+                                          ,(obj.time)?' (':''
+                                          ,(obj.time)?blue:''
+                                          ,(obj.time)?obj.time:''
+                                          ,(obj.time)?normal:''
+                                          ,(obj.time)?' ms)':'');
+                } break;
+            }
+
+            /** display description if defined */
+            if (obj.description) console.log(obj.description);
+            
+            /** display trace if defined */
+            if (obj.trace) {
+                console.log(obj.trace);
+            }
+
+            /** display error if defined */
+            if (obj.error) {
+                // console.error(obj.error);
+                console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
+                    if (obj.error.stack) console.log(obj.error.stack);
+                    console.dir(obj.error.error);
+                console.groupEnd();
+            }
+            console.log(obj.argument);
+            console.groupEnd();
+        } break;
+    }
+}
+
+/**
+ * Compares any type of variables
+ * @return {Boolean}            result of comparison
+ * {@link http://stackoverflow.com/a/1144249/1771942}
+ */
+function deepCompare(){function c(d,e){var f;if(isNaN(d)&&isNaN(e)&&"number"==typeof d&&"number"==typeof e)return!0;if(d===e)return!0;if("function"==typeof d&&"function"==typeof e||d instanceof Date&&e instanceof Date||d instanceof RegExp&&e instanceof RegExp||d instanceof String&&e instanceof String||d instanceof Number&&e instanceof Number)return d.toString()===e.toString();if(!(d instanceof Object&&e instanceof Object))return!1;if(d.isPrototypeOf(e)||e.isPrototypeOf(d))return!1;if(d.constructor!==e.constructor)return!1;if(d.prototype!==e.prototype)return!1;if(a.indexOf(d)>-1||b.indexOf(e)>-1)return!1;for(f in e){if(e.hasOwnProperty(f)!==d.hasOwnProperty(f))return!1;if(typeof e[f]!=typeof d[f])return!1}for(f in d){if(e.hasOwnProperty(f)!==d.hasOwnProperty(f))return!1;if(typeof e[f]!=typeof d[f])return!1;switch(typeof d[f]){case"object":case"function":if(a.push(d),b.push(e),!c(d[f],e[f]))return!1;a.pop(),b.pop();break;default:if(d[f]!==e[f])return!1}}return!0}var a,b;if(arguments.length<1)return!0;for(var d=1,e=arguments.length;e>d;d++)if(a=[],b=[],!c(arguments[0],arguments[d]))return!1;return!0}
+
 /** 
  * new instance of testit, availible from outside.
  */
