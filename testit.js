@@ -793,9 +793,9 @@ function getTrace(error) {
         /** take off Errors (Chrome) */
         if (i.indexOf(typeOf(error))!==-1) addToStack = false;
         /** take of reference to this function */
-        if (i.indexOf('getTrace')!==-1) addToStack = false;
+        if (i.indexOf('testit.')!==-1) addToStack = false;
         /** take off any references to testit lines */
-        if (i.indexOf('/testit.')!==-1) addToStack = false;
+        if (i.indexOf('testit-')!==-1) addToStack = false;
         /** fill the stack */
         if (addToStack) {
             stack += (stack)?'\n':'';
