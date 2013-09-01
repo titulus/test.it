@@ -4,6 +4,11 @@
 
 var rootTimeDone = false;
 
+/**
+ * Context for printer strategies
+ * @constructor
+ * @param  {Object} strategy     used strategy
+ */
 function printerFrom (strategy) {
     this.print = strategy.print;
     this.group = strategy.group;
@@ -13,12 +18,26 @@ function printerFrom (strategy) {
 
 function Testit () {
 
-    // var printer = new printerFrom(new firebugConsole);
+    /**
+     * Printer object.
+     * It will be used for output results.
+     */
     var printer;
 
+    /**
+     * change default printer
+     * @private
+     * @param {Object} strategy     used printer strategy
+     */
     function _setPrinter(strategy) {
         printer = new printerFrom(strategy);
     }
+    /**
+     * public interface for _setPrinter
+     * @public
+     * @example
+     *   test.printer(new somePrinterStrategy);
+     */
     this.printer = _setPrinter;
 
     /**
@@ -125,15 +144,15 @@ function Testit () {
          * This part provides nesting.
          * For this reason there are redefinition of root.
          */
-            var oldRoot = root;
-            root = newgroup;
+        var oldRoot = root;
+        root = newgroup;
         try {
             fun();
         } catch(e) {
             newgroup.status = 'error';
             newgroup.error = generateError(e);
         }
-            root = oldRoot;
+        root = oldRoot;
 
         /** update time */
         newgroup.time += new Date().getTime() - time;
@@ -592,11 +611,8 @@ function Testit () {
         }
 
         var curentLevel = (this.link)?this.link:root;
-        console.warn(this.link);
-        console.warn(root);
-        console.warn(curentLevel);
 
-        /** display result */
+        /** display result (if printer is set) */
         if (printer) printer.group(curentLevel);
     }
     /**
@@ -645,17 +661,6 @@ function Testit () {
         }
     }
 
-
-    /**
-     * public interface for _printConsole
-     * @type {Function}
-     * @public
-     * @example
-     *   test.print(test.root);
-     */
-    /*this.printGroup = printer.group;
-    this.printTest = printer.test;*/
-
     /**
      * public interface for typeOf
      * @public
@@ -693,7 +698,6 @@ function typeOf (argument) {
             case Error : type='Error';break;
             case EvalError : type='EvalError';break;
             case Function : type='Function';break;
-            // case Math : type='math';break;
             case Number : {type=(isNaN(argument))?'NaN':'Number';}break;
             case Object : type='Object';break;
             case RangeError : type='RangeError';break;
@@ -803,143 +807,6 @@ function getTrace(error) {
 function arrayConsist(array, val) {
     for (var i in array) if (array[i] === val) return true;
     return false;
-}
-
-/**
- * prittify display of group or test in browser dev console
- * @private
- * @param  {Object} obj     group or test to display
- */
-function printConsole(obj) {
-
-    /** colors for console.log %c */
-    var green = "color: green",
-        red = "color: red;",
-        orange = "color: orange",
-        blue = "color: blue",
-        normal = "color: normal; font-weight:normal;";
-
-    /** Try to figure out what type of object display and open group */
-    switch (obj.type) {
-        case 'group' : {
-            /** different behavior depending on status */
-            switch (obj.status) {
-                /** if object have passed - make collapsed group*/
-                case 'pass' : {
-                    console.groupCollapsed("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
-                                 ,obj.name,green,obj.status,normal
-                                 ,green,obj.result.pass,normal
-                                 ,red,obj.result.fail,normal
-                                 ,orange,obj.result.error,normal
-                                 ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
-                } break;
-                case 'fail' : {
-                    console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
-                                 ,obj.name,red,obj.status,normal
-                                 ,green,obj.result.pass,normal
-                                 ,red,obj.result.fail,normal
-                                 ,orange,obj.result.error,normal
-                                 ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
-                } break;
-                case 'error' : {
-                    console.group("%s - %c%s%c - %c%d%c/%c%d%c/%c%d%c (%c%d%c ms) %s"
-                                 ,obj.name,orange,obj.status,normal
-                                 ,green,obj.result.pass,normal
-                                 ,red,obj.result.fail,normal
-                                 ,orange,obj.result.error,normal
-                                 ,blue,obj.time,normal,((obj.comment)?obj.comment:''));
-                } break;
-                /** if status is not defined - display error; finish displaying */
-                default : {
-                    console.error("No status in object %s",obj.name);
-                    return false;
-                }
-            }
-
-            /** display description if defined */
-            if (obj.description) {
-                console.log(obj.description);
-            }
-
-            /** display trace if defined */
-            if (obj.trace) {
-                console.log(obj.trace);
-            }
-            
-            /**
-             * display all tests and groups in stack
-             * It will make new levels of group, if there are groups in stack.
-             */
-            for (var i in obj.stack) {
-                printConsole(obj.stack[i]);
-            }
-
-            /** display error if defined */
-            if (obj.error) {
-                // console.error(obj.error);
-                console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
-                    if (obj.error.stack) console.log(obj.error.stack);
-                    console.dir(obj.error.error);
-                console.groupEnd();
-            }
-
-            /** close opened group (current level) */
-            console.groupEnd();
-
-        } break;
-        case 'test' : {
-            /** display different results depending on status */
-            switch (obj.status) {
-                case 'pass' : {
-                    /** if pass - collapse group*/
-                    console.groupCollapsed("%cpass%c: %s%s%c%s%c%s",green,normal
-                                          ,(obj.comment)?obj.comment:''
-                                          ,(obj.time)?' (':''
-                                          ,(obj.time)?blue:''
-                                          ,(obj.time)?obj.time:''
-                                          ,(obj.time)?normal:''
-                                          ,(obj.time)?' ms)':'');
-                } break;
-                case 'fail' : {
-                    console.group("%cfail%c: %s",red,normal
-                                          ,(obj.comment)?obj.comment:''
-                                          ,(obj.time)?' (':''
-                                          ,(obj.time)?blue:''
-                                          ,(obj.time)?obj.time:''
-                                          ,(obj.time)?normal:''
-                                          ,(obj.time)?' ms)':'');
-                } break;
-                case 'error' : {
-                    console.group("%cerror%c: %s",orange,normal
-                                          ,(obj.comment)?obj.comment:''
-                                          ,(obj.time)?' (':''
-                                          ,(obj.time)?blue:''
-                                          ,(obj.time)?obj.time:''
-                                          ,(obj.time)?normal:''
-                                          ,(obj.time)?' ms)':'');
-                } break;
-            }
-
-            /** display description if defined */
-            if (obj.description) console.log(obj.description);
-            
-            /** display trace if defined */
-            if (obj.trace) {
-                console.log(obj.trace);
-            }
-
-            /** display error if defined */
-            if (obj.error) {
-                // console.error(obj.error);
-                console.group('%c%s%c: %s',orange,obj.error.type,normal,obj.error.message);
-                    if (obj.error.stack) console.log(obj.error.stack);
-                    console.dir(obj.error.error);
-                console.groupEnd();
-            }
-            console.log(obj.argument);
-            console.groupEnd();
-        } break;
-    }
 }
 
 /**
