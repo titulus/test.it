@@ -4,6 +4,23 @@
 
 var rootTimeDone = false;
 
+function printerFrom (strategy) {
+    this.print = strategy.print;
+    this.group = strategy.group;
+    this.test = strategy.test;
+    this.error = strategy.error;
+}
+
+function firebugConsole(){
+    this.print = function(){
+        console.log.apply(console, arguments);
+    }
+}
+
+var printer = new printerFrom(new firebugConsole);
+
+scope.printer = printer;
+
 function Testit () {
     /**
      * group class which will contain tests
@@ -577,7 +594,7 @@ function Testit () {
         var curentLevel = (this.link)?this.link:root;
 
         /** display result */
-        _print(curentLevel);
+        printer.group(curentLevel);
         // _printConsole(curentLevel);
     }
     /**
@@ -634,7 +651,8 @@ function Testit () {
      * @example
      *   test.print(test.root);
      */
-    this.print = _print;
+    this.printGroup = printer.group;
+    this.printTest = printer.test;
 
     /**
      * public interface for typeOf
