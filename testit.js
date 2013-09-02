@@ -450,14 +450,16 @@ function Testit () {
      * @private
      * @chainable chain-preparatory
      */
-    var _time = Object.create(this,{timestamp:{value:new Date().getTime()}});
+    function _addTime () {
+        return Object.create(this,{timestamp:{value:new Date().getTime()}});
+    }
     /**
      * public interface for _time
      * @public
      * @example
-     *   test.time.it(someThing());
+     *   test.addTime().it(someThing());
      */
-    this.time = _time;
+    this.addTime = _addTime;
 
     /**
      * makes test/group unpushable into stack of current level group
