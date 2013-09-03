@@ -29,7 +29,7 @@ function firebugConsole(){
         
         var args = ['%c%s%c',color,test.status,normal];
         
-        if (test.time) {
+        if (typeof test.time !== 'undefined') {
             args[0] += ' (%c%s%c ms)';
             args.push(blue,test.time,normal);
         };
