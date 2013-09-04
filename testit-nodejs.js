@@ -41,7 +41,7 @@ function nodeConsole(){
         
         
 
-        if (test.time) {
+        if (typeof test.time !== 'undefined') {
             args[0] += ' (%s%s%s ms)';
             args.push(blue,test.time,normal);
         };
