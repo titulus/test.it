@@ -263,6 +263,8 @@ function Testit () {
             case 'them' : _testThem(newtest); break;
             case 'type' : _testType(newtest); break;
             case 'types' : _testTypes(newtest); break;
+            case 'is' : _testIs(newtest); break;
+            case 'are' : _testAre(newtest); break;
         }
         
         /** calculate time, if .time was called before this test */
@@ -287,6 +289,8 @@ function Testit () {
     this.them = function(){return _doTest.call(this,'them',arguments)};
     this.type = function(){return _doTest.call(this,'type',arguments)};
     this.types = function(){return _doTest.call(this,'types',arguments)};
+    this.is = function(){return _doTest.call(this,'is',arguments)};
+    this.are = function(){return _doTest.call(this,'are',arguments)};
 
     /**
      * checks the argument for the true-like value
@@ -374,6 +378,7 @@ function Testit () {
 
     /**
      * checks type of value to be equal to specified
+     * @deprecated use test.is instead
      * @private
      * @param  {Object} testobj     test object, wich will be filled with result
      */
@@ -401,6 +406,7 @@ function Testit () {
 
     /**
      * checks types of elements in array to be equal to specified and between each other
+     * @deprecated use test.are instead
      * @private
      * @param  {Object} testobj     test object, wich will be filled with result
      */
@@ -440,6 +446,90 @@ function Testit () {
                 if (testobj.status !== 'fail') {
                     testobj.status = 'pass';
                     testobj.description = 'arguments are '+types+' type';
+                }
+            }
+        }
+    }
+
+    /**
+     * checks constructor of value to be equal to specified
+     * @private
+     * @param  {Object} testobj     test object, wich will be filled with result
+     */
+    function _testIs(testobj) {
+        if (testobj.argument.length!==2) {
+            testobj.status = 'error';
+            testobj.error = generateError(new RangeError("expect two arguments"));
+        } else if (typeOf(testobj.argument[1]) !== 'Function') {
+            testobj.status = 'error';
+            testobj.error = generateError(new TypeError("second argument should be a constructor (function)"));
+        } else {
+            if (testobj.argument[1].name=='') {
+                testobj.description = 'argument has ';
+                if (testobj.argument[0].constructor !== testobj.argument[1]) {
+                    testobj.description += 'wrong';
+                    testobj.status = 'fail';
+                } else {
+                    testobj.description += 'right';
+                    testobj.status = 'pass';
+                }
+                testobj.description += ' constructor';
+            } else {
+                testobj.description = 'argument is ';
+                if (testobj.argument[0].constructor !== testobj.argument[1]) {
+                    testobj.description += 'not '+testobj.argument[1].name;
+                    testobj.status = 'fail';
+                } else {
+                    testobj.description += testobj.argument[1].name;
+                    testobj.status = 'pass';
+                }
+            }
+        }
+    }
+
+    /**
+     * checks constructors of elements in array to be equal to specified and between each other
+     * @private
+     * @param  {Object} testobj     test object, wich will be filled with result
+     */
+    function _testAre(testobj) {
+        if (testobj.argument.length==0) {
+            testobj.status = 'error';
+            testobj.error = generateError(new RangeError("at least one argument expected"));
+        } else if (testobj.argument.length>2) {
+            testobj.status = 'error';
+            testobj.error = generateError(new RangeError("maximum of two arguments expected"));
+        } else if (typeOf(testobj.argument[0]) !== 'Array') {
+            testobj.status = 'error';
+            testobj.error = generateError(new TypeError("first argument should be an array"));
+        } else {
+            var constructor, constructors;
+            if (typeOf(testobj.argument[1]) === 'undefined') {
+                constructor = testobj.argument[0][0].constructor;
+                constructors = 'same';
+            } else if (typeOf(testobj.argument[1]) !== 'Function') {
+                testobj.status = 'error';
+                testobj.error = generateError(new TypeError("second argument should be a constructor (function)"));
+            } else {
+                constructor = testobj.argument[1];
+                constructors = 'right';
+            }
+            if (testobj.status !== 'error') {
+                for (var i in testobj.argument[0]) {
+                    if (testobj.argument[0][i].constructor !== constructor) {
+                        testobj.status = 'fail';
+                        var num = 1 +parseInt(i);
+                        testobj.description = 'There are at least one ('+num+') element with different constructor';
+                    }
+                }
+                if (testobj.status !== 'fail') {
+                    testobj.status = 'pass';
+                    if (typeof testobj.argument[1]!=='undefined') {
+                        testobj.description = 'arguments '+(testobj.argument[1].name!=='undefined')?'are '+testobj.argument[1].name:'has same constructor';
+                    } else {
+                        testobj.description = 'arguments has same constructor';
+                    }
+                    
                 }
             }
         }
