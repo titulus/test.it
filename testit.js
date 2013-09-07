@@ -550,13 +550,21 @@ function Testit () {
      *   test.addTime().it(someThing());
      */
     this.addTime = _addTime;
+    /**
+     * old time attribute.
+     * It has bug! Do not use it!
+     * @deprecated
+     */
+    this.time = Object.create(this,{timestamp:{value:new Date().getTime()}});
 
     /**
      * makes test/group unpushable into stack of current level group
      * @private
      * @chainable chain-preparatory
      */
-    var _exclude = Object.create(this,{excluded:{value:true}});
+    function _exclude () {
+        return Object.create(this,{excluded:{value:true}});
+    } 
     /**
      * public interface for _exclude
      * @public
@@ -564,7 +572,8 @@ function Testit () {
      *   test.exclude.it(someThing).done();
      *   test.exclude.group('some group',function(){ ... }).done();
      */
-    this.exclude = _exclude;
+    this.x = _exclude;
+    this.exclude = Object.create(this,{excluded:{value:true}});
 
     /**
      * add a comment for the linked test or group
