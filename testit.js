@@ -2,8 +2,6 @@
 
 'use strict'
 
-var rootTimeDone = false;
-
 /** Context for printer strategies @constructor */
 function printerFrom (strategy) {
     this.print = strategy.print;
@@ -55,7 +53,7 @@ function Testit () {
     var root = new Group();
     root.root = true;
     root.name = 'root';
-    root.time = new Date().getTime();
+    root.timestamp = new Date().getTime();
 
     /** return root object */
     function _returnRoot() {
@@ -520,9 +518,8 @@ function Testit () {
     function _done() {
 
         /** update time in root */
-        if (!rootTimeDone && root.name==='root') {
-            root.time = new Date().getTime() - root.time;
-            rootTimeDone = true;
+        if (typeof root.root !== 'undefined') {
+            root.time = new Date().getTime() - root.timestamp;
         }
 
         var curentLevel = (this.link)?this.link:root;
