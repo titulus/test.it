@@ -62,7 +62,6 @@ function Testit () {
         return root;
     }
     this.getRoot = this.r = _returnRoot;
-
     /** public interface for root @deprecated */
     this.root = root;
 
