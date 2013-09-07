@@ -47,6 +47,12 @@ function firebugConsole(){
 
         if (test.description) console.log(test.description);
 
+        if (test.trace) {
+            console.group('trace');
+                console.log(test.trace);
+            console.groupEnd();
+        }
+
         if (test.error) _error(test.error);
         
         console.log(test.argument);
@@ -83,7 +89,11 @@ function firebugConsole(){
         
         if (group.description) console.log(group.description);
 
-        if (group.trace) console.log(group.trace);
+        if (group.trace) {
+            console.group('trace');
+                console.log(group.trace);
+            console.groupEnd();
+        }
 
         for (var i in group.stack) {
             (group.stack[i].type==='test')?_test(group.stack[i]):_group(group.stack[i]);

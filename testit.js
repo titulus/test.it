@@ -629,7 +629,7 @@ function Testit () {
     function _addTrace(level) {
         if (!this.link) throw new ReferenceError('addTrace can only be used in testit chain');
         if (this.trace) {
-            var trace = this.trace
+            var trace = this.trace;
             if (typeOf(level) === 'Number') trace = trace.split('\n').slice(0,level+1).join('\n');
             this.link.trace = trace;
         }

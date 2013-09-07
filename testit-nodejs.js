@@ -53,11 +53,24 @@ function nodeConsole(){
 
         console.log.apply(console, args);
 
+
         if (!passed) {
             prefix.push(color+':');
             if (test.description) console.log(prefix.join('')+' '+normal,test.description);
 
-            if (test.error) _error(test.error);
+            if (test.error) {
+                _error(test.error)
+            } else {
+                if (test.trace) {
+                    console.log(prefix.join('')+' '+blue,'trace');
+                    prefix.push(blue+'  >');
+                    var stack = test.trace.split(/\n/)
+                    for (var i in stack) {
+                        console.log(prefix.join('')+normal,stack[i]);
+                    }
+                    prefix.pop();
+                };
+            };
         
             console.log(prefix.join('')+'_'+normal,test.argument);
             prefix.pop();
@@ -97,7 +110,15 @@ function nodeConsole(){
 
             if (group.description) console.log(prefix.join('')+' '+normal,group.description);
 
-            if (group.trace) console.log(group.trace);
+            if (group.trace) {
+                console.log(prefix.join('')+blue,'trace');
+                prefix.push(blue+' >');
+                var stack = group.trace.split(/\n/)
+                for (var i in stack) {
+                    console.log(prefix.join('')+normal,stack[i]);
+                }
+                prefix.pop();
+            };
 
             for (var i in group.stack) {
                 (group.stack[i].type==='test')?_test(group.stack[i]):_group(group.stack[i]);
