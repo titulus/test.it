@@ -495,6 +495,8 @@ function Testit () {
     function _result() {
         if (this.link) {
             return (this.link.status == 'pass')? true : false;
+        } else {
+            return (root.status == 'pass')? true : false;
         }
         return undefined;
     };
