@@ -444,16 +444,7 @@ function Testit () {
     this.time = Object.create(this,{timestamp:{value:new Date().getTime()}});
 
     /** makes test/group unpushable into stack of current level group */
-    function _exclude () {
-        return Object.create(this,{excluded:{value:true}});
-    };
-    this.x = _exclude;
-
-    /**
-     * Old exclude attribute. Must be a first call in chain.
-     * @deprecated
-     */
-    this.exclude = this.x();
+    this.exclude = this.x = Object.create(this,{excluded:{value:true}});
 
     /** add a comment for the linked test or group */
     function _comment(text) {
