@@ -18,6 +18,8 @@ test.group('first group',function(){
             });
         });
     });
+    
+    throw new Error('simple error');
 }).comment('consist one test and one group');
 
 test.done();

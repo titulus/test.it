@@ -14,7 +14,8 @@ npm install test.it-nodejs
 include testit core and output module
 ```javascript
 test = require('test.it');
-test.printer(require('test.it-nodejs'));
+output = require('test.it-nodejs');
+test.printer(output);
 ```
 or shorter
 ```javascript
@@ -52,6 +53,8 @@ test.group('first group',function(){
             });
         });
     });
+    
+    throw new Error('simple error');
 }).comment('consist one test and one group');
 
 test.done();
