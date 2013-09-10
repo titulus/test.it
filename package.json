@@ -5,8 +5,11 @@
   "main": "testit.js",
   "repository": {
     "type": "git",
-    "url": "https://titulus@github.com/titulus/testit.git"
+    "url": "https://github.com/titulus/testit.git"
   },
+  "bugs": {
+    "url": "https://github.com/titulus/testit/issues"
+  }, 
   "keywords": [
     "TDD",
     "Test Driven Development",
