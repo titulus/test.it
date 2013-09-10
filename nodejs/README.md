@@ -1,4 +1,4 @@
-testit - Usage in node.js
+test.it - Usage in node.js
 ===================
 
 ## Install

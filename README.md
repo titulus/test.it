@@ -1,4 +1,4 @@
-testit
+test.it
 ===================
 
 Simple js testing framework.
