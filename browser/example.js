@@ -1,3 +1,5 @@
+test.printer(firebugConsole);
+
 test.it(true)
     .comment('passed test');
 test.it(false)
