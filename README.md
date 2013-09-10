@@ -1,10 +1,12 @@
 testit
 ===================
 
-Simple js testing framework
+Simple js testing framework.
+
+*Availible in nodejs*
 
 #### Goals:
-  + to use dev console instead of page DOM
+  + to use dev console instead of page DOM (in browser)
   + to avoid crashes
   + to avoid differences in results of tests of one and the same code
   + to provide the ease of use
@@ -16,12 +18,13 @@ Simple js testing framework
 
 #### Techniques:
   + OOP
+  + Strategy pattern
   + dev console API
 
 #### Test types
+  + validity of expression or value
   + equality between 2 or more values
-  + non-false result of expression or value
-  + type of value
+  + constructor *(type)* of value
 
 ===
 
@@ -29,13 +32,16 @@ Simple js testing framework
 You just need to add 
 ```html
 <script src='path/to/testit.js'></script>
+<script src='path/to/testit-firebug.js'></script>
 ```
 to the end of  `<body>` tag. That's it!
 
 btw you can use this construction:
 ```html
 <!-- framework -->
-<script src='../testit.js'></script>
+<script src='./testit.js'></script>
+<!-- print to firebug console -->
+<script src='./testit-firebug.js'></script>
 <!-- your script -->
 <script src='./script.js'></script>
 <!-- your tests -->
@@ -50,4 +56,5 @@ btw you can use this construction:
 You can find the API manual on [wiki](https://github.com/titulus/testit/wiki/API)
 
 ### Example
-Look at it right [here](http://titulus.github.io/testit/) 
+Look at it right [here](http://titulus.github.io/testit/)
+Русская версия [сдесь](http://titulus.github.io/testit/RU/)
