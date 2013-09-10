@@ -1,0 +1,22 @@
+{
+  "name": "test.it",
+  "version": "1.2.0",
+  "description": "TDD framework",
+  "main": "testit.js",
+  "repository": {
+    "type": "git",
+    "url": "https://titulus@github.com/titulus/testit.git"
+  },
+  "keywords": [
+    "TDD",
+    "Test Driven Development",
+    "Unit tests",
+    "Unit testing",
+    "framework"
+  ],
+  "author": "Titulus Desiderio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/titulus/testit/issues"
+  }
+}
