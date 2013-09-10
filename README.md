@@ -1,7 +1,7 @@
 test.it
 ===================
 
-Simple js testing framework.
+TDD testing framework.
 
 *Availible in nodejs*
 
@@ -15,11 +15,9 @@ Simple js testing framework.
   + multilevel nesting
   + chaining
 
-
 #### Techniques:
   + OOP
   + Strategy pattern
-  + dev console API
 
 #### Test types
   + validity of expression or value
@@ -55,6 +53,6 @@ btw you can use this construction:
 ### How to use
 You can find the API manual on [wiki](https://github.com/titulus/testit/wiki/API)
 
-### Example
+### Online example
 Look at it right [here](http://titulus.github.io/testit/)
 Русская версия [сдесь](http://titulus.github.io/testit/RU/)
