@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "nodejs output module for test.it framework",
   "main": "testit-nodejs.js",
+  "bugs": {
+    "url": "https://github.com/titulus/testit/issues"
+  },
   "keywords": [
     "test.it"
   ],
