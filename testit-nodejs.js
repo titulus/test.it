@@ -135,4 +135,4 @@ function nodeConsole(){
     this.group = _group;
 }
 
-module.exports = nodeConsole;
+module.exports = new nodeConsole;
