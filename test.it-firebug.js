@@ -113,6 +113,6 @@ function firebugConsole(){
     this.group = _group;
 }
 
-scope.test.printer(new firebugConsole);
+scope.firebugConsole = new firebugConsole;
 
 })(this);
