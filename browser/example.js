@@ -16,6 +16,9 @@ test.group('first group',function(){
             });
         });
     });
-}).comment('consist one test and one group');
+
+    throw new Error('simple error');
+}).comment('consist one test, one group and one error');
+
 
 test.done();

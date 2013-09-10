@@ -9,8 +9,14 @@ function firebugConsole(){
         normal = "color: normal; font-weight:normal;";
 
 
-    function _print(){
-        console.log.apply(console, arguments);
+    function _print(entity){
+        if (entity.type==="group") {
+                _group(entity);
+            } else if (entity.type==="test") {
+                _test(entity);
+            } else if (entity.error) {
+                _error(entity);
+            } else console.log.apply(console, arguments);
     };
     this.print = _print;
 
@@ -96,7 +102,7 @@ function firebugConsole(){
         }
 
         for (var i in group.stack) {
-            (group.stack[i].type==='test')?_test(group.stack[i]):_group(group.stack[i]);
+            _print(group.stack[i]);
         }
 
         if (group.error) _error(group.error);

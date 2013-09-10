@@ -10,7 +10,14 @@ function nodeConsole(){
     var prefix = [];
 
     function _print(){
-        console.log.apply(null, arguments);
+        if (entity.type==="group") {
+                _group(entity);
+            } else if (entity.type==="test") {
+                _test(entity);
+            } else if (entity.error) {
+                _error(entity);
+            } else console.log.apply(null, arguments);
+        
     };
     this.print = _print;
 
@@ -121,7 +128,7 @@ function nodeConsole(){
             };
 
             for (var i in group.stack) {
-                (group.stack[i].type==='test')?_test(group.stack[i]):_group(group.stack[i]);
+                _print(group.stack[i]);
             }
 
             if (group.error) _error(group.error);

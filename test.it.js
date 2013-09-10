@@ -506,7 +506,7 @@ function Testit () {
     this.arguments = _arguments;
 
     /** apply last stuff and display result */
-    function _done() {
+    function _done(Printer) {
 
         /** update time in root */
         if (typeof root.root !== 'undefined') {
@@ -516,15 +516,18 @@ function Testit () {
         var curentLevel = (this.link)?this.link:root;
 
         /** display result (if printer is set) */
-        if (printer) {
-            if (curentLevel.type==="group") {
-                printer.group(curentLevel)
-            } else if (curentLevel.type==="test") {
-                printer.test(curentLevel)
-            } else throw new TypeError('test or group expected');
-        }
+        _print(curentLevel,Printer);
     };
     this.done = _done;
+
+    /** output something into default or specified printer */
+    function _print (entity, newPrinter) {
+        if (newPrinter) (new printerFrom(newPrinter)).print(entity)
+        else if (printer) printer.print(entity)
+        else return false;
+        return true;
+    }
+    this.print = _print;
 
 
     /** update counters of contained object */
@@ -648,10 +651,10 @@ function getTrace(error) {
         if (i==='') addToStack = false;
         /** take off Errors (Chrome) */
         if (i.indexOf(typeOf(error))!==-1) addToStack = false;
-        /** take of reference to this function */
-        if (i.indexOf('testit.')!==-1) addToStack = false;
         /** take off any references to testit lines */
-        if (i.indexOf('testit-')!==-1) addToStack = false;
+        if (i.indexOf('test.it')!==-1) addToStack = false;
+        /** take of reference to this function */
+        if (i.indexOf('getTrace')!==-1) addToStack = false;
         /** fill the stack */
         if (addToStack) {
             stack += (stack)?'\n':'';
