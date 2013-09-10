@@ -1,4 +1,4 @@
-(test = require('../testit.js')).printer(require('./testit-nodejs.js'));
+(test = require('test.it')).printer(require('test.it-nodejs'));
 
 test.it(true)
     .comment('passed test');
