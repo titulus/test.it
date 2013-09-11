@@ -22,4 +22,4 @@ test.group('first group',function(){
     throw new Error('simple error');
 }).comment('consist one test, one group and one error');
 
-test.done();
+test.print();
