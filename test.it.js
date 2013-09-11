@@ -505,19 +505,6 @@ function Testit () {
     };
     this.arguments = _arguments;
 
-    /** apply last stuff and output result */
-    function _done(Printer) {
-
-        /** update time in root */
-        if (typeof root.root !== 'undefined') {
-            root.time = new Date().getTime() - root.timestamp;
-        }
-
-        /** output result */
-        return _print.call(this,Printer);
-    };
-    this.done = _done;
-
     /** output something into default or specified printer */
     function _print (newPrinter) {
         var entity = (this.link)?this.link:root;
@@ -527,6 +514,8 @@ function Testit () {
         return true;
     };
     this.print = _print;
+    /** @deprecated */
+    this.done = _print;
 
 
     /** update counters of contained object */
@@ -555,6 +544,10 @@ function Testit () {
         if (link.result.error || link.error) {link.status='error'}
         else if (link.result.fail) {link.status='fail'}
         else {link.status='pass'}
+
+        if (link.root) {
+            link.time = new Date().getTime() - link.timestamp;
+        }
 
         if (link.linkBack) {
             updateCounters(link.linkBack);
