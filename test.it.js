@@ -505,7 +505,7 @@ function Testit () {
     };
     this.arguments = _arguments;
 
-    /** apply last stuff and display result */
+    /** apply last stuff and output result */
     function _done(Printer) {
 
         /** update time in root */
@@ -513,20 +513,19 @@ function Testit () {
             root.time = new Date().getTime() - root.timestamp;
         }
 
-        var curentLevel = (this.link)?this.link:root;
-
-        /** display result (if printer is set) */
-        _print(curentLevel,Printer);
+        /** output result */
+        return _print.call(this,Printer);
     };
     this.done = _done;
 
     /** output something into default or specified printer */
-    function _print (entity, newPrinter) {
+    function _print (newPrinter) {
+        var entity = (this.link)?this.link:root;
         if (newPrinter) (new printerFrom(newPrinter)).print(entity)
         else if (printer) printer.print(entity)
         else return false;
         return true;
-    }
+    };
     this.print = _print;
 
 
