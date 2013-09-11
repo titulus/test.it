@@ -19,7 +19,12 @@ function Testit () {
     function _setPrinter(strategy) {
         printer = new printerFrom(strategy);
     };
-    this.printer = _setPrinter;
+
+    /** get and set default printer */
+    this.printer = function (strategy) {
+        if (strategy) _setPrinter(strategy);
+        return printer;
+    }
 
     /** group class @constructor */
     function Group() {
