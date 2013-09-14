@@ -1,3 +1,20 @@
+<?php 
+$lang = $argv[1];
+function put($ru,$en) {
+    global $lang;
+    switch ($lang) {
+        case "ru":
+            echo $ru;
+            break;
+        case "en":
+            echo $en;
+            break;
+        default:
+            echo "";
+            break;
+    }
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -5,7 +22,7 @@
     <title>test.it</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="test.it-highlight.css">
-    <meta name="description" content="test.it - simple javascript testing framework. Provides console output, multi-level group nesting, async testing.">
+    <meta name="description" content="<?php put("test.it - лёгкое тестирование javascript. Поддерживает вывод в консоль браузера или nodejs, многоуровневую вложенность и асинхронное тестирование","test.it - simple javascript testing framework. Provides console output, multi-level group nesting, async testing.");?>">
     <meta name="keywords" content="test.it, javascript, js, testing, code testing, unit-testing, unit testing, framework, TDD">
 </head>
 <body>
@@ -17,29 +34,44 @@
 
     <div id="header">
         <h1 id="logo">test<span class="dot">.</span><span class="it">it</span></h1>
-        <p id="description">Simple javascript testing framework</p>
+        <p id="description"><?php put("Лёгкое тестирование javascript","Simple javascript testing framework"); ?></p>
     </div>
     <div id="links">
-        <a href="https://github.com/titulus/testit/archive/v1.1.0.zip" class="button" id="download">Download v1.1.0</a>
-        <span class="link">Fork it on &nbsp;<a href="https://github.com/titulus/testit" id="github" target=_blank>GitHub</a></span>
-        <span class="link">Read manual on &nbsp;<a href="https://github.com/titulus/testit/wiki" id="wiki" target=_blank>Wiki</a></span>
+        <a href="https://github.com/titulus/testit/archive/v1.1.0.zip" class="button" id="download"><?php put('Скачать','Download') ?> v1.1.0</a>
+        <span class="link"><?php put('Код на','Fork it on') ?> &nbsp;<a href="https://github.com/titulus/testit" id="github" target=_blank>GitHub</a></span>
+        <span class="link"><?php put('Мануал на','Read manual on') ?> &nbsp;<a href="https://github.com/titulus/testit/wiki" id="wiki" target=_blank>Wiki</a></span>
     </div>
     <div id="code">
         <div>
-            <h2><a href="#introduction" id="introduction">Introduction</a></h2>
-            <p><i>test.it</i> - <abbr title="Test Driven Development">TDD</abbr> framework for javascript unit testing.
+            <h2><a href="#introduction" id="introduction"><?php put("Введение","Introduction");?></a></h2>
+            <?php put('<p><i>test.it</i> - фреймворк для юнит-тестирования javascript кода по методологии <abbr title="Test Driven Development">TDD</abbr>  <i>(Разработка Через Тестирование)</i>.
+            Хотя его можно использовать для тестирования js в scrum и в agile техниках.</p>
+            <p>На текущий момент поддерживается вывод в <i>веб консоль</i> и <i>консоль node.js</i></p>
+            <p>Этот гайд работает на версии <i>1.2.0</i></p>
+            <p>Откройте <i>веб консоль</i> что бы увидеть примеры.</p>','<p><i>test.it</i> - <abbr title="Test Driven Development">TDD</abbr> framework for javascript unit testing.
             TDD is not the only application for <i>test.it</i>. You can also use it in agile or scrum metodologies though.</p>
             <p>Output into the <i>Web Console</i> and <i>OS console from node.js</i> are availible.</p>
             <p>This guide is running on v1.2.0</p>
-            <p>Open <i>Web Console</i> to see the examples.</p>        </div>
+            <p>Open <i>Web Console</i> to see the examples.</p>');?>
+        </div>
         
         <div>
-            <h2><a href="#link-up" id="link-up">Setup</a></h2>
-            <p>There are differences in setup, dependent on used environment.</p>        </div>
+            <h2><a href="#link-up" id="link-up"><?php put('Подключение','Setup');?></a></h2>
+            <?php put('<p>Подключение зависит от среды, в которой будет проходить тестирование.</p>','<p>There are differences in setup, dependent on used environment.</p>');?>
+        </div>
         <div class="part">
             <div class="description">
-                <h3><a href="#link-browser" id="link-browser">Testing javascript in a browser</a></h3>
-                <p><i>test.it</i> includes like other javascript files on the page. Just add <i>&lt;script></i> tag with path to <i>test.it.js</i>.</p>
+                <h3><a href="#link-browser" id="link-browser"><?php put('Тестирование javascript в браузере','Testing javascript in a browser');?></a></h3>
+                <?php put('<p>Фреймворк <i>test.it</i> подключается как любой другой javascript на странице. Просто добавьте тег <i>&lt;script></i> с адрессом к <i>test.it.js</i>.</p>
+                <p>Но это не всё. Точнее не совсем всё. Для того что бы увидеть наглядный результат тестов, необходимо подключить ещё и модуль вывода в консоль. Он подключается так же как библиотека, следующей строкой.</p>
+                <p>А в начало файла тестов добавьте <b>firebugConsole</b>  в качестве модуля вывода по-умолчанию через <b>test.printer()</b>.</p>
+                <p>Вывод в консоль удобен в современных браузерах, с качественной поддержкой <i>console API</i>. Это:</p>
+                <ul>
+                    <li><i>Firefox</i> <u>с плагином <i>Firebug</i></u>,</li>
+                    <li><i>Google Chrome</i> и все браузеры на основе <i>Chromium</i>,</li>
+                    <li>а так же <i>Safari</i>.</li>
+                </ul>
+                <p>Если у вас другой браузер - ждите релиза модуля вывода в DOM.</p>','<p><i>test.it</i> includes like other javascript files on the page. Just add <i>&lt;script></i> tag with path to <i>test.it.js</i>.</p>
                 <p>But it is only the core. To see results output, include <i>firebug output module</i>, and use <b>firebugConsole</b> as default printer via <b>test.printer()</b>.</p>
                 <p>Console output is very convenient in browsers with total <i>console API</i> support. They are:</p>
                 <ul>
@@ -47,7 +79,8 @@
                     <li><i>Google Chrome</i> and other <i>Chromium</i>-based,</li>
                     <li><i>Safari</i> as well.</li>
                 </ul>
-                <p>If you are unfortunate enough to use other browser - waits for <i>DOM output module</i> release please.</p>            </div>
+                <p>If you are unfortunate enough to use other browser - waits for <i>DOM output module</i> release please.</p>');?>
+            </div>
             <div class="code">
                 <pre><code class="html">&lt;script src='path/to/test.it.js'>&lt;/script>
 &lt;script src='path/to/test.it-firebug.js'>&lt;/script></code></pre>
@@ -57,10 +90,14 @@
         </div>
         <div class="part last">
             <div class="description">
-                <h3><a href="#link-nodejs" id="link-nodejs">Testing Javascript in node.js</a></h3>
-                <p>First of all you need to install <i>test.it</i></p>
+                <h3><a href="#link-nodejs" id="link-nodejs"><?php put('Тестирование javascript в node.js','Testing Javascript in node.js');?></a></h3>
+                <?php put('<p>Первым делом, необходимо установить соответствующий пакет: <i>test.it</i></p>
+                <p>В <i>node.js</i>, подключение <i>test.it</i> ничем не отличается от подключения большинства сторонних пакетов. Для этого предназначена функция <i>require</i>, результат которой нужно поместить в переменную <b>test</b>.</p>
+                <p>Как и в браузере, одного только ядра фреймворка, как правило, не достаточно. Хотя для <abbr title="Continuous Integration">CI</abbr> хватит и его. Но если вам нужен наглядный вывод - придётся установить и подключить модуль вывода в консоль node.js: <i>test.it-nodejs</i>.</p>
+                <p>После установки не достаточно просто использовать <i>require</i> с имененем модуля. Но так же необходимо добавить его в качестве стандартного вывода через <b>test.printer</b>.</p>','<p>First of all you need to install <i>test.it</i></p>
                 <p>After that - include in into your tests file with <b>require</b>.</p>
-                <p>That enough for <abbr title="Continuous Integration">CI</abbr>. But if you want pretty output for results - install and include <i>test.it-nodejs</i> output module. And set it as default output module with <b>test.printer</b>.</p>            </div>
+                <p>That enough for <abbr title="Continuous Integration">CI</abbr>. But if you want pretty output for results - install and include <i>test.it-nodejs</i> output module. And set it as default output module with <b>test.printer</b>.</p>');?>
+            </div>
             <div class="code">
                 <pre><code>npm install 'test.it'
 npm install 'test.it-nodejs'</code></pre>
@@ -68,16 +105,18 @@ npm install 'test.it-nodejs'</code></pre>
                 <pre><code class="javascript">test = require('test.it');
 nodeConsole = require('test.it-nodejs');
 test.printer(nodeConsole);</code></pre>
-                <br/>&nbsp;Or shorter<br/><br/>
+                <br/>&nbsp;<?php put('Или сокращённый вариант','Or shorter');?><br/><br/>
                 <pre><code class="javascript">(test = require('test.it')).printer(require('test.it-nodejs'));</code></pre>
             </div>
         </div>
 
         <div class="part">
             <div class="description">
-                <h2><a href="#tests" id="tests">Tests</a></h2>
-                <p><i>test.it</i> framework is designed for unit testing. And usage with <abbr title="Test Driven Development">TDD</abbr> methodology. This implies tests for validity, equality and type.</p>
-                <p>All tests are methods of <b>test</b> object and means interpretations of the above concepts. They usually takes from one to three arguments. Так же существуют несколько множественных форм - they takes array as first argument, and test every element in it.</p>            </div>
+                <h2><a href="#tests" id="tests"><?php put('Тесты','Tests');?></a></h2>
+                <?php put('<p>Фреймворк <i>test.it</i> задуман для написания модульных тестов <i>(unit testing)</i>. И использования c применением методологии <abbr title="Test Driven Development">TDD</abbr> <i>(Разработка Через Тестирование)</i>. А это предполагает тесты на истинность значения или выражения, ревенство значений и тип.</p>
+                <p>Все тесты являются методами объекта <b>test</b> и являются интерпретациями в коде названных ваше понятий. Обычно они принимают от одного до трёх аргументов. Так же существуют несколько множественных форм этих методов - они первым аргументом принимают массив, элементы которого и будут тестироваться.</p>','<p><i>test.it</i> framework is designed for unit testing. And usage with <abbr title="Test Driven Development">TDD</abbr> methodology. This implies tests for validity, equality and type.</p>
+                <p>All tests are methods of <b>test</b> object and means interpretations of the above concepts. They usually takes from one to three arguments. Так же существуют несколько множественных форм - they takes array as first argument, and test every element in it.</p>');?>
+            </div>
         </div>
 
         <div class="part">

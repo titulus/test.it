@@ -1,70 +1,245 @@
+/* CLEAR CSS */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent;}
+body {line-height: 1;}
+ol, ul {list-style: none;}
+blockquote, q {quotes: none;}
+blockquote:before, blockquote:after, q:before, q:after {content: ''; content: none;}
+/* remember to define focus styles! */
+:focus {outline: 0;}
+/* remember to highlight inserts somehow! */
+ins {text-decoration: none;}
+del {text-decoration: line-through;}
+/* tables still need 'cellspacing="0"' in the markup */
+table {border-collapse: collapse; border-spacing: 0;}
+html {height: 100%;width:100%;}
+
+
+.keywords {
+    list-style: none;
+    padding: 0;
+    color: SkyBlue;
+}
+.keywords > * {
+    display: inline-block;
+}
+.keywords > *:before {
+    content: '#';
+}
+
+
+
 body {
-    text-align: center;
-    background: #1d1d1d;
-    background-image: url(zenbg.png);
+    padding: 32px;
+
+    font-family: Arial, sans-serif;
     color: #bbb;
-    font-family: arial,sans-serif;
+
+    background: #1d1d1d;
+    background-image: url(bg.gif);
+
     cursor: default;
 }
 
-h1 {
-    font-size: 72px;
-    line-height: 72px;
-    font-style: italic;
-    margin-bottom: 0;
-}
-    h1:hover {color: #ddd;}
-    h1>span {color: SteelBlue;}
-
-.description {
-    font-size: 28px;
+abbr {
+    border-bottom: 1px dashed SteelBlue;
+    cursor: help;
 }
 
-#line {
-    line-height: 52px;
-}
-#line>* {
-    margin: 0 24px;
-    white-space: nowrap;
-}
-#line a {
+a {
     color: SteelBlue;
     text-decoration: none;
 }
-#line>:hover {
-    color: white;
-}
-#line a:hover {
+a:hover {
     color: SkyBlue;
-}
-#line>span>a:hover {
     text-decoration: underline;
 }
-#line>a {
+a[href^="#"] {
+    position: relative;
+}
+a[href^="#"]:hover:before{
+    content: '¶';
+    display: block;
+    position: absolute;
+    left: -0.6em;
+    font-size: .6em;
+}
+
+p {
+    line-height: 1.2em;
+    margin: 16px 0;
+}
+
+ul > li:before {
+    content: "> ";
+    color: rgb(100, 130, 150);
+}
+
+.button {
     display: inline-block;
-    padding: 0 16px;
     background: rgba(48,48,48,.5);
 }
-#line>a:hover {
+.button {
     background: rgba(128,128,148,.1);
 }
 
-.suggestion {
-    font-family: monospace;
+#logo {
     font-style: italic;
-    color: #aaa;
+    font-size: 72px;
 }
+    #logo .dot {color: SteelBlue;}
+    #logo .it {color: #ddd;}
 
-#code {
-    text-align: left;
-    max-width: 800px;
-    overflow-x: auto;
-    margin: auto;
-    cursor: text;
-    color: white;
+#links {}
+    #links > * {
+        white-space: nowrap;
+    }
+    #links > .link:hover {
+        color: white;
+    }
+
+
+
+#code {}
+    #code h2
+   ,#code h3 {
+        color: SteelBlue;
+   }
+
+    #code i
+   ,#code b {color: rgb(100, 130, 150);}
+    
+    #code code {
+        background: rgba(128,128,148,.1);
+        border: 1px solid #1F333F;
+        color: white;
+        cursor: text;
+    }
+    #code code[data-clicktext] {
+        cursor: pointer;
+    }
+    #code code[data-clicktext]:after {
+        content: attr(data-clicktext);
+        text-align: right;
+        display: block;
+        background: rgba(128,128,148,.1);
+        text-decoration: blink;
+        margin: 6px -9px -9px;
+        padding: 4px 8px;
+    }
+    #code code[data-clicktext]:hover {
+        background: rgba(128,128,148,.2);
+    }
+
+.code .function {color: #ddd;}
+.code .method {color: white;}
+.code .comment {color:#aaa;font-style:italic;}
+.code .value {color:SkyBlue;}
+.code .lang-const {color:SteelBlue;}
+
+@media screen and (min-width: 1201px){
+    #header {
+        display: block;
+        text-align: center;
+    }
+        #description {
+            font-size: 32px;
+        }
+    #links {
+        display: block;
+        text-align: center;
+        line-height: 72px;
+        font-size: 24px;
+        word-spacing: 16px;
+        margin-top: 16px;
+    }
+        #links > * {
+            word-spacing: normal;
+        }
+        #links .button {
+            padding: 0 16px;
+        }
+    #code {
+        font-size: 18px;
+        color: #888;
+    }
+        #code > * {
+            width: 100%;
+        }
+        #code > .part {
+            display: table;
+            table-layout: auto;
+            vertical-align: top;
+        }
+            #code > .part > * {
+                display: table-cell;
+                vertical-align: top;
+            }
+            #code > .part > .code {
+                width: 720px;
+                background: rgba(64,64,64,.1);
+            }
+            #code > .part > .description {
+                padding-right: 16px;
+            }
+        #code h2 {
+            font-size: 36px;
+            text-align: center;
+            margin-top: 32px;
+        }
+        #code h3 {
+            font-size: 32px;
+            margin: 0;
+        }
 }
-#code .function {color: #ddd;}
-#code .method {color: white;}
-#code .comment {color:#aaa;font-style:italic;}
-#code .value {color:SkyBlue;}
-#code .lang-const {color:SteelBlue;}
+@media screen and (max-width: 1200px) {
+    body {
+        min-width: 720px;
+    }
+    #header {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+    }
+        #description {
+            display: none;
+        }
+    #links {
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 54px;
+        font-size: 16px;
+        word-spacing: 8px;
+        /*margin-top: 16px;*/
+        margin-left: 16px;
+    }
+        #links > * {
+            word-spacing: normal;
+        }
+        #links .button {
+            padding: 0 16px;
+        }
+    #code {
+        font-size: 14px;
+        color: #aaa;
+    }
+    #code > * {
+        display: block;
+    }
+    #code > .part > * {
+        display: block;
+    }
+    #code h2 {
+        font-size: 28px;
+        text-align: center;
+        margin-top: 32px;
+    }
+    #code h3 {
+        font-size: 24px;
+        margin-top: 16px;
+    }
+    #code .part .code {
+        width: 720px;
+        margin: auto;
+    }
+}

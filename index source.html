@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <title>test.it</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="test.it-highlight.css">
+    <link rel="stylesheet" href="testit-highlight.css">
     <meta name="description" content="test.it - simple javascript testing framework. Provides console output, multi-level group nesting, async testing.">
     <meta name="keywords" content="test.it, javascript, js, testing, code testing, unit-testing, unit testing, framework, TDD">
 </head>
 <body>
     <!-- framework -->
-    <script src='test.it.js'></script>
-    <script src='test.it-firebug.js'></script>
+    <script src='testit.js'></script>
+    <script src='testit-firebug.js'></script>
     <!-- script which is represented above -->
     <script src='example.js'></script>
 
@@ -26,68 +26,64 @@
     </div>
     <div id="code">
         <div>
-            <h2><a href="#introduction" id="introduction">Introduction</a></h2>
-            <p><i>test.it</i> - <abbr title="Test Driven Development">TDD</abbr> framework for javascript unit testing.
-            TDD is not the only application for <i>test.it</i>. You can also use it in agile or scrum metodologies though.</p>
-            <p>Output into the <i>Web Console</i> and <i>OS console from node.js</i> are availible.</p>
-            <p>This guide is running on v1.2.0</p>
-            <p>Open <i>Web Console</i> to see the examples.</p>        </div>
+            <h2><a href="#introdution" id="introdution">Введение</a></h2>
+            <p><i>testit</i> - фреймворк для юнит-тестирования javascript кода по методологии <abbr title="Test Driven Development">TDD</abbr>  <i>(Разработка Через Тестирование)</i>.
+            Хотя его можно использовать для тестирования js в scrum и в agile техниках.</p>
+            <p>На текущий момент поддерживается вывод в <i>веб консоль</i> и <i>консоль node.js</i></p>
+            <p>Этот гайд работает на версии <i>1.2.0</i></p>
+            <p>Откройте <i>веб консоль</i> что бы увидеть примеры.</p>
+        </div>
         
         <div>
-            <h2><a href="#link-up" id="link-up">Setup</a></h2>
-            <p>There are differences in setup, dependent on used environment.</p>        </div>
+            <h2><a href="#link-up" id="link-up">Подключение</a></h2>
+            <p>Подключение зависит от среды, в которой будет проходить тестирование.</p>
+        </div>
         <div class="part">
             <div class="description">
-                <h3><a href="#link-browser" id="link-browser">Testing javascript in a browser</a></h3>
-                <p><i>test.it</i> includes like other javascript files on the page. Just add <i>&lt;script></i> tag with path to <i>test.it.js</i>.</p>
-                <p>But it is only the core. To see results output, include <i>firebug output module</i>, and use <b>firebugConsole</b> as default printer via <b>test.printer()</b>.</p>
-                <p>Console output is very convenient in browsers with total <i>console API</i> support. They are:</p>
+                <h3><a href="#link-browser" id="link-browser">Тестирование javascript в браузере</a></h3>
+                <p>Фреймворк <i>testit</i> подключается как любой другой javascript на странице. Просто добавьте тег <i>&lt;script></i> с адрессом к <i>testit.js</i>.</p>
+                <p>Но это не всё. Точнее не совсем всё. Для того что бы увидеть наглядный результат тестов, необходимо подключить ещё и модуль вывода в консоль. Он подключается так же как библиотека, следующей строкой.</p>
+                <p>Вывод в консоль удобен в современных браузерах, с качественной поддержкой <i>console API</i>. Это:</p>
                 <ul>
-                    <li><i>Firefox</i> <u>with <i>Firebug</i> plugin</u>,</li>
-                    <li><i>Google Chrome</i> and other <i>Chromium</i>-based,</li>
-                    <li><i>Safari</i> as well.</li>
+                    <li><i>Firefox</i> <u>с плагином <i>Firebug</i></u>,</li>
+                    <li><i>Google Chrome</i> и все браузеры на основе <i>Chromium</i>,</li>
+                    <li>а так же <i>Safari</i>.</li>
                 </ul>
-                <p>If you are unfortunate enough to use other browser - waits for <i>DOM output module</i> release please.</p>            </div>
+                <p>Если у вас другой браузер - ждите релиза модуля вывода в DOM.</p>
+            </div>
             <div class="code">
-                <pre><code class="html">&lt;script src='path/to/test.it.js'>&lt;/script>
-&lt;script src='path/to/test.it-firebug.js'>&lt;/script></code></pre>
-                <br/>
-                <pre><code class="javascript">test.printer(firebugConsole);</code></pre>
+                
+				<pre><code class="html">&lt;script src='testit.js'>&lt;/script>
+&lt;script src='testit-firebug.js'>&lt;/script></code></pre>
             </div>
         </div>
         <div class="part last">
             <div class="description">
-                <h3><a href="#link-nodejs" id="link-nodejs">Testing Javascript in node.js</a></h3>
-                <p>First of all you need to install <i>test.it</i></p>
-                <p>After that - include in into your tests file with <b>require</b>.</p>
-                <p>That enough for <abbr title="Continuous Integration">CI</abbr>. But if you want pretty output for results - install and include <i>test.it-nodejs</i> output module. And set it as default output module with <b>test.printer</b>.</p>            </div>
-            <div class="code">
-                <pre><code>npm install 'test.it'
-npm install 'test.it-nodejs'</code></pre>
-                <br/>
-                <pre><code class="javascript">test = require('test.it');
-nodeConsole = require('test.it-nodejs');
-test.printer(nodeConsole);</code></pre>
-                <br/>&nbsp;Or shorter<br/><br/>
-                <pre><code class="javascript">(test = require('test.it')).printer(require('test.it-nodejs'));</code></pre>
+                <h3><a href="#link-nodejs" id="link-nodejs">Тестирование javascript в node.js</a></h3>
+                <p>В <i>node.js</i>, подключение <i>testit</i> ничем не отличается от подключения большинства сторонних скриптом. Для этого преднозначена функция <i>require</i>, результат которой нужно поместить в переменную <b>test</b>.</p>
+                <p>Как и в браузере, одного только ядра фреймворка как правило не достаточно. Хотя для continuous integration хватит и его. Но если вам нужен наглядный вывод - придётся подключить модуль вывода в консоль node.js.</p>
+                <p>Для это не достаточно просто использовать <i>require</i> с адресом модуля. Но так же необходимо добавить новый инстанс того что он вернул, в качестве стандартного вывода через <b>test.printer</b>.</p>
             </div>
+            <div class="code">
+				<pre><code class="javascript">test = require('../testit.js');
+nodeConsole = require('../testit-nodejs.js');
+test.printer(new nodeConsole);</code></pre>
+			</div>
         </div>
 
         <div class="part">
             <div class="description">
-                <h2><a href="#tests" id="tests">Tests</a></h2>
-                <p><i>test.it</i> framework is designed for unit testing. And usage with <abbr title="Test Driven Development">TDD</abbr> methodology. This implies tests for validity, equality and type.</p>
-                <p>All tests are methods of <b>test</b> object and means interpretations of the above concepts. They usually takes from one to three arguments. Так же существуют несколько множественных форм - they takes array as first argument, and test every element in it.</p>            </div>
+                <h2><a href="#tests" id="tests">Тесты</a></h2>
+                <p>Фреймворк <i>testit</i> задуман для написания модульных тестов <i>(unit testing)</i>. B использования c применением методологии <abbr title="Test Driven Development">TDD</abbr> <i>(Разработка Через Тестирование)</i>. А это предполагает тесты на истинность значения или выражения, ревенство значений и тип.</p>
+                <p>Все тесты являются методами объекта <b>test</b> и являются интерпретациями в коде названных ваше понятий. Обычно они принимают от одного до трёх аргументов. Так же существуют несколько множественных форм этих методов - они первым аргументом принимают массив, элементы которого и будут тестироваться.</p>
+            </div>
         </div>
 
         <div class="part">
             <div class="description">
                 <p>Вот два распространённых варианта записи тестов:</p>
-                <p>Здесь первый тест проверяет больше ли <i>a</i> чем <i>10</i> и, соответственно, не проходит. А второй сравнивает ту же переменную <i>a</i> уже с <i>2</i> и, соответственно, проходит.</p>
+                <p>Сдесь первый тест проверяет больше ли <i>a</i> чем <i>10</i> и, соответственно, не проходит. А второй сравнивает ту же переменную <i>a</i> уже с <i>2</i> и, соответственно, проходит.</p>
                 <p>Это два однотипных теста, которые только записанны слегка по-разному. Оба способа записи приветствуются, но второй лучше подходит для случаев с более сложными тестами. Мы ещё встретимся с ними на этой странице.</p>
-
-                <p>Here are two common variants writing the tests:</p>
-                <p>First check</p>
             </div>
             <div class="code">
                 <pre><code class="javascript" id="classic_test_1" data-clicktext="кликните что бы запустить"><script>
@@ -110,28 +106,28 @@ process(classic_test_1);
                 <p>У этого теста есть множественная форма.</p>
             </div>
             <div class="code">
-                <pre><code class="javascript" id="non_false" data-clicktext="кликните что бы запустить"><script>
+				<pre><code class="javascript" id="non_false" data-clicktext="кликните что бы запустить"><script>
 function non_false () {
 test.it( "hello world" ); // pass
 test.it( 0 ); // fail
 };
 process(non_false);
                 </script></code></pre>
-            </div>
+			</div>
         </div>
         <div class="part">
             <div class="description">
                 <p><b>test.them( values )</b> - проверяет истинность всех элементов в массиве <i>values</i></p>
             </div>
             <div class="code">
-                <pre><code class="javascript" id="them" data-clicktext="кликните что бы запустить"><script>
+				<pre><code class="javascript" id="them" data-clicktext="кликните что бы запустить"><script>
 function them () {
 test.them( [1,'text',true] ); // pass
 test.them( [1,'text',false] ); // fail
 }
 process(them);
 </script></code></pre>
-            </div>
+			</div>
         </div>
         <div class="part">
             <div class="description">
@@ -140,14 +136,14 @@ process(them);
             </div>
             <div class="code">
                 <br/>
-                <pre><code class="javascript" id="equal" data-clicktext="кликните что бы запустить"><script>
+				<pre><code class="javascript" id="equal" data-clicktext="кликните что бы запустить"><script>
 function equal () {
 test.it( 1, 1 ); // pass
 test.it( 1, 2 ); // fail
 }
 process(equal);
 </script></code></pre>
-            </div>
+			</div>
         </div>
         <div class="part">
             <div class="description">
@@ -156,7 +152,7 @@ process(equal);
                 <p>У этого теста есть множественная форма.</p>
             </div>
             <div class="code">
-                <pre><code class="javascript" id="is" data-clicktext="кликните что бы запустить"><script>
+				<pre><code class="javascript" id="is" data-clicktext="кликните что бы запустить"><script>
 function is () {
 test.is( 1, Number ); // pass
 function constr () {};
@@ -169,7 +165,7 @@ test.is( b, constr ); // fail
 }
 process(is);
 </script></code></pre>
-            </div>
+			</div>
         </div>
         <div class="part">
             <div class="description">
@@ -177,7 +173,7 @@ process(is);
             </div>
             <div class="code">
                 <br/>
-                <pre><code class="javascript" id="are" data-clicktext="кликните что бы запустить"><script>function are () {
+				<pre><code class="javascript" id="are" data-clicktext="кликните что бы запустить"><script>function are () {
 test.are( [1,2] ); // pass
 test.are( [1,2], Number ); // pass
 
@@ -185,20 +181,20 @@ test.are( [1,'text']); //fail
 test.are( [1,2], String ); //fail
 }
 process(are);</script></code></pre>
-            </div>
+			</div>
         </div>
         
 
         <div>
             <h2><a href="#groups" id="groups">Группы</a></h2>
-            <p>Методология <abbr title="Test Driven Development">TDD</abbr> предполагает разделение кода на отдельные модули, и их разделное юнит-тестирование. Следовательно тесты необходимо объеденять в группы, соответствующие модулям, их подмодулям и т.д. Древовидная структура групп в <i>test.it</i> подходит для этого как нельзя лучше.</p>
+            <p>Методология <abbr title="Test Driven Development">TDD</abbr> предполагает разделение кода на отдельные модули, и их разделное юнит-тестирование. Следовательно тесты необходимо объеденять в группы, соответствующие модулям, их подмодулям и т.д. Древовидная структура групп в <i>testit</i> подходит для этого как нельзя лучше.</p>
             <p>Все операции с группами осуществляются через метод <b>.group()</b>. Далее рассмотрим различные способы его использования.</p>
         </div>
         <div class="part">
             <div class="description">
                 <p><b>test.group( name, function(){ ... } )</b> - объединяет все тесты (и группы) внутри функции <i>function</i> в группу с именем <i>name</i></p>
                 <p>В случае, когда группа с таким именем уже существует, новые тесты (и группы) из <i>function</i> просто добавляются в неё.</p>
-                <p>Обратите внимание, что группы в <i>test.it</i> поддерживают многоуровневую вложенность.</p>
+                <p>Обратите внимание, что группы в <i>testit</i> поддерживают многоуровневую вложенность.</p>
             </div>
             <div class="code">
                 <pre><code class="javascript" id="group_nesting" data-clicktext="кликните что бы запустить"><script>
@@ -290,7 +286,7 @@ process(comment);
                 <p>В группы время выполнения добавляется автоматически. Если вам потребуется подобное в тесте, просто добавьте <b>.addTime()</b> перед его вызовом</p>
             </div>
             <div class="code">
-                <pre><code class="javascript" id="test_time" data-clicktext="кликните что бы запустить"><script>
+				<pre><code class="javascript" id="test_time" data-clicktext="кликните что бы запустить"><script>
 function test_time () {
 var longfunction = function () {
     for (var i=0;i<10000000;i++);
@@ -300,7 +296,7 @@ test.addTime().it(longfunction());
 }
 process(test_time);
             </script></code></pre>
-            </div>
+			</div>
         </div>
         <div class="part">
             <div class="description">
@@ -332,7 +328,7 @@ process(addtrace);
                 <p>В качестве аргументов <i>callback</i> принимает от одной до трёх функций. Они запускаются соответственно при прохождении, провале или ошибочном выполнении теста.</p>
             </div>
             <div class="code">
-                <pre><code class="javascript" id="callback" data-clicktext="кликните что бы запустить"><script>
+				<pre><code class="javascript" id="callback" data-clicktext="кликните что бы запустить"><script>
 function callback () {
 var ifpass = function () {console.info('test pass');}
 var iffail = function () {console.info('test fail');}
@@ -342,7 +338,7 @@ test.it(true)
 }
 process(callback);
             </script></code></pre>
-            </div>
+			</div>
         </div>
         
         <div class="part">
@@ -432,7 +428,7 @@ process(exclude);
                 <p>Все модификаторы можно комбинировать в цепи вызовов. Стоит лишь учесть, что в цепи может быть только один из завершающих модификаторов, и он должен идти последним.</p>
             </div>
             <div class="code">
-                <pre><code class="javascript" id="combine" data-clicktext="кликните что бы запустить"><script>
+				<pre><code class="javascript" id="combine" data-clicktext="кликните что бы запустить"><script>
 function combine () {
 var groupResult = test.group('groupname',function(){
     test.x().it(false)
@@ -455,7 +451,7 @@ console.log('group result:',groupResult);
 }
 process(combine);
             </script></code></pre>
-            </div>
+			</div>
         </div>
         <div class="part">
             <div class="description">
@@ -485,7 +481,7 @@ process(test_async);
 
         <div>
             <h2><a href="#additional" id="additional">Дополнительные функции</a></h2>
-            <p>Внутри ядра <i>test.it</i> используется несколько функций, которые могут слегка облегчить тестирование и отладку кода.</p>
+            <p>Внутри ядра <i>testit</i> используется несколько функций, которые могут слегка облегчить тестирование и отладку кода.</p>
             <p>Эти функции не являются ни тестами, ни группами, ни частями цепи. Они никак не проявляются в результате, но возвращают значения которые вы можете использовать по своему усмотрению.</p>
         </div>
 
@@ -496,7 +492,7 @@ process(test_async);
                 <p>Он умеет различать : <i>Array</i>, <i>Boolean</i>, <i>Date</i>, <i>Error</i> (<i>EvalError</i>, <i>RangeError</i>, <i>ReferenceError</i>, <i>SyntaxError</i>, <i>TypeError</i>, <i>UriError</i>), <i>Function</i>, <i>NaN</i> и <i>Number</i>, <i>Object</i>, <i>RegExp</i>, <i>String</i>, <i>Window</i>, <i>HTML</i>, <i>NodeList</i>. А ещё он пустую переменную определит как <i>'undefined'</i> но в отличие от стандартного <b>typeof</b> не сможет получить в качестве аргумента не объявленную переменную. За то ответит <i>'undefined'</i> на несуществующее свойство объявленного и непустого объекта. </p>
             </div>
             <div class="code">
-                <pre><code class="javascript" onclick="console.clear();test_typeof()" data-clicktext="кликните что бы запустить">console.log( // look how do test.typeof() work
+				<pre><code class="javascript" onclick="console.clear();test_typeof()" data-clicktext="кликните что бы запустить">console.log( // look how do test.typeof() work
     test.typeof(1)
    ,test.typeof("text")
    ,test.typeof([1,2,3])
@@ -519,7 +515,7 @@ console.log( // look how do test.typeof() work
    ,test.typeof(/yes it is RegExp/));
 }
    </script></pre>
-            </div>
+			</div>
         </div>
         <div class="part last">
             <div class="description">
@@ -527,7 +523,7 @@ console.log( // look how do test.typeof() work
                 <p>Для того что бы получить <i>"trace stack"</i> - список строк кода, которые были выполнены для вызова этой строки (или список областей видимости, по которым прошёл движёк Javascript) используйте метод <b>.trace()</b>.</p>
             </div>
             <div class="code">
-                <pre><code class="javascript" onclick="console.clear();test_trace()" data-clicktext="кликните что бы запустить">(function firstFunction() { // look how do test.trace() work
+				<pre><code class="javascript" onclick="console.clear();test_trace()" data-clicktext="кликните что бы запустить">(function firstFunction() { // look how do test.trace() work
     (function secondFunction() {
         (function lastFunction() {
             console.log(test.trace());
@@ -544,7 +540,7 @@ function test_trace () {
     })();
 }
 </script></pre>
-            </div>
+			</div>
         </div>
 
 </div>
