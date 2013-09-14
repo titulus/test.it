@@ -31,15 +31,17 @@ There are some differences between usage **testit** in different environment lik
 
 ## Browser
 + First: add core of framework
-    ```html
+
+  ```html
 <script src='path/to/test.it.js'></script>
-    ```
-+ Next: add output strategy and set firebugConsole as default printer 
-    ```html
+  ```
++ Next: add output strategy and set `firebugConsole` as default printer 
+  
+  ```html
 <script src='path/to/test.it-firebug.js'></script>
 <script>test.printer(firebugConsole);</script>
-    ```
-    Of course you can include `test.printer(firebugConsole);` in your tests script.
+  ```
+  Of course you can include `test.printer(firebugConsole);` in your tests script.
 
 **Hint:** *add `<script>` tags to the and of your `<body>` tag.*
 
@@ -61,22 +63,25 @@ btw you can use this construction:
 
 ### Nodejs
 + First: install framework and output module
-    ```bash
+
+  ```bash
 npm install 'test.it'
 npm install 'test.it-nodejs'
-    ```
-    **Hint:** *you can use [`-g`](https://npmjs.org/doc/install.html) flag to install them globally*
+  ```
+  **Hint:** *you can use [`-g`](https://npmjs.org/doc/install.html) flag to install them globally*
 + Second: add core of framework and output module, set it as default printer
-    ```javascript
+
+  ```javascript
 test = require('test.it');
 nodeConsole = require('test.it-nodejs');
 test.printer(nodeConsole);
-    ```
-    btw you can use this construction:
-    ```javascript
+  ```
+  btw you can use this construction:
+  ```javascript
 (test = require('test.it')).printer(require('test.it-nodejs'));
-    ```
-    **Info:** *Output module is not required! It's repo takes place [here](https://github.com/titulus/test.it-nodejs)*
+  ```
+  **Info:** *Output module is not required! It's repo takes place [here](https://github.com/titulus/test.it-nodejs)*
+  
 ===
 
 ### How to use
