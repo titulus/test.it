@@ -27,26 +27,56 @@ TDD testing framework.
 ===
 
 ### How to install
-You just need to add 
-```html
-<script src='path/to/testit.js'></script>
-<script src='path/to/testit-firebug.js'></script>
-```
-to the end of  `<body>` tag. That's it!
+There are some differences between usage **testit** in different environment like browser or nodejs.
+
+## Browser
++ First: add core of framework
+    ```html
+<script src='path/to/test.it.js'></script>
+    ```
++ Next: add output strategy and set firebugConsole as default printer 
+    ```html
+<script src='path/to/test.it-firebug.js'></script>
+<script>test.printer(firebugConsole);</script>
+    ```
+    Of course you can include `test.printer(firebugConsole);` in your tests script.
+
+**Hint:** *add `<script>` tags to the and of your `<body>` tag.*
 
 btw you can use this construction:
 ```html
 <!-- framework -->
-<script src='./testit.js'></script>
+<script src='./test.it.js'></script>
 <!-- print to firebug console -->
-<script src='./testit-firebug.js'></script>
+<script src='./test.it-firebug.js'></script>
+<!-- set firebugConsole as default printer  -->
+<script>test.printer(firebugConsole);</script>
 <!-- your script -->
 <script src='./script.js'></script>
 <!-- your tests -->
 <script src='./tests.js'></script>
-<!-- a trick to not worry about the call of test.done() -->
-<script>test.done();</script>
+<!-- a trick to not worry about the call of test.print() -->
+<script>test.print();</script>
 ```
+
+### Nodejs
++ First: install framework and output module
+    ```bash
+npm install 'test.it'
+npm install 'test.it-nodejs'
+    ```
+    **Hint:** *you can use [`-g`](https://npmjs.org/doc/install.html) flag to install them globally*
++ Second: add core of framework and output module, set it as default printer
+    ```javascript
+test = require('test.it');
+nodeConsole = require('test.it-nodejs');
+test.printer(nodeConsole);
+    ```
+    btw you can use this construction:
+    ```javascript
+(test = require('test.it')).printer(require('test.it-nodejs'));
+    ```
+    **Info:** *Output module is not required!*
 
 ===
 
