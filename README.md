@@ -76,8 +76,7 @@ test.printer(nodeConsole);
     ```javascript
 (test = require('test.it')).printer(require('test.it-nodejs'));
     ```
-    **Info:** *Output module is not required!*
-
+    **Info:** *Output module is not required! It's repo takes place [here](https://github.com/titulus/test.it-nodejs)*
 ===
 
 ### How to use
