@@ -81,7 +81,7 @@ test.printer(nodeConsole);
 (test = require('test.it')).printer(require('test.it-nodejs'));
   ```
   **Info:** *Output module is not required! It's repo takes place [here](https://github.com/titulus/test.it-nodejs)*
-  
+
 ===
 
 ### How to use
@@ -89,4 +89,4 @@ You can find the API manual on [wiki](https://github.com/titulus/testit/wiki/API
 
 ### Online example
 Look at it right [here](http://titulus.github.io/testit/)
-Русская версия [сдесь](http://titulus.github.io/testit/RU/)
+Русская версия [сдесь](http://titulus.github.io/testit/ru)
