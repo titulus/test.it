@@ -702,6 +702,11 @@ function deepCompare() {
             return x.toString() === y.toString();
         }
 
+        // Compare jQuery objects
+        if ((window || false) && (window.jQuery || false) && ((x instanceof jQuery) && (y instanceof jQuery))) {
+            return x.is(y);
+        }
+
         // At last checking prototypes as good a we can
         if (!(x instanceof Object && y instanceof Object)) {
             return false;
