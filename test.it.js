@@ -72,7 +72,7 @@ function Testit () {
     function _makeGroup(name,fun,excluded) {
         /** get timestamp */
         var time = new Date().getTime();
-        
+
         /** var for the new instance of group */
         var newgroup;
         /** identify new group */
@@ -186,7 +186,7 @@ function Testit () {
             case 'is' : _testIs(newtest); break;
             case 'are' : _testAre(newtest); break;
         }
-        
+
         /** calculate time, if .time was called before this test */
         if (this.timestamp) newtest.time = new Date().getTime() - this.timestamp;
 
@@ -431,7 +431,7 @@ function Testit () {
                     } else {
                         testobj.description = 'arguments has same constructor';
                     }
-                    
+
                 }
             }
         }
@@ -545,7 +545,7 @@ function Testit () {
                 } break;
             };
         };
-        
+
         if (link.result.error || link.error) {link.status='error'}
         else if (link.result.fail) {link.status='fail'}
         else {link.status='pass'}
@@ -561,13 +561,13 @@ function Testit () {
 
     /** public interface for typeOf */
     this.typeof = typeOf;
-    
+
     /** public interface for getTrace(error) */
     this.trace = getTrace;
 
     // return this;
     return this;
-}  
+}
 
 /** determinates type of argument. More powerfull then typeof(). */
 function typeOf (argument) {
@@ -608,7 +608,7 @@ function typeOf (argument) {
 }
 /** list of types, which can be identified by typeOf */
 var identifiedTypes = ['array', 'boolean', 'date', 'error', 'evalerror', 'function', 'html', 'nan', 'nodelist', 'null', 'number', 'object', 'rangeerror', 'referenceerror', 'regexp', 'string', 'syntaxerror', 'typeerror', 'urierror', 'window'];
-    
+
 
 /**
  * figure out what status will be used
@@ -672,7 +672,119 @@ function arrayConsist(array, val) {
  * @return {Boolean}            result of comparison
  * {@link http://stackoverflow.com/a/1144249/1771942}
  */
-function deepCompare(){function c(d,e){var f;if(isNaN(d)&&isNaN(e)&&"number"==typeof d&&"number"==typeof e)return!0;if(d===e)return!0;if("function"==typeof d&&"function"==typeof e||d instanceof Date&&e instanceof Date||d instanceof RegExp&&e instanceof RegExp||d instanceof String&&e instanceof String||d instanceof Number&&e instanceof Number)return d.toString()===e.toString();if(!(d instanceof Object&&e instanceof Object))return!1;if(d.isPrototypeOf(e)||e.isPrototypeOf(d))return!1;if(d.constructor!==e.constructor)return!1;if(d.prototype!==e.prototype)return!1;if(a.indexOf(d)>-1||b.indexOf(e)>-1)return!1;for(f in e){if(e.hasOwnProperty(f)!==d.hasOwnProperty(f))return!1;if(typeof e[f]!=typeof d[f])return!1}for(f in d){if(e.hasOwnProperty(f)!==d.hasOwnProperty(f))return!1;if(typeof e[f]!=typeof d[f])return!1;switch(typeof d[f]){case"object":case"function":if(a.push(d),b.push(e),!c(d[f],e[f]))return!1;a.pop(),b.pop();break;default:if(d[f]!==e[f])return!1}}return!0}var a,b;if(arguments.length<1)return!0;for(var d=1,e=arguments.length;e>d;d++)if(a=[],b=[],!c(arguments[0],arguments[d]))return!1;return!0}
+function deepCompare() {
+    var leftChain, rightChain;
+
+    function compare2Objects(x, y) {
+        var p;
+
+        // remember that NaN === NaN returns false
+        // and isNaN(undefined) returns true
+        if (isNaN(x) && isNaN(y) && typeof x === 'number' && typeof y === 'number') {
+            return true;
+        }
+
+        // Compare primitives and functions.
+        // Check if both arguments link to the same object.
+        // Especially useful on step when comparing prototypes
+        if (x === y) {
+            return true;
+        }
+
+        // Works in case when functions are created in constructor.
+        // Comparing dates is a common scenario. Another built-ins?
+        // We can even handle functions passed across iframes
+        if ((typeof x === 'function' && typeof y === 'function') ||
+            (x instanceof Date && y instanceof Date) ||
+            (x instanceof RegExp && y instanceof RegExp) ||
+            (x instanceof String && y instanceof String) ||
+            (x instanceof Number && y instanceof Number)) {
+            return x.toString() === y.toString();
+        }
+
+        // At last checking prototypes as good a we can
+        if (!(x instanceof Object && y instanceof Object)) {
+            return false;
+        }
+
+        if (x.isPrototypeOf(y) || y.isPrototypeOf(x)) {
+            return false;
+        }
+
+        if (x.constructor !== y.constructor) {
+            return false;
+        }
+
+        if (x.prototype !== y.prototype) {
+            return false;
+        }
+
+        // check for infinitive linking loops
+        if (leftChain.indexOf(x) > -1 || rightChain.indexOf(y) > -1) {
+            return false;
+        }
+
+        // Quick checking of one object being a subset of another.
+        for (p in y) {
+            if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
+                return false;
+            }
+            else if (typeof y[p] !== typeof x[p]) {
+                return false;
+            }
+        }
+
+        for (p in x) {
+            if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
+                return false;
+            }
+            else if (typeof y[p] !== typeof x[p]) {
+                return false;
+            }
+
+            switch (typeof (x[p])) {
+                case 'object':
+                case 'function':
+
+                    leftChain.push(x);
+                    rightChain.push(y);
+
+                    if (!compare2Objects(x[p], y[p])) {
+                        return false;
+                    }
+
+                    leftChain.pop();
+                    rightChain.pop();
+                    break;
+
+                default:
+                    if (x[p] !== y[p]) {
+                        return false;
+                    }
+                    break;
+            }
+        }
+
+        return true;
+    }
+
+    if (arguments.length < 1) {
+        return true; //Die silently? Don't know how to handle such case, please help...
+        // throw "Need two or more arguments to compare";
+    }
+
+    for (var i = 1, l = arguments.length; i < l; i++) {
+
+        leftChain = [];
+        rightChain = [];
+
+        if (!compare2Objects(arguments[0], arguments[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 /** new instance of testit, availible from outside. */
 if (typeof module !== 'undefined' && module.exports) module.exports = new Testit();
