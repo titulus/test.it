@@ -1,4 +1,4 @@
-testit
+testi.t
 ===================
 
 TDD testing framework.
@@ -27,18 +27,18 @@ TDD testing framework.
 ===
 
 ### How to install
-There are some differences between usage **testit** in different environment like browser or nodejs.
+There are some differences between usage **test.it** in different environment like browser or nodejs.
 
 ## Browser
 + First: add core of framework
 
   ```html
-<script src='path/to/testit.js'></script>
+<script src='path/to/test.it.js'></script>
   ```
 + Next: add output strategy and set `firebugConsole` as default printer 
   
   ```html
-<script src='path/to/testit-firebug.js'></script>
+<script src='path/to/test.it-firebug.js'></script>
 <script>test.printer(firebugConsole);</script>
   ```
   Of course you can include `test.printer(firebugConsole);` in your tests script.
@@ -48,9 +48,9 @@ There are some differences between usage **testit** in different environment lik
 btw you can use this construction:
 ```html
 <!-- framework -->
-<script src='./testit.js'></script>
+<script src='./test.it.js'></script>
 <!-- print to firebug console -->
-<script src='./testit-firebug.js'></script>
+<script src='./test.it-firebug.js'></script>
 <!-- set firebugConsole as default printer  -->
 <script>test.printer(firebugConsole);</script>
 <!-- your script -->
@@ -64,31 +64,31 @@ btw you can use this construction:
 ### Nodejs
 + First: install framework and output module
     ```bash
-npm install 'testit'
-npm install 'testit-nodejs'
+npm install 'test.it'
+npm install 'test.it-nodejs'
     ```
 
     **Hint:** *you can use [`-g`](https://npmjs.org/doc/install.html) flag to install them globally*
 + Second: add core of framework and output module, set it as default printer
     ```javascript
-test = require('testit');
-nodeConsole = require('testit-nodejs');
+test = require('test.it');
+nodeConsole = require('test.it-nodejs');
 test.printer(nodeConsole);
     ```
     btw you can use this construction:
     ```javascript
-(test = require('testit')).printer(require('testit-nodejs'));
+(test = require('test.it')).printer(require('test.it-nodejs'));
     ```
     
-    **Info:** *Output module is not required! You can use testit without any output at all.*
+    **Info:** *Output module is not required! You can use test.it without any output at all.*
 
-    It's repo takes place [here](https://github.com/titulus/testit-nodejs)
+    It's repo takes place [here](https://github.com/titulus/test.it-nodejs)
 
 ===
 
 ### How to use
-You can find the API manual on [wiki](https://github.com/titulus/testit/wiki/API)
+You can find the API manual on [wiki](https://github.com/titulus/test.it/wiki/API)
 
 ### Online demo
-Look at it right [here](http://titulus.github.io/testit/)
-Русская версия [сдесь](http://titulus.github.io/testit/ru)
+Look at it right [here](http://titulus.github.io/test.it/)
+Русская версия [сдесь](http://titulus.github.io/test.it/ru)
