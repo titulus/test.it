@@ -1,4 +1,4 @@
-test.it
+testit
 ===================
 
 TDD testing framework.
@@ -33,12 +33,12 @@ There are some differences between usage **testit** in different environment lik
 + First: add core of framework
 
   ```html
-<script src='path/to/test.it.js'></script>
+<script src='path/to/testit.js'></script>
   ```
 + Next: add output strategy and set `firebugConsole` as default printer 
   
   ```html
-<script src='path/to/test.it-firebug.js'></script>
+<script src='path/to/testit-firebug.js'></script>
 <script>test.printer(firebugConsole);</script>
   ```
   Of course you can include `test.printer(firebugConsole);` in your tests script.
@@ -48,9 +48,9 @@ There are some differences between usage **testit** in different environment lik
 btw you can use this construction:
 ```html
 <!-- framework -->
-<script src='./test.it.js'></script>
+<script src='./testit.js'></script>
 <!-- print to firebug console -->
-<script src='./test.it-firebug.js'></script>
+<script src='./testit-firebug.js'></script>
 <!-- set firebugConsole as default printer  -->
 <script>test.printer(firebugConsole);</script>
 <!-- your script -->
@@ -65,22 +65,22 @@ btw you can use this construction:
 + First: install framework and output module
 
   ```bash
-npm install 'test.it'
-npm install 'test.it-nodejs'
+npm install 'testit'
+npm install 'testit-nodejs'
   ```
   **Hint:** *you can use [`-g`](https://npmjs.org/doc/install.html) flag to install them globally*
 + Second: add core of framework and output module, set it as default printer
 
   ```javascript
-test = require('test.it');
-nodeConsole = require('test.it-nodejs');
+test = require('testit');
+nodeConsole = require('testit-nodejs');
 test.printer(nodeConsole);
   ```
   btw you can use this construction:
   ```javascript
-(test = require('test.it')).printer(require('test.it-nodejs'));
+(test = require('testit')).printer(require('testit-nodejs'));
   ```
-  **Info:** *Output module is not required! It's repo takes place [here](https://github.com/titulus/test.it-nodejs)*
+  **Info:** *Output module is not required! It's repo takes place [here](https://github.com/titulus/testit-nodejs)*
 
 ===
 
