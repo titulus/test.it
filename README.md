@@ -43,7 +43,7 @@ There are some differences between usage **testit** in different environment lik
   ```
   Of course you can include `test.printer(firebugConsole);` in your tests script.
 
-**Hint:** *add `<script>` tags to the and of your `<body>` tag.*
+**Hint:** *add `<script>` tags to the end of your `<body>` tag.*
 
 btw you can use this construction:
 ```html
@@ -63,24 +63,26 @@ btw you can use this construction:
 
 ### Nodejs
 + First: install framework and output module
-
-  ```bash
+    ```bash
 npm install 'testit'
 npm install 'testit-nodejs'
-  ```
-  **Hint:** *you can use [`-g`](https://npmjs.org/doc/install.html) flag to install them globally*
-+ Second: add core of framework and output module, set it as default printer
+    ```
 
-  ```javascript
+    **Hint:** *you can use [`-g`](https://npmjs.org/doc/install.html) flag to install them globally*
++ Second: add core of framework and output module, set it as default printer
+    ```javascript
 test = require('testit');
 nodeConsole = require('testit-nodejs');
 test.printer(nodeConsole);
-  ```
-  btw you can use this construction:
-  ```javascript
+    ```
+    btw you can use this construction:
+    ```javascript
 (test = require('testit')).printer(require('testit-nodejs'));
-  ```
-  **Info:** *Output module is not required! It's repo takes place [here](https://github.com/titulus/testit-nodejs)*
+    ```
+    
+    **Info:** *Output module is not required! You can use testit without any output at all.*
+
+    It's repo takes place [here](https://github.com/titulus/testit-nodejs)
 
 ===
 
