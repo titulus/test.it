@@ -89,6 +89,6 @@ test.printer(nodeConsole);
 ### How to use
 You can find the API manual on [wiki](https://github.com/titulus/testit/wiki/API)
 
-### Online example
+### Online demo
 Look at it right [here](http://titulus.github.io/testit/)
 Русская версия [сдесь](http://titulus.github.io/testit/ru)
