@@ -6,6 +6,7 @@ function firebugConsole(){
         red = "color: red;",
         orange = "color: orange",
         blue = "color: blue",
+        grey = "color: grey",
         normal = "color: normal; font-weight:normal;";
 
 
@@ -32,9 +33,9 @@ function firebugConsole(){
         var color = (test.status==='pass')?green:
                     (test.status==='fail')?red:
                     (test.status==='error')?orange:normal;
-        
+
         var args = ['%c%s%c',color,test.status,normal];
-        
+
         if (typeof test.time !== 'undefined') {
             args[0] += ' (%c%s%c ms)';
             args.push(blue,test.time,normal);
@@ -60,7 +61,7 @@ function firebugConsole(){
         }
 
         if (test.error) _error(test.error);
-        
+
         console.log(test.argument);
 
         console.groupEnd();
@@ -75,9 +76,9 @@ function firebugConsole(){
         var args = ['%s - %c%s%c',group.name,color,group.status,normal];
 
         args[0] += ' - %c%d%c/%c%d%c/%c%d%c';
-        args.push(green,group.result.pass,normal
-                 ,red,group.result.fail,normal
-                 ,orange,group.result.error,normal);
+        args.push((group.result.pass > 0) ? green : grey,group.result.pass,normal
+                 , (group.result.fail > 0) ? red : grey,group.result.fail,normal
+                 , (group.result.error > 0) ? orange : grey,group.result.error,normal);
 
         args[0] += ' (%c%s%c ms)';
         args.push(blue,group.time,normal);
@@ -92,7 +93,7 @@ function firebugConsole(){
         } else {
             console.group.apply(console, args);
         }
-        
+
         if (group.description) console.log(group.description);
 
         if (group.trace) {
