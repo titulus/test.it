@@ -1,4 +1,4 @@
-testi.t
+test.it
 ===================
 
 TDD testing framework.
