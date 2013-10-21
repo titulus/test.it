@@ -147,9 +147,9 @@ test.group('first group',function(){
             .arguments()
     );
     
-    test.addTrace()
-        .them([1,2,true])
+    test.them([1,2,true])
         .comment('has')
+        .addTrace()
         .callback(function(){console.log('test passed')}
                  ,function(){console.log('test faild')}
                  ,function(){console.log('test ended with error')});
