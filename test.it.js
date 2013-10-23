@@ -648,8 +648,9 @@ function getTrace(error) {
         if (i==='') addToStack = false;
         /** take off Errors (Chrome) */
         if (i.indexOf(typeOf(error))!==-1) addToStack = false;
-        /** take off any references to testit lines */
-        if (i.indexOf('test.it')!==-1) addToStack = false;
+        /** take off any references to testit files */
+        if (i.indexOf('test.it.js')!==-1 ||
+            i.indexOf('test.it.min.js')!==-1) addToStack = false;
         /** take of reference to this function */
         if (i.indexOf('getTrace')!==-1) addToStack = false;
         /** fill the stack */
