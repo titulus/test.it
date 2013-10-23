@@ -18,7 +18,7 @@
         <p id="description">Simple javascript testing framework</p>
     </div>
     <div id="links">
-        <a href="https://github.com/titulus/testit/archive/v1.1.0.zip" class="button" id="download">Download v1.1.0</a>
+        <a href="https://github.com/titulus/testit/archive/v1.2.1.zip" class="button" id="download">Download v1.2.1</a>
         <span class="link">Fork it on &nbsp;<a href="https://github.com/titulus/testit" id="github" target=_blank>GitHub</a></span>
         <span class="link">Read manual on &nbsp;<a href="https://github.com/titulus/testit/wiki" id="wiki" target=_blank>Wiki</a></span>
     </div>
@@ -28,7 +28,7 @@
             <p><i>test.it</i> - <abbr title="Test Driven Development">TDD</abbr> framework for javascript unit testing.
             TDD is not the only application for <i>test.it</i>. You can also use it in agile or scrum metodologies though.</p>
             <p>Output into the <i>Web Console</i> and <i>CLI from node.js</i> are availible.</p>
-            <p>This guide is running on <i>v1.2.0</i></p>
+            <p>This guide is running on <i>v1.2.1</i></p>
             <p>Open <i>Web Console</i> to see the example.</p>
         </div>
 
@@ -82,51 +82,53 @@ test.printer(nodeConsole);</code></pre>
 test.it( "hello world" ); // pass
 test.it( 0 ); // fail
 
-test.group('first group',function(){
+test.group('first group',function(){ // group some tests
     test.it(1)
-        .comment('this');
+        .comment('this'); // add comment to the test
 
     console.log('using tests arguments',
-        test.addTime()
+        test.addTime() // add time in ms spent on this test
             .it(1,2)
             .comment('tests')
-            .arguments()
+            .arguments() // return test's arguments
     );
     
-    test.addTrace()
-        .them([1,2,true])
+    test.them([1,2,true]) 
         .comment('has')
-        .callback(function(){console.log('test passed')}
+        .addTrace() // add stack trace
+        .callback(function(){console.log('test passed')} // add callbacks
                  ,function(){console.log('test faild')}
                  ,function(){console.log('test ended with error')});
     
     console.log('using tests result',
         test.it(true)
             .comment('comments')
-            .result()
+            .result() // return result [bool] of the test
     );
 });
 
-test.group('second group',function(){
+test.group('second group',function(){ // group nesting
     test.group('nested group',function(){
         test.group('deep nested group',function(){
-            test.x.it('this test','this test')
+            test.x // esclude this test from result
+                .it('this test','this test')
                 .comment('will be excluded and outputed by itself')
-                .print();
+                .print(); // output similar test
         });
     });
 }).comment('has it\'s own comment');
-test.group('second group');
+
+test.group('second group') // group chaining
     .group('nested group').comment('comment to nested group')
     .group('deep nested group',function(){
         test.it('and this','and this')
             .comment('will be added to deep nested group from outside');
     });
-test.group('second group');
+test.group('second group')
     .group('nested group')
     .group('deep nested group')
         .comment('will be printed by itself')
-        .print();
+        .print(); // output similar group
 
 test.print(); // output results.
 console.log(test.result()) // or use it in CI
@@ -136,41 +138,43 @@ console.log(test.result()) // or use it in CI
 test.it( "hello world" ); // pass
 test.it( 0 ); // fail
 
-test.group('first group',function(){
+test.group('first group',function(){ // group some tests
     test.it(1)
-        .comment('this');
+        .comment('this'); // add comment to the test
 
     console.log('using tests arguments',
-        test.addTime()
+        test.addTime() // add time in ms spent on this test
             .it(1,2)
             .comment('tests')
-            .arguments()
+            .arguments() // return test's arguments
     );
     
-    test.them([1,2,true])
+    test.them([1,2,true]) 
         .comment('has')
-        .addTrace()
-        .callback(function(){console.log('test passed')}
+        .addTrace() // add stack trace
+        .callback(function(){console.log('test passed')} // add callbacks
                  ,function(){console.log('test faild')}
                  ,function(){console.log('test ended with error')});
     
     console.log('using tests result',
         test.it(true)
             .comment('comments')
-            .result()
+            .result() // return result [bool] of the test
     );
 });
 
-test.group('second group',function(){
+test.group('second group',function(){ // group nesting
     test.group('nested group',function(){
         test.group('deep nested group',function(){
-            test.x.it('this test','this test')
+            test.x // esclude this test from result
+                .it('this test','this test')
                 .comment('will be excluded and outputed by itself')
-                .print();
+                .print(); // output similar test
         });
     });
 }).comment('has it\'s own comment');
-test.group('second group')
+
+test.group('second group') // group chaining
     .group('nested group').comment('comment to nested group')
     .group('deep nested group',function(){
         test.it('and this','and this')
@@ -180,7 +184,7 @@ test.group('second group')
     .group('nested group')
     .group('deep nested group')
         .comment('will be printed by itself')
-        .print();
+        .print(); // output similar group
 
 test.print(); // output results.
 console.log(test.result()) // or use it in CI
