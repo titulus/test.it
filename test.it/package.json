@@ -1,6 +1,6 @@
 {
   "name": "test.it",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "TDD framework",
   "main": "test.it.min.js",
   "repository": {
