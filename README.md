@@ -91,4 +91,3 @@ You can find the API manual on [wiki](https://github.com/titulus/test.it/wiki/AP
 
 ### Online demo
 Look at it right [here](http://titulus.github.io/test.it/)
-Русская версия [сдесь](http://titulus.github.io/test.it/ru)
