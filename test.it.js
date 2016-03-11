@@ -704,7 +704,7 @@ function deepCompare() {
         }
 
         // Compare jQuery objects
-        if ((window || false) && (window.jQuery || false) && ((x instanceof jQuery) && (y instanceof jQuery))) {
+        if ((typeof window !== 'undefined') && (window.jQuery || false) && ((x instanceof jQuery) && (y instanceof jQuery))) {
             return x.is(y);
         }
 
