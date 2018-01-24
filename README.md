@@ -31,15 +31,14 @@ There are some differences between usage **test.it** in different environment li
 
 ## Browser
 + First: add core of framework
-
   ```html
-<script src='path/to/test.it.js'></script>
+  <script src='path/to/test.it.js'></script>
   ```
+
 + Next: add output strategy and set `firebugConsole` as default printer 
-  
   ```html
-<script src='path/to/test.it-firebug.js'></script>
-<script>test.printer(firebugConsole);</script>
+  <script src='path/to/test.it-firebug.js'></script>
+  <script>test.printer(firebugConsole);</script>
   ```
   Of course you can include `test.printer(firebugConsole);` in your tests script.
 
